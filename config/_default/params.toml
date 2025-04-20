@@ -69,5 +69,5 @@ reactionsEnabled = "1"
 emitMetadata = "0"
 inputPosition = "bottom"
 theme = "preferred_color_scheme"
-lang = "zh-CN"
+loading = "eager"  # 改为 eager 立即加载; Note: This may impact performance by loading content immediately. Ensure this aligns with user experience goals.
 loading = "lazy"  # 保持lazy加载

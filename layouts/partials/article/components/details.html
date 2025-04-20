@@ -1,0 +1,72 @@
+<div class="article-details">
+    {{ if .Params.categories }}
+    <header class="article-category">
+        {{ range (.GetTerms "categories") }}
+            <a href="{{ .RelPermalink }}" {{ with .Params.style }}style="background-color: {{ .background }}; color: {{ .color }};"{{ end }}>
+                {{ .LinkTitle }}
+            </a>
+        {{ end }}
+    </header>
+    {{ end }}
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="{{ .RelPermalink }}">
+                {{- .Title -}}
+            </a>
+        </h2>
+    
+        {{ with .Params.description }}
+        <h3 class="article-subtitle">
+            {{ . }}
+        </h3>
+        {{ end }}
+
+        {{/* --- DEBUGGING --- */}}
+        <!-- Date: {{ .Date }} -->
+        <!-- Lastmod: {{ .Lastmod }} -->
+        <!-- GitInfo: {{ with .GitInfo }}{{ .AuthorDate }}{{ else }} N/A {{ end }} -->
+        {{/* --- END DEBUGGING --- */}}
+
+        {{/* --- ADDED DATE SECTION --- */}}
+        {{ $publishDate := .Date }} 
+        {{ if $publishDate.IsZero }}
+            {{ $publishDate = .Lastmod }} {{/* Fallback to Lastmod if Date is zero */}}
+        {{ end }}
+        {{ $lastModDate := .Lastmod }}
+        {{/* $showLastMod := ne $publishDate $lastModDate <-- Removed condition */}}
+
+        <footer class="article-time" style="margin-top: 0.5rem;"> {{/* Removed flex, added margin */}}
+            {{/* Always show Publish Date */}}
+            <div>
+                {{ partial "helper/icon" "date" }}
+                <time class="article-time--published">
+                    {{ T "article.publishedOn" }}: 
+                    {{- $dateFormat := .Site.Params.dateFormat.published | default "Jan 02, 2006" -}}
+                    {{- if eq .Language.Lang "zh" -}}
+                        {{- $dateFormat = .Site.Params.dateFormat.published | default "2006年01月02日" -}}
+                    {{- end -}}
+                    {{ $publishDate | time.Format $dateFormat }}
+                </time>
+            </div>
+
+            {{/* Show LastMod only if different <-- Now always show */}}
+            {{/* if $showLastMod */}} {{/* Removed condition */}}
+                <div style="margin-top: 0.25rem;"> {{/* Added small top margin */}}
+                    {{ partial "helper/icon" "clock" }}
+                    <time class="article-time--updated"> 
+                        {{ T "article.lastUpdatedOn" }}: 
+                        {{- $lastModFormat := .Site.Params.dateFormat.lastUpdated | default "Jan 02, 2006 15:04 MST" -}}
+                        {{- if eq .Language.Lang "zh" -}}
+                            {{- $lastModFormat = .Site.Params.dateFormat.lastUpdated | default "2006年01月02日 15:04" -}}
+                        {{- end -}}
+                        {{ $lastModDate | time.Format $lastModFormat }}
+                    </time>
+                </div>
+            {{/* end */}} {{/* Removed condition end */}}
+        </footer>
+        {{/* --- END ADDED DATE SECTION --- */}}
+    </div>
+
+    {{/* Translations footer removed */}}
+</div> 
