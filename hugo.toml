@@ -18,6 +18,7 @@ defaultContentLanguage = 'zh' # 设置默认语言为中文
     # contentDir = 'content/zh' # Optional: Separate content directories
 
 [params]
+  mainSections = ["posts"]
   # Add other params from Ananke theme documentation if needed
 
   # Giscus configuration placeholder
