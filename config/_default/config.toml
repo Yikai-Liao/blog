@@ -3,6 +3,7 @@ baseurl = "https://Yikai-Liao.github.io/blog/"
 languageCode = "en-us"
 title = "My Blog"
 theme = "stack"
+enableGitInfo = true
 
 # Theme i18n support
 defaultContentLanguage = "zh"
@@ -92,3 +93,9 @@ hasCJKLanguage = true
   section = ["HTML", "RSS"]
   taxonomy = ["HTML", "RSS"]
   term = ["HTML", "RSS"]
+
+[frontmatter]
+  date = ["git", "date", "publishDate"]
+  lastmod = ["git", ":git", "lastmod", "publishDate", "date"]
+  publishDate = ["publishDate", "date"]
+  expiryDate = ["expiryDate"]
