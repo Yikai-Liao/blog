@@ -1,3 +1,5 @@
 article:
     publishedOn:
-        other: 发布于 
+        other: 发布于
+    lastUpdatedOn:
+        other: 最后更新于 
