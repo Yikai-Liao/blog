@@ -93,8 +93,9 @@
         <li class="menu-bottom-section">
             <ol class="menu">
                 {{- $currentLanguageCode := .Language.Lang -}}
-                {{ if ( compare.Gt .Site.Home.AllTranslations.Len 1 ) }}
-                    {{ with .Site.Home.AllTranslations }}
+                {{- $currentPage := . -}} {{/* Store current page context */}}
+                {{ if ( compare.Gt $currentPage.AllTranslations.Len 1 ) }} {{/* Check current page translations */}}
+                    {{ with $currentPage.AllTranslations }} {{/* Use current page translations */}}
                         <li id="i18n-switch">  
                             {{ partial "helper/icon" "language" }}
                             <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
