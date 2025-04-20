@@ -70,4 +70,4 @@ emitMetadata = "0"
 inputPosition = "bottom"
 theme = "preferred_color_scheme"
 lang = "zh-CN"
-loading = "lazy"
+loading = "lazy"  # 保持lazy加载
