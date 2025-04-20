@@ -1,0 +1,7 @@
+{{- $data := dict 
+    "title" .Title
+    "content" .Content
+    "date" .Date
+    "permalink" .Permalink
+-}}
+{{ jsonify $data }}

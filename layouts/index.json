@@ -1,0 +1,6 @@
+{{- $pages := where .Site.RegularPages "Type" "in" .Site.Params.mainSections -}}
+{{- $data := dict 
+    "title" .Site.Title
+    "pages" (apply $pages "partial" "page.json" ".")
+-}}
+{{ jsonify $data }}
