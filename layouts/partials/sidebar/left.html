@@ -1,0 +1,53 @@
+{{ $sidebar := .Site.Params.sidebar }}
+
+{{ $sidebarMenu := .Site.Menus.sidebar }}
+{{ if or $sidebar.emoji $sidebar.subtitle $sidebar.avatar (gt (len $sidebarMenu) 0) }}
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-content">
+        <div class="site-info">
+            {{ with .Site.Params.sidebar.avatar }}
+                <figure class="site-avatar">
+                    {{ $avatarResource := false }}
+                    {{ if .local }}
+                        {{/* Local image processing */}}
+                        {{ $avatarResource = resources.Get (.src) }}
+                    {{ else }}
+                        {{/* Remote image fetching and processing */}}
+                        {{ $avatarResource = resources.GetRemote (.src) }}
+                    {{ end }}
+
+                    {{ if $avatarResource }}
+                        {{/* Apply 1:1 centered crop */}}
+                        {{ $avatarProcessed := $avatarResource.Fill "300x300 Center" }}
+                        <img src="{{ $avatarProcessed.RelPermalink }}" width="{{ $avatarProcessed.Width }}"
+                            height="{{ $avatarProcessed.Height }}" class="site-logo" loading="lazy" alt="Avatar">
+                    {{ else }}
+                        {{ errorf "Failed loading avatar from %q" .src }}
+                    {{ end }}
+
+                    {{ with $.Site.Params.sidebar.avatar_status }}
+                        <span class="avatar-status {{ . }}"></span>
+                    {{ end }}
+                </figure>
+            {{ end }}
+            {{ with .Site.Params.sidebar.emoji }}
+                <span class="site-emoji">{{ . | safeHTML }}</span>
+            {{ end }}
+            {{ with .Site.Title }}
+                <h1 class="site-name"><a href="{{ .Site.BaseURL | absLangURL }}">{{ . }}</a></h1>
+            {{ end }}
+            {{ with .Site.Params.sidebar.subtitle }}
+                <p class="site-description">{{ . | safeHTML }}</p>
+            {{ end }}
+        </div>
+
+        {{ if gt (len $sidebarMenu) 0 }}
+            <nav class="nav sidebar-nav">
+                {{ partial "helper/menu" (dict "menu" $sidebarMenu "current" . "location" "sidebar") }}
+            </nav>
+        {{ end }}
+
+        {{- partial "sidebar/components/social_icons.html" . -}}
+    </div>
+</aside>
+{{ end }} 

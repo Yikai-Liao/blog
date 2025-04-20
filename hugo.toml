@@ -22,6 +22,10 @@ defaultContentLanguage = 'zh' # 设置默认语言为中文
   mainSections = ["posts"]
   # Add other params from Ananke theme documentation if needed
 
+  [params.sidebar.avatar]
+    src = "https://pub-3882fdd9f81f44b996a0eb4c32a8c257.r2.dev/black-saber.jpg"
+    local = false
+
   # Giscus configuration placeholder
   # You need to enable giscus in your GitHub repository settings first.
   # See: https://giscus.app/
