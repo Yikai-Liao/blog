@@ -1,22 +1,23 @@
 {{- if .Site.Params.giscus.enable -}}
   {{- with .Site.Params.giscus -}}
+    {{ $giscusTerm := $.Page.Params.giscus_term | default $.Page.Slug | default $.Page.Title }}
     <script src="https://giscus.app/client.js"
             data-repo="{{ .repo }}"
             data-repo-id="{{ .repoId }}"
             data-category="{{ .category }}"
             data-category-id="{{ .categoryId }}"
-            data-mapping="{{ .mapping | default "pathname" }}"
+            data-mapping="specific"
+            data-term="{{ $giscusTerm }}"
             data-strict="{{ .strict | default "0" }}"
             data-reactions-enabled="{{ .reactionsEnabled | default "1" }}"
             data-emit-metadata="{{ .emitMetadata | default "0" }}"
             data-input-position="{{ .inputPosition | default "bottom" }}"
             data-theme="{{ .theme | default "preferred_color_scheme" }}"
-            data-lang="{{ $.Page.Language.Lang | default .lang | default "en" }}" {{/* Use page language, fallback to config, fallback to en */}}
-            {{ if .loading }}data-loading="{{ .loading }}"{{ end }}
+            data-lang="{{ $.Page.Language.Lang | default .lang | default "zh-CN" }}"
+            {{ if .loading }}data-loading="{{ .loading | default "lazy" }}"{{ end }}
             crossorigin="anonymous"
             async>
     </script>
-    {{/* Optional: Add a container for styling */}}
     <noscript>Please enable JavaScript to view the <a href="https://giscus.app/?repo={{ .repo }}">comments powered by giscus.</a></noscript>
   {{- end }}
-{{- end -}} 
+{{- end -}}
