@@ -2,6 +2,7 @@ baseURL = 'https://Yikai-Liao.github.io/blog/'
 languageCode = 'en-us'
 title = 'My New Hugo Site'
 theme = 'stack'
+enableGitInfo = true
 
 defaultContentLanguage = 'zh' # 设置默认语言为中文
 
