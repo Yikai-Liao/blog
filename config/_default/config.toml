@@ -1,0 +1,94 @@
+# Change baseurl before deploy
+baseurl = "https://Yikai-Liao.github.io/blog/"
+languageCode = "en-us"
+title = "My Blog"
+theme = "stack"
+
+# Theme i18n support
+defaultContentLanguage = "zh"
+hasCJKLanguage = true
+
+[languages]
+  [languages.en]
+    title = "My Blog"
+    weight = 1
+    languageName = "English"
+    
+    [[languages.en.menu.main]]
+      identifier = "home"
+      name = "Home"
+      url = "/en"
+      weight = -100
+      [languages.en.menu.main.params]
+        icon = "home"
+    
+    [[languages.en.menu.main]]
+      identifier = "archives"
+      name = "Archives"
+      url = "/en/archives"
+      weight = -90
+      [languages.en.menu.main.params]
+        icon = "archives"
+    
+    [[languages.en.menu.main]]
+      identifier = "search"
+      name = "Search"
+      url = "/en/search"
+      weight = -80
+      [languages.en.menu.main.params]
+        icon = "search"
+
+    [[languages.en.menu.main]]
+      identifier = "about"
+      name = "About"
+      url = "/en/about"
+      weight = -70
+      [languages.en.menu.main.params]
+        icon = "user"
+
+  [languages.zh]
+    title = "我的博客"
+    weight = 2
+    languageName = "中文"
+    [languages.zh.params.dateFormat]
+      published = "2006年01月02日"
+      lastUpdated = "2006年01月02日 15:04 MST"
+
+    [[languages.zh.menu.main]]
+      identifier = "home"
+      name = "主页"
+      url = "/zh"
+      weight = -100
+      [languages.zh.menu.main.params]
+        icon = "home"
+    
+    [[languages.zh.menu.main]]
+      identifier = "archives"
+      name = "归档"
+      url = "/zh/archives"
+      weight = -90
+      [languages.zh.menu.main.params]
+        icon = "archives"
+    
+    [[languages.zh.menu.main]]
+      identifier = "search"
+      name = "搜索"
+      url = "/zh/search"
+      weight = -80
+      [languages.zh.menu.main.params]
+        icon = "search"
+
+    [[languages.zh.menu.main]]
+      identifier = "about"
+      name = "关于"
+      url = "/zh/about"
+      weight = -70
+      [languages.zh.menu.main.params]
+        icon = "user"
+
+[outputs]
+  page = ["HTML", "JSON"]
+  home = ["HTML", "RSS", "JSON"]
+  section = ["HTML", "RSS"]
+  taxonomy = ["HTML", "RSS"]
+  term = ["HTML", "RSS"]
