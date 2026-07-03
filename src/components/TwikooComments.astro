@@ -482,7 +482,9 @@ if (getSwup()?.hooks) {
 }
 
 #swup-container.twikoo-overflow-visible {
-	overflow: visible !important;
+	min-width: 0;
+	overflow-x: clip !important;
+	overflow-y: visible !important;
 }
 
 .twikoo-card .OwO .OwO-body .OwO-items::-webkit-scrollbar {
