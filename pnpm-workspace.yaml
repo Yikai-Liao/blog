@@ -1,5 +1,9 @@
+packages:
+  - comments
+
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
   sharp: true
   swup: true
+  workerd: true
