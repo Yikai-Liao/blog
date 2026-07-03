@@ -29,6 +29,10 @@ function getBuildCommitHash() {
 }
 
 const buildCommitHash = getBuildCommitHash();
+const buildTime = new Date(Date.now() + 8 * 60 * 60 * 1000)
+	.toISOString()
+	.slice(0, 16)
+	.replace("T", " ");
 const githubUrl = profileConfig.links
 	.find((link) => link.name === "GitHub")
 	?.url.replace(/\/+$/, "");
@@ -52,6 +56,8 @@ const buildCommitUrl =
 					>
 						{buildCommitHash}
 					</a>
+					<br />
+					构建时间：{buildTime}（UTC+8）
 				</div>
 			)}
         </div>
