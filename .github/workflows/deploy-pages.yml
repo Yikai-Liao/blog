@@ -60,6 +60,8 @@ jobs:
 
       - name: Build GitHub Pages site
         run: pnpm build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_CARD_TOKEN || github.token }}
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v4
@@ -116,6 +118,8 @@ jobs:
 
       - name: Build Cloudflare Pages site
         run: pnpm build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_CARD_TOKEN || github.token }}
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
