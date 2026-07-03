@@ -103,3 +103,4 @@ lang: jp      # 仅当文章语言与 `config.ts` 中的网站语言不同时需
    - `CLOUDFLARE_PAGES_SITE_URL`：覆盖默认的 Cloudflare Pages URL（`https://<project>.pages.dev`）。
 
 之所以在 workflow 里分别构建两次，是因为 Astro 的 `site` 和 `base` 会影响 sitemap、RSS、canonical URL 等产物。现在 `astro.config.mjs` 会读取 `PUBLIC_SITE_URL` 和 `PUBLIC_BASE_PATH`，从而为两个部署目标生成各自正确的静态文件。
+在 Cloudflare 所需的 variable 和 secret 还没配置完之前，Cloudflare job 会自动跳过，不会阻塞 GitHub Pages 先上线。

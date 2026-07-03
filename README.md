@@ -106,6 +106,7 @@ Before enabling the workflow:
    - `CLOUDFLARE_PAGES_SITE_URL`: overrides the default Cloudflare Pages URL (`https://<project>.pages.dev`).
 
 The workflow builds the site twice so each deployment gets the correct Astro `site` and `base` values. It uses `PUBLIC_SITE_URL` and `PUBLIC_BASE_PATH` during the build instead of hard-coding a single deployment target in `astro.config.mjs`.
+The Cloudflare job is skipped until all required Cloudflare variables and secrets are configured, so GitHub Pages can ship independently first.
 
 ## ✏️ Contributing
 

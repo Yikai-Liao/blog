@@ -79,6 +79,7 @@ jobs:
         uses: actions/deploy-pages@v5
 
   deploy-cloudflare-pages:
+    if: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' && secrets.CLOUDFLARE_API_TOKEN != '' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -102,11 +103,6 @@ jobs:
 
       - name: Resolve Cloudflare Pages site settings
         run: |
-          if [ -z "$CLOUDFLARE_PAGES_PROJECT_NAME" ]; then
-            echo "::error::Missing repository variable CLOUDFLARE_PAGES_PROJECT_NAME."
-            exit 1
-          fi
-
           default_site="https://${CLOUDFLARE_PAGES_PROJECT_NAME}.pages.dev"
           echo "PUBLIC_SITE_URL=${CLOUDFLARE_PAGES_SITE_URL:-$default_site}" >> "$GITHUB_ENV"
           echo "PUBLIC_BASE_PATH=/" >> "$GITHUB_ENV"
