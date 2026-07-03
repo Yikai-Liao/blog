@@ -24,10 +24,22 @@ import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 
+function normalizeSite(value, fallback) {
+	return (value?.trim() || fallback).replace(/\/+$/, "");
+}
+
+function normalizeBase(value) {
+	const trimmed = value?.trim();
+	if (!trimmed || trimmed === "/") {
+		return "/";
+	}
+	return `/${trimmed.replace(/^\/+|\/+$/g, "")}/`;
+}
+
 // https://astro.build/config
 export default defineConfig({
-	site: "https://fuwari.vercel.app/",
-	base: "/",
+	site: normalizeSite(process.env.PUBLIC_SITE_URL, "https://fuwari.vercel.app"),
+	base: normalizeBase(process.env.PUBLIC_BASE_PATH),
 	trailingSlash: "always",
 	integrations: [
 		tailwind({

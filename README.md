@@ -47,7 +47,7 @@ A static blog template built with [Astro](https://astro.build).
     - Install [pnpm](https://pnpm.io) `npm install -g pnpm` if you haven't.
 3. Edit the config file `src/config.ts` to customize your blog.
 4. Run `pnpm new-post <filename>` to create a new post and edit it in `src/content/posts/`.
-5. Deploy your blog to Vercel, Netlify, GitHub Pages, etc. following [the guides](https://docs.astro.build/en/guides/deploy/). You need to edit the site configuration in `astro.config.mjs` before deployment.
+5. Deploy your blog to Vercel, Netlify, GitHub Pages, Cloudflare Pages, etc. following [the guides](https://docs.astro.build/en/guides/deploy/). This repository includes a GitHub Actions workflow for dual deployment to GitHub Pages and Cloudflare Pages.
 
 ## 📝 Frontmatter of Posts
 
@@ -87,6 +87,25 @@ All commands are run from the root of the project, from a terminal:
 | `pnpm new-post <filename>` | Create a new post                                   |
 | `pnpm astro ...`           | Run CLI commands like `astro add`, `astro check`    |
 | `pnpm astro --help`        | Get help using the Astro CLI                        |
+
+## Dual Deployment
+
+This repository includes [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) to deploy the site to both GitHub Pages and Cloudflare Pages on every push to `main`.
+
+Before enabling the workflow:
+
+1. In GitHub repository settings, set Pages to build from **GitHub Actions**.
+2. Add the Cloudflare GitHub Actions secrets:
+   - `CLOUDFLARE_ACCOUNT_ID`
+   - `CLOUDFLARE_API_TOKEN`
+3. Add the Cloudflare repository variable:
+   - `CLOUDFLARE_PAGES_PROJECT_NAME`
+4. Optional repository variables:
+   - `GITHUB_PAGES_SITE_URL`: overrides the default GitHub Pages site URL.
+   - `GITHUB_PAGES_BASE_PATH`: overrides the default GitHub Pages base path. By default it uses `/` for `<owner>.github.io` repositories and `/<repo>` for project pages.
+   - `CLOUDFLARE_PAGES_SITE_URL`: overrides the default Cloudflare Pages URL (`https://<project>.pages.dev`).
+
+The workflow builds the site twice so each deployment gets the correct Astro `site` and `base` values. It uses `PUBLIC_SITE_URL` and `PUBLIC_BASE_PATH` during the build instead of hard-coding a single deployment target in `astro.config.mjs`.
 
 ## ✏️ Contributing
 
