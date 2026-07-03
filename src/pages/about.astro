@@ -33,9 +33,7 @@ const githubUrl = profileConfig.links
 	.find((link) => link.name === "GitHub")
 	?.url.replace(/\/+$/, "");
 const buildCommitUrl =
-	buildCommitHash && githubUrl
-		? `${githubUrl}/commit/${buildCommitHash}`
-		: "";
+	buildCommitHash && githubUrl ? `${githubUrl}/commit/${buildCommitHash}` : "";
 ---
 <MainGridLayout title={i18n(I18nKey.about)} description={i18n(I18nKey.about)}>
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
