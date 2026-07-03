@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "blog-twikoo",
+  "main": "src/index.js",
+  "compatibility_date": "2026-07-03",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "twikoo",
+      "database_id": "__TWIKOO_D1_DATABASE_ID__"
+    }
+  ],
+  "dev": {
+    "port": 8787
+  }
+}

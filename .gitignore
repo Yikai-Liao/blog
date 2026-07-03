@@ -6,6 +6,10 @@ dist/
 
 # dependencies
 node_modules/
+comments/node_modules/
+comments/.mf/
+comments/.wrangler/
+comments/wrangler.generated.jsonc
 
 # logs
 npm-debug.log*

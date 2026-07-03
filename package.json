@@ -58,6 +58,7 @@
     "stylus": "^0.64.0",
     "svelte": "^5.56.4",
     "tailwindcss": "^3.4.19",
+    "twikoo": "1.7.13",
     "typescript": "^5.9.3",
     "unist-util-visit": "^5.1.0"
   },

@@ -20,6 +20,7 @@ jobs:
     env:
       GITHUB_PAGES_SITE_URL: ${{ vars.GITHUB_PAGES_SITE_URL }}
       GITHUB_PAGES_BASE_PATH: ${{ vars.GITHUB_PAGES_BASE_PATH }}
+      PUBLIC_TWIKOO_ENV_ID: ${{ vars.PUBLIC_TWIKOO_ENV_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -87,6 +88,7 @@ jobs:
     env:
       CLOUDFLARE_PAGES_PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
       CLOUDFLARE_PAGES_SITE_URL: ${{ vars.CLOUDFLARE_PAGES_SITE_URL }}
+      PUBLIC_TWIKOO_ENV_ID: ${{ vars.PUBLIC_TWIKOO_ENV_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -120,3 +122,40 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-twikoo-worker:
+    if: ${{ vars.TWIKOO_WORKER_ENABLED == 'true' && vars.TWIKOO_D1_DATABASE_ID != '' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      TWIKOO_D1_DATABASE_ID: ${{ vars.TWIKOO_D1_DATABASE_ID }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        with:
+          run_install: false
+
+      - name: Install Twikoo Worker dependencies
+        working-directory: comments
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Twikoo Worker config
+        working-directory: comments
+        run: pnpm run write-config
+
+      - name: Deploy Twikoo Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: comments
+          command: deploy --config wrangler.generated.jsonc --minify

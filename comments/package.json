@@ -1,0 +1,23 @@
+{
+  "name": "blog-twikoo-worker",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.14.4",
+  "scripts": {
+    "postinstall": "node ./scripts/prepare-twikoo-cloudflare.mjs",
+    "write-config": "node ./scripts/write-wrangler-config.mjs",
+    "dev": "pnpm run write-config && wrangler dev --config wrangler.generated.jsonc",
+    "deploy": "pnpm run write-config && wrangler deploy --config wrangler.generated.jsonc --minify",
+    "d1:create": "wrangler d1 create twikoo",
+    "d1:schema": "pnpm run d1:schema:local",
+    "d1:schema:local": "pnpm run write-config && wrangler d1 execute twikoo --local --file=./node_modules/twikoo-cloudflare/schema.sql --config wrangler.generated.jsonc",
+    "d1:schema:remote": "pnpm run write-config && wrangler d1 execute twikoo --remote --file=./node_modules/twikoo-cloudflare/schema.sql --config wrangler.generated.jsonc"
+  },
+  "dependencies": {
+    "twikoo-cloudflare": "1.6.41",
+    "twikoo-func": "1.7.13"
+  },
+  "devDependencies": {
+    "wrangler": "^4.107.0"
+  }
+}
