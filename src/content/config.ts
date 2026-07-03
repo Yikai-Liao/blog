@@ -7,10 +7,16 @@ const postsCollection = defineCollection({
 		updated: z.date().optional(),
 		draft: z.boolean().optional().default(false),
 		description: z.string().optional().default(""),
+		author: z.string().optional().default(""),
 		image: z.string().optional().default(""),
 		tags: z.array(z.string()).optional().default([]),
 		category: z.string().optional().nullable().default(""),
 		lang: z.string().optional().default(""),
+		toc: z
+			.object({
+				depth: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
+			})
+			.optional(),
 
 		/* For internal use */
 		prevTitle: z.string().default(""),

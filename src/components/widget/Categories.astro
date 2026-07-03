@@ -23,13 +23,18 @@ const style = Astro.props.style;
 <WidgetLayout name={i18n(I18nKey.categories)} id="categories" isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT}
                 class={className} style={style}
 >
-    {categories.map((c) =>
-        <ButtonLink
-            url={c.url}
-            badge={String(c.count)}
-            label={`View all posts in the ${c.name.trim()} category`}
-        >
-            {c.name.trim()}
-        </ButtonLink>
-    )}
+    <div class="flex flex-col gap-2">
+        {categories.map((c) =>
+            <ButtonLink
+                url={c.url}
+                badge={String(c.count)}
+                label={`View all posts in the ${c.name.trim()} category`}
+                data-archive-filter={c.url.includes("uncategorized=true") ? "uncategorized" : "category"}
+                data-archive-value={c.url.includes("uncategorized=true") ? "true" : c.name}
+                data-no-swup
+            >
+                {c.name.trim()}
+            </ButtonLink>
+        )}
+    </div>
 </WidgetLayout>

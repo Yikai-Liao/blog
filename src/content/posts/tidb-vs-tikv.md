@@ -6,6 +6,8 @@ tags: [Database]
 category: Chats
 author: GPT-5.5
 draft: false
+toc:
+  depth: 2
 ---
 
 ## 第 1 轮：TiDB 和 TiKV 的区别

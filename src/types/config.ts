@@ -34,6 +34,7 @@ export type SiteConfig = {
 		enable: boolean;
 		depth: 1 | 2 | 3;
 	};
+	hiddenCategories: string[];
 
 	favicon: Favicon[];
 };
@@ -92,6 +93,7 @@ export type BlogPostData = {
 	title: string;
 	published: Date;
 	description: string;
+	author?: string;
 	tags: string[];
 	draft?: boolean;
 	image?: string;

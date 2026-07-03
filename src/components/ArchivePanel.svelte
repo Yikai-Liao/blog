@@ -7,12 +7,10 @@ import { getPostUrlBySlug } from "../utils/url-utils";
 
 export let tags: string[] = [];
 export let categories: string[] = [];
+export let hiddenCategories: string[] = [];
 export let sortedPosts: PostForList[] = [];
 
-const params = new URLSearchParams(window.location.search);
-tags = params.has("tag") ? params.getAll("tag") : [];
-categories = params.has("category") ? params.getAll("category") : [];
-const uncategorized = params.get("uncategorized");
+let uncategorized = false;
 
 interface Group {
 	year: number;
@@ -31,8 +29,22 @@ function formatTag(tagList: string[]) {
 	return tagList.map((t) => `#${t}`).join(" ");
 }
 
-onMount(async () => {
-	let filteredPosts: PostForList[] = sortedPosts;
+function applyFilters() {
+	const params = new URLSearchParams(window.location.search);
+	tags = params.getAll("tag");
+	categories = params.getAll("category");
+	uncategorized = params.has("uncategorized");
+	const selectedHiddenCategories = new Set(
+		categories.filter((category) => hiddenCategories.includes(category)),
+	);
+	let filteredPosts: PostForList[] = sortedPosts.filter((post) => {
+		const category = post.data.category?.trim();
+		return (
+			!category ||
+			!hiddenCategories.includes(category) ||
+			selectedHiddenCategories.has(category)
+		);
+	});
 
 	if (tags.length > 0) {
 		filteredPosts = filteredPosts.filter(
@@ -72,6 +84,17 @@ onMount(async () => {
 	groupedPostsArray.sort((a, b) => b.year - a.year);
 
 	groups = groupedPostsArray;
+}
+
+onMount(() => {
+	applyFilters();
+	window.addEventListener("archive-filter-change", applyFilters);
+	window.addEventListener("popstate", applyFilters);
+
+	return () => {
+		window.removeEventListener("archive-filter-change", applyFilters);
+		window.removeEventListener("popstate", applyFilters);
+	};
 });
 </script>
 

@@ -1,22 +1,140 @@
 ---
 import type { MarkdownHeading } from "astro";
+import { siteConfig } from "../../config";
 import Categories from "./Categories.astro";
 import Profile from "./Profile.astro";
 import Tag from "./Tags.astro";
+import TOC from "./TOC.astro";
+import WidgetLayout from "./WidgetLayout.astro";
 
 interface Props {
 	class?: string;
 	headings?: MarkdownHeading[];
+	tocDepth?: 1 | 2 | 3;
 }
 
 const className = Astro.props.class;
+const { headings = [], tocDepth } = Astro.props;
+const hasToc = siteConfig.toc.enable && headings.length > 0;
 ---
 <div id="sidebar" class:list={[className, "w-full"]}>
     <div class="flex flex-col w-full gap-4 mb-4">
         <Profile></Profile>
     </div>
     <div id="sidebar-sticky" class="transition-all duration-700 flex flex-col w-full gap-4 top-4 sticky top-4">
-        <Categories class="onload-animation" style="animation-delay: 150ms"></Categories>
-        <Tag class="onload-animation" style="animation-delay: 200ms"></Tag>
+        {hasToc && <WidgetLayout name="Contents" id="sidebar-toc" class="onload-animation hidden lg:block" style="animation-delay: 150ms">
+            <div data-toc-scroll class="max-h-[calc(100vh_-_8rem)] overflow-y-auto overflow-x-hidden hide-scrollbar">
+                <TOC headings={headings} depth={tocDepth}></TOC>
+            </div>
+        </WidgetLayout>}
+        {!hasToc && <Categories class="onload-animation" style="animation-delay: 200ms"></Categories>}
+        {!hasToc && <Tag class="onload-animation" style="animation-delay: 250ms"></Tag>}
     </div>
 </div>
+
+<script>
+function isArchivePage() {
+	return window.location.pathname.replace(/\/+$/, "").endsWith("/archive");
+}
+
+function withoutValue(params: URLSearchParams, key: string, value: string) {
+	const next = new URLSearchParams(params);
+	next.delete(key);
+	params.getAll(key).forEach((item) => {
+		if (item !== value) next.append(key, item);
+	});
+	return next;
+}
+
+function syncArchiveFilters() {
+	const onArchive = isArchivePage();
+	const params = new URLSearchParams(window.location.search);
+
+	document
+		.querySelectorAll<HTMLAnchorElement>("[data-archive-filter][data-archive-value]")
+		.forEach((link) => {
+			const key = link.dataset.archiveFilter;
+			const value = link.dataset.archiveValue;
+			if (!key || !value) return;
+
+			const active =
+				key === "uncategorized"
+					? params.has("uncategorized")
+					: params.getAll(key).includes(value);
+			link.classList.toggle("archive-filter-active", onArchive && active);
+			link.toggleAttribute("aria-current", onArchive && active);
+			if (!onArchive) return;
+
+			let next = active ? withoutValue(params, key, value) : new URLSearchParams(params);
+			if (!active) {
+				if (key === "category") next.delete("uncategorized");
+				if (key === "uncategorized") next.delete("category");
+				next.append(key, value);
+			}
+
+			const url = new URL(link.href);
+			url.search = next.toString();
+			link.href = url.toString();
+		});
+}
+
+function onArchiveFilterClick(event: MouseEvent) {
+	if (
+		event.defaultPrevented ||
+		event.button !== 0 ||
+		event.metaKey ||
+		event.ctrlKey ||
+		event.shiftKey ||
+		event.altKey ||
+		!isArchivePage()
+	) {
+		return;
+	}
+
+	const target = event.target;
+	if (!(target instanceof Element)) return;
+
+	const link = target.closest<HTMLAnchorElement>(
+		"[data-archive-filter][data-archive-value]",
+	);
+	if (!link) return;
+
+	event.preventDefault();
+	const url = new URL(link.href);
+	window.history.pushState({}, "", `${url.pathname}${url.search}`);
+	syncArchiveFilters();
+	window.dispatchEvent(new CustomEvent("archive-filter-change"));
+}
+
+syncArchiveFilters();
+document.addEventListener("DOMContentLoaded", syncArchiveFilters);
+document.addEventListener("click", onArchiveFilterClick, true);
+document.addEventListener("swup:page:view", syncArchiveFilters);
+window.addEventListener("popstate", () => {
+	syncArchiveFilters();
+	window.dispatchEvent(new CustomEvent("archive-filter-change"));
+});
+
+if (window.swup?.hooks) {
+	window.swup.hooks.on("page:view", syncArchiveFilters);
+} else {
+	document.addEventListener(
+		"swup:enable",
+		() => window.swup?.hooks?.on("page:view", syncArchiveFilters),
+		{ once: true },
+	);
+}
+</script>
+
+<style>
+:global(a.archive-filter-active.btn-regular) {
+	background: var(--btn-regular-bg-hover);
+	color: var(--primary);
+}
+
+:global(a.archive-filter-active > button) {
+	background: var(--btn-plain-bg-hover);
+	color: var(--primary);
+	padding-left: 0.75rem;
+}
+</style>
