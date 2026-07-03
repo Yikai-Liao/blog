@@ -1,7 +1,7 @@
 # About
-This is the demo site for [Fuwari](https://github.com/saicaca/fuwari).
+This is the demo site for [Fuwari](https://github.com/Yikai-Liao/blog).
 
-::github{repo="saicaca/fuwari"}
+::github{repo="Yikai-Liao/blog"}
 
 > ### Sources of images used in this site
 > - [Unsplash](https://unsplash.com/)
