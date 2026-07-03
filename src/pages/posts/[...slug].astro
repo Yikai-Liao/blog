@@ -34,11 +34,11 @@ const jsonLd = {
 	headline: entry.data.title,
 	description: entry.data.description || entry.data.title,
 	keywords: entry.data.tags,
-		author: {
-			"@type": "Person",
-			name: entry.data.author || profileConfig.name,
-			url: Astro.site,
-		},
+	author: {
+		"@type": "Person",
+		name: entry.data.author || profileConfig.name,
+		url: Astro.site,
+	},
 	datePublished: formatDateToYYYYMMDD(entry.data.published),
 	inLanguage: entry.data.lang
 		? entry.data.lang.replace("_", "-")
