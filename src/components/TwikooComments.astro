@@ -10,6 +10,7 @@ interface Props {
 const { path, title } = Astro.props;
 const enabled = commentConfig.enable && !!commentConfig.envId;
 const lang = siteConfig.lang.replace("_", "-");
+const normalizedPath = path.replace(/\/+/g, "/").replace(/\/+$/, "") || "/";
 ---
 
 {enabled && (
@@ -18,174 +19,13 @@ const lang = siteConfig.lang.replace("_", "-");
 		aria-label="Comments"
 		data-twikoo-root
 		data-env-id={commentConfig.envId}
-		data-path={path}
+		data-path={normalizedPath}
 		data-title={title}
 		data-lang={lang}
 	>
 		<div id="tcomment" class="twikoo-host"></div>
 	</section>
 )}
-
-<script>
-import twikoo from "twikoo/dist/twikoo.min.js";
-
-type TwikooInitOptions = {
-	envId: string;
-	el: string;
-	path: string;
-	title: string;
-	lang?: string;
-};
-
-declare global {
-	interface Window {
-		__initBlogTwikoo?: () => void;
-	}
-}
-
-type SwupLike = {
-	hooks?: {
-		on: (name: string, callback: () => void) => void;
-	};
-};
-
-const TWIKOO_ADMIN_PORTAL_CLASS = "twikoo-admin-portal";
-let twikooAdminObserver: MutationObserver | undefined;
-
-function getSwup() {
-	return (window as Window & { swup?: SwupLike }).swup;
-}
-
-function prettifyTwikooMetaInputs() {
-	const labels = {
-		nick: "Nickname *",
-		mail: "Email *",
-		link: "Website",
-	};
-
-	for (const input of document.querySelectorAll<HTMLInputElement>(
-		".twikoo-card .tk-meta-input input[name]",
-	)) {
-		const name = input.name as keyof typeof labels;
-		if (!labels[name]) continue;
-		input.placeholder = labels[name];
-		input.setAttribute("aria-label", labels[name]);
-	}
-}
-
-function syncTwikooAdminEntry() {
-	const nickInput = document.querySelector<HTMLInputElement>(
-		".twikoo-card .tk-meta-input input[name='nick']",
-	);
-	if (!nickInput) return;
-
-	for (const type of ["input", "change"]) {
-		nickInput.dispatchEvent(new window.Event(type, { bubbles: true }));
-	}
-}
-
-function allowTwikooOverflow() {
-	document.querySelector("#swup-container")?.classList.add("twikoo-overflow-visible");
-}
-
-function resetTwikooAdminPortal() {
-	twikooAdminObserver?.disconnect();
-	twikooAdminObserver = undefined;
-
-	for (const portal of document.querySelectorAll(
-		`.${TWIKOO_ADMIN_PORTAL_CLASS}`,
-	)) {
-		portal.remove();
-	}
-}
-
-function portalTwikooAdmin(root: HTMLElement) {
-	const adminContainer = root.querySelector<HTMLElement>(".tk-admin-container");
-	if (!adminContainer) return;
-
-	adminContainer.classList.add(TWIKOO_ADMIN_PORTAL_CLASS);
-	if (adminContainer.parentElement !== document.body) {
-		document.body.appendChild(adminContainer);
-	}
-}
-
-function observeTwikooAdmin(root: HTMLElement) {
-	twikooAdminObserver?.disconnect();
-	twikooAdminObserver = new MutationObserver(() => portalTwikooAdmin(root));
-	twikooAdminObserver.observe(root, { childList: true, subtree: true });
-	portalTwikooAdmin(root);
-}
-
-function initTwikoo(options: TwikooInitOptions) {
-	if (typeof twikoo === "function") {
-		return twikoo(options);
-	}
-
-	return twikoo.init(options);
-}
-
-function initBlogTwikoo() {
-	const root = document.querySelector<HTMLElement>("[data-twikoo-root]");
-	const host = document.querySelector<HTMLElement>("#tcomment");
-	if (!root || !host) {
-		resetTwikooAdminPortal();
-		return;
-	}
-
-	const { envId, path, title, lang } = root.dataset;
-	if (!envId || !path || !title) {
-		resetTwikooAdminPortal();
-		return;
-	}
-	if (host.dataset.twikooPath === path) return;
-
-	resetTwikooAdminPortal();
-	host.dataset.twikooPath = path;
-	host.replaceChildren();
-
-	Promise.resolve(
-		initTwikoo({
-			envId,
-			el: "#tcomment",
-			path,
-			title,
-			lang,
-		} satisfies TwikooInitOptions),
-	)
-		.then(() => {
-			allowTwikooOverflow();
-			observeTwikooAdmin(root);
-			prettifyTwikooMetaInputs();
-			syncTwikooAdminEntry();
-			requestAnimationFrame(() => {
-				portalTwikooAdmin(root);
-				prettifyTwikooMetaInputs();
-				syncTwikooAdminEntry();
-			});
-			window.setTimeout(() => {
-				portalTwikooAdmin(root);
-				syncTwikooAdminEntry();
-			}, 600);
-		})
-		.catch((error: unknown) => {
-			console.error("Twikoo failed to initialize", error);
-			delete host.dataset.twikooPath;
-		});
-}
-
-window.__initBlogTwikoo = initBlogTwikoo;
-initBlogTwikoo();
-
-const setupTwikooSwup = () => {
-	getSwup()?.hooks?.on("page:view", initBlogTwikoo);
-};
-
-if (getSwup()?.hooks) {
-	setupTwikooSwup();
-} else {
-	document.addEventListener("swup:enable", setupTwikooSwup, { once: true });
-}
-</script>
 
 <style is:global>
 .twikoo-card,

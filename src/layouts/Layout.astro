@@ -505,6 +505,185 @@ window.onresize = () => {
 </script>
 
 <script>
+type TwikooInitOptions = {
+	envId: string;
+	el: string;
+	path: string;
+	title: string;
+	lang?: string;
+};
+
+type TwikooModule = typeof import("twikoo/dist/twikoo.min.js");
+
+type SwupLike = {
+	hooks?: {
+		on: (name: string, callback: () => void, options?: { before?: boolean }) => void;
+	};
+};
+
+declare global {
+	interface Window {
+		__blogTwikooRuntimeReady?: boolean;
+		__initBlogTwikoo?: () => void;
+	}
+}
+
+const TWIKOO_ADMIN_PORTAL_CLASS = "twikoo-admin-portal";
+let twikooAdminObserver: MutationObserver | undefined;
+let twikooModule: Promise<TwikooModule> | undefined;
+let twikooInitToken = 0;
+
+function normalizeTwikooPath(pathname: string) {
+	return pathname.replace(/\/+/g, "/").replace(/\/+$/, "") || "/";
+}
+
+function getSwup() {
+	return (window as Window & { swup?: SwupLike }).swup;
+}
+
+function prettifyTwikooMetaInputs() {
+	const labels = {
+		nick: "Nickname *",
+		mail: "Email *",
+		link: "Website",
+	};
+
+	for (const input of document.querySelectorAll<HTMLInputElement>(
+		".twikoo-card .tk-meta-input input[name]",
+	)) {
+		const name = input.name as keyof typeof labels;
+		if (!labels[name]) continue;
+		input.placeholder = labels[name];
+		input.setAttribute("aria-label", labels[name]);
+	}
+}
+
+function syncTwikooAdminEntry() {
+	const nickInput = document.querySelector<HTMLInputElement>(
+		".twikoo-card .tk-meta-input input[name='nick']",
+	);
+	if (!nickInput) return;
+
+	for (const type of ["input", "change"]) {
+		nickInput.dispatchEvent(new window.Event(type, { bubbles: true }));
+	}
+}
+
+function portalTwikooAdmin(root: HTMLElement) {
+	const adminContainer = root.querySelector<HTMLElement>(".tk-admin-container");
+	if (!adminContainer) return;
+
+	adminContainer.classList.add(TWIKOO_ADMIN_PORTAL_CLASS);
+	if (adminContainer.parentElement !== document.body) {
+		document.body.appendChild(adminContainer);
+	}
+}
+
+function resetBlogTwikoo() {
+	twikooInitToken++;
+	twikooAdminObserver?.disconnect();
+	twikooAdminObserver = undefined;
+	document.querySelector("#swup-container")?.classList.remove("twikoo-overflow-visible");
+
+	for (const portal of document.querySelectorAll(
+		`.${TWIKOO_ADMIN_PORTAL_CLASS}`,
+	)) {
+		portal.remove();
+	}
+}
+
+async function initTwikoo(options: TwikooInitOptions) {
+	const mod = await (twikooModule ??= import("twikoo/dist/twikoo.min.js"));
+	const twikoo = mod.default;
+
+	if (typeof twikoo === "function") {
+		return twikoo(options);
+	}
+
+	return twikoo.init(options);
+}
+
+function enhanceTwikoo(root: HTMLElement) {
+	document.querySelector("#swup-container")?.classList.add("twikoo-overflow-visible");
+	twikooAdminObserver?.disconnect();
+	twikooAdminObserver = new MutationObserver(() => portalTwikooAdmin(root));
+	twikooAdminObserver.observe(root, { childList: true, subtree: true });
+	portalTwikooAdmin(root);
+	prettifyTwikooMetaInputs();
+	syncTwikooAdminEntry();
+}
+
+async function initBlogTwikoo() {
+	const root = document.querySelector<HTMLElement>("[data-twikoo-root]");
+	const host = document.querySelector<HTMLElement>("#tcomment");
+	if (!root || !host) {
+		resetBlogTwikoo();
+		return;
+	}
+
+	const { envId, title, lang } = root.dataset;
+	const path = normalizeTwikooPath(window.location.pathname);
+	if (!envId || !title) {
+		resetBlogTwikoo();
+		return;
+	}
+	if (host.dataset.twikooPath === path) return;
+
+	resetBlogTwikoo();
+	const token = twikooInitToken;
+	host.dataset.twikooPath = path;
+	host.replaceChildren();
+
+	try {
+		await initTwikoo({
+			envId,
+			el: "#tcomment",
+			path,
+			title,
+			lang,
+		});
+		if (token !== twikooInitToken || host.dataset.twikooPath !== path) return;
+
+		enhanceTwikoo(root);
+		requestAnimationFrame(() => {
+			if (token !== twikooInitToken) return;
+			enhanceTwikoo(root);
+		});
+		window.setTimeout(() => {
+			if (token !== twikooInitToken) return;
+			portalTwikooAdmin(root);
+			syncTwikooAdminEntry();
+		}, 600);
+	} catch (error) {
+		console.error("Twikoo failed to initialize", error);
+		if (token === twikooInitToken && host.dataset.twikooPath === path) {
+			delete host.dataset.twikooPath;
+		}
+	}
+}
+
+function setupBlogTwikoo() {
+	if (window.__blogTwikooRuntimeReady) return;
+	window.__blogTwikooRuntimeReady = true;
+	window.__initBlogTwikoo = initBlogTwikoo;
+	initBlogTwikoo();
+
+	const setupSwup = () => {
+		getSwup()?.hooks?.on("content:replace", resetBlogTwikoo, { before: true });
+		getSwup()?.hooks?.on("page:view", initBlogTwikoo);
+	};
+
+	if (getSwup()?.hooks) {
+		setupSwup();
+	} else {
+		document.addEventListener("swup:enable", setupSwup, { once: true });
+	}
+}
+
+setupBlogTwikoo();
+</script>
+
+<script>
 import PhotoSwipeLightbox from "photoswipe/lightbox"
 import "photoswipe/style.css"
 
