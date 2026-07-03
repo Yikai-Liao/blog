@@ -83,6 +83,10 @@ function syncTwikooAdminEntry() {
 	}
 }
 
+function allowTwikooOverflow() {
+	document.querySelector("#swup-container")?.classList.add("twikoo-overflow-visible");
+}
+
 function resetTwikooAdminPortal() {
 	twikooAdminObserver?.disconnect();
 	twikooAdminObserver = undefined;
@@ -142,6 +146,7 @@ function initBlogTwikoo() {
 		} satisfies TwikooInitOptions),
 	)
 		.then(() => {
+			allowTwikooOverflow();
 			observeTwikooAdmin(root);
 			prettifyTwikooMetaInputs();
 			syncTwikooAdminEntry();
@@ -188,6 +193,23 @@ if (getSwup()?.hooks) {
 	--twikoo-admin-soft: rgb(0 0 0 / 4%);
 	--twikoo-admin-text: rgb(0 0 0 / 86%);
 	color: rgb(0 0 0 / 75%);
+}
+
+.twikoo-card,
+.twikoo-card .tk-submit,
+.twikoo-card .tk-row.actions,
+.twikoo-card .tk-row-actions-start {
+	overflow: visible !important;
+}
+
+.twikoo-card {
+	position: relative;
+	z-index: 100;
+}
+
+.twikoo-card .tk-row.actions {
+	position: relative;
+	z-index: 110;
 }
 
 .dark .twikoo-card,
@@ -426,6 +448,8 @@ if (getSwup()?.hooks) {
 }
 
 .twikoo-card .OwO .OwO-body {
+	display: flex !important;
+	flex-direction: column !important;
 	top: 2.35rem !important;
 	right: auto !important;
 	left: 0 !important;
@@ -438,6 +462,7 @@ if (getSwup()?.hooks) {
 	color: rgb(0 0 0 / 78%) !important;
 	box-shadow: 0 1rem 2.5rem rgb(0 0 0 / 14%) !important;
 	overflow: hidden !important;
+	z-index: 120 !important;
 }
 
 .dark .twikoo-card .OwO .OwO-body {
@@ -446,12 +471,18 @@ if (getSwup()?.hooks) {
 }
 
 .twikoo-card .OwO .OwO-body .OwO-items {
-	max-height: min(18rem, 46vh) !important;
+	order: 2;
+	min-height: 0;
+	max-height: min(18rem, calc(62vh - 2.4rem)) !important;
 	padding: 0.7rem 0.65rem !important;
 	padding-right: 0.35rem !important;
 	background: transparent !important;
 	scrollbar-width: thin;
 	scrollbar-color: color-mix(in oklab, var(--primary) 60%, transparent) transparent;
+}
+
+#swup-container.twikoo-overflow-visible {
+	overflow: visible !important;
 }
 
 .twikoo-card .OwO .OwO-body .OwO-items::-webkit-scrollbar {
@@ -478,6 +509,10 @@ if (getSwup()?.hooks) {
 		color 0.15s ease;
 }
 
+.twikoo-card .OwO .OwO-body .OwO-items-emoticon .OwO-item {
+	white-space: nowrap !important;
+}
+
 .twikoo-card .OwO .OwO-body .OwO-items-emoji .OwO-item {
 	display: inline-flex !important;
 	align-items: center !important;
@@ -500,7 +535,9 @@ if (getSwup()?.hooks) {
 }
 
 .twikoo-card .OwO .OwO-body .OwO-bar {
-	border-top: 1px solid var(--twikoo-border) !important;
+	order: 1;
+	border-top: 0 !important;
+	border-bottom: 1px solid var(--twikoo-border) !important;
 	border-radius: 0 !important;
 	background: color-mix(in oklab, var(--twikoo-control-bg) 72%, transparent) !important;
 }
@@ -1253,6 +1290,20 @@ if (getSwup()?.hooks) {
 }
 
 @media (max-width: 640px) {
+	.twikoo-card .tk-row.actions {
+		position: relative;
+	}
+
+	.twikoo-card .tk-row.actions .OwO {
+		position: static !important;
+	}
+
+	.twikoo-card .tk-row.actions .OwO .OwO-body {
+		left: 0 !important;
+		width: 100% !important;
+		max-width: 100% !important;
+	}
+
 	:where(.twikoo-card, .twikoo-admin-portal) .tk-admin > div {
 		padding: 3rem 1rem 1rem !important;
 	}

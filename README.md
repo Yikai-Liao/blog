@@ -88,6 +88,36 @@ All commands are run from the root of the project, from a terminal:
 | `pnpm astro ...`           | Run CLI commands like `astro add`, `astro check`    |
 | `pnpm astro --help`        | Get help using the Astro CLI                        |
 
+## Local Comments Debugging
+
+Run the Twikoo Worker and the blog dev server together when debugging comments.
+
+Initialize the local D1 database once:
+
+```sh
+cd comments
+TWIKOO_D1_DATABASE_ID=local-twikoo pnpm d1:schema:local
+```
+
+Leave `EMOTION_CDN` unset for local debugging. Twikoo then uses its built-in
+default `https://owo.imaegoo.com/owo.json`, matching the default deployment
+packs: `颜文字`, `Emoji`, and `Bilibili`.
+
+Terminal 1:
+
+```sh
+cd comments
+TWIKOO_D1_DATABASE_ID=local-twikoo pnpm dev
+```
+
+Terminal 2:
+
+```sh
+PUBLIC_TWIKOO_ENV_ID=http://127.0.0.1:8787 pnpm dev --host 127.0.0.1
+```
+
+Open `http://127.0.0.1:4321/posts/markdown/`.
+
 ## Dual Deployment
 
 This repository includes [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) to deploy the site to both GitHub Pages and Cloudflare Pages on every push to `main`.
