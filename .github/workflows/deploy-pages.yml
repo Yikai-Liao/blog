@@ -79,7 +79,7 @@ jobs:
         uses: actions/deploy-pages@v5
 
   deploy-cloudflare-pages:
-    if: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' && secrets.CLOUDFLARE_API_TOKEN != '' }}
+    if: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME != '' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
