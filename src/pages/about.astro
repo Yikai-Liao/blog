@@ -1,7 +1,9 @@
 ---
 
 import { getEntry, render } from "astro:content";
+import { execSync } from "node:child_process";
 import Markdown from "@components/misc/Markdown.astro";
+import { profileConfig } from "@/config";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
@@ -13,6 +15,27 @@ if (!aboutPost) {
 }
 
 const { Content } = await render(aboutPost);
+
+function getBuildCommitHash() {
+	if (import.meta.env.CF_PAGES_COMMIT_SHA) {
+		return import.meta.env.CF_PAGES_COMMIT_SHA;
+	}
+
+	try {
+		return execSync("git rev-parse HEAD", { encoding: "utf8" }).trim();
+	} catch {
+		return "";
+	}
+}
+
+const buildCommitHash = getBuildCommitHash();
+const githubUrl = profileConfig.links
+	.find((link) => link.name === "GitHub")
+	?.url.replace(/\/+$/, "");
+const buildCommitUrl =
+	buildCommitHash && githubUrl
+		? `${githubUrl}/commit/${buildCommitHash}`
+		: "";
 ---
 <MainGridLayout title={i18n(I18nKey.about)} description={i18n(I18nKey.about)}>
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
@@ -20,6 +43,19 @@ const { Content } = await render(aboutPost);
             <Markdown class="mt-2">
                 <Content />
             </Markdown>
+			{buildCommitHash && buildCommitUrl && (
+				<div class="mt-6 border-t border-dashed border-black/10 pt-4 text-sm text-black/50 transition dark:border-white/15 dark:text-white/50">
+					构建提交：{" "}
+					<a
+						href={buildCommitUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="link break-all font-mono text-[var(--primary)]"
+					>
+						{buildCommitHash}
+					</a>
+				</div>
+			)}
         </div>
     </div>
 </MainGridLayout>
