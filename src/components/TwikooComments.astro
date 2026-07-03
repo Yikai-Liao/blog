@@ -23,7 +23,9 @@ const normalizedPath = path.replace(/\/+/g, "/").replace(/\/+$/, "") || "/";
 		data-title={title}
 		data-lang={lang}
 	>
-		<div id="tcomment" class="twikoo-host"></div>
+		<div id="tcomment" class="twikoo-host" aria-live="polite">
+			<p class="twikoo-lazy-placeholder">评论区将在滚动到这里时加载</p>
+		</div>
 	</section>
 )}
 
@@ -52,6 +54,12 @@ const normalizedPath = path.replace(/\/+/g, "/").replace(/\/+$/, "") || "/";
 .twikoo-card {
 	position: relative;
 	z-index: 100;
+}
+
+.twikoo-lazy-placeholder {
+	margin: 0;
+	text-align: center;
+	color: var(--twikoo-muted);
 }
 
 .twikoo-card .tk-row.actions {
