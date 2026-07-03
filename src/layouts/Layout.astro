@@ -454,7 +454,9 @@ declare global {
 }
 
 const TWIKOO_ADMIN_PORTAL_CLASS = "twikoo-admin-portal";
+const TWIKOO_LAZY_ROOT_MARGIN = "0px";
 let twikooAdminObserver: MutationObserver | undefined;
+let twikooLazyObserver: IntersectionObserver | undefined;
 let twikooModule: Promise<TwikooModule> | undefined;
 let twikooInitToken = 0;
 
@@ -508,6 +510,8 @@ function resetBlogTwikoo() {
 	twikooInitToken++;
 	twikooAdminObserver?.disconnect();
 	twikooAdminObserver = undefined;
+	twikooLazyObserver?.disconnect();
+	twikooLazyObserver = undefined;
 	document.querySelector("#swup-container")?.classList.remove("twikoo-overflow-visible");
 
 	for (const portal of document.querySelectorAll(
@@ -587,15 +591,50 @@ async function initBlogTwikoo() {
 	}
 }
 
+function setupLazyBlogTwikoo() {
+	const root = document.querySelector<HTMLElement>("[data-twikoo-root]");
+	if (!root) {
+		resetBlogTwikoo();
+		return;
+	}
+
+	twikooLazyObserver?.disconnect();
+
+	if (typeof IntersectionObserver === "undefined") {
+		const onScroll = () => {
+			const rect = root.getBoundingClientRect();
+			if (rect.top > window.innerHeight || rect.bottom < 0) return;
+			window.removeEventListener("scroll", onScroll);
+			window.removeEventListener("resize", onScroll);
+			void initBlogTwikoo();
+		};
+		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("resize", onScroll);
+		onScroll();
+		return;
+	}
+
+	twikooLazyObserver = new IntersectionObserver(
+		(entries, observer) => {
+			if (!entries.some((entry) => entry.isIntersecting)) return;
+			observer.disconnect();
+			twikooLazyObserver = undefined;
+			void initBlogTwikoo();
+		},
+		{ rootMargin: TWIKOO_LAZY_ROOT_MARGIN },
+	);
+	twikooLazyObserver.observe(root);
+}
+
 function setupBlogTwikoo() {
 	if (window.__blogTwikooRuntimeReady) return;
 	window.__blogTwikooRuntimeReady = true;
 	window.__initBlogTwikoo = initBlogTwikoo;
-	initBlogTwikoo();
+	setupLazyBlogTwikoo();
 
 	const setupSwup = () => {
 		getSwup()?.hooks?.on("content:replace", resetBlogTwikoo, { before: true });
-		getSwup()?.hooks?.on("page:view", initBlogTwikoo);
+		getSwup()?.hooks?.on("page:view", setupLazyBlogTwikoo);
 	};
 
 	if (getSwup()?.hooks) {
