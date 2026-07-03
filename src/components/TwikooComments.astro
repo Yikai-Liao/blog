@@ -1,5 +1,6 @@
 ---
 import { commentConfig, siteConfig } from "../config";
+import "twikoo/dist/twikoo.css";
 
 interface Props {
 	path: string;
@@ -126,10 +127,16 @@ function initTwikoo(options: TwikooInitOptions) {
 function initBlogTwikoo() {
 	const root = document.querySelector<HTMLElement>("[data-twikoo-root]");
 	const host = document.querySelector<HTMLElement>("#tcomment");
-	if (!root || !host) return;
+	if (!root || !host) {
+		resetTwikooAdminPortal();
+		return;
+	}
 
 	const { envId, path, title, lang } = root.dataset;
-	if (!envId || !path || !title) return;
+	if (!envId || !path || !title) {
+		resetTwikooAdminPortal();
+		return;
+	}
 	if (host.dataset.twikooPath === path) return;
 
 	resetTwikooAdminPortal();
@@ -695,7 +702,7 @@ if (getSwup()?.hooks) {
 :where(.twikoo-card, .twikoo-admin-portal) .tk-admin {
 	position: fixed !important;
 	top: 50% !important;
-	left: 50% !important;
+	left: 100% !important;
 	display: flex !important;
 	flex-direction: column !important;
 	width: min(48rem, calc(100vw - 2rem)) !important;
@@ -708,7 +715,9 @@ if (getSwup()?.hooks) {
 	background: var(--twikoo-admin-bg) !important;
 	color: var(--twikoo-admin-text) !important;
 	box-shadow: 0 1.25rem 3rem rgb(0 0 0 / 18%) !important;
-	transform: translate(-50%, -50%) scale(0.98) !important;
+	visibility: hidden !important;
+	pointer-events: none !important;
+	transform: translate(0, -50%) scale(0.98) !important;
 	backdrop-filter: blur(14px);
 	box-sizing: border-box !important;
 }
@@ -716,6 +725,7 @@ if (getSwup()?.hooks) {
 :where(.twikoo-card, .twikoo-admin-portal) .tk-admin.__show {
 	left: 50% !important;
 	visibility: visible !important;
+	pointer-events: all !important;
 	transform: translate(-50%, -50%) scale(1) !important;
 }
 
