@@ -230,6 +230,15 @@ function applyStoredIpRegion(parsedComments, rawComments, config) {
 	return parsedComments;
 }
 
+function removeAvatarData(comments) {
+	return comments.map((comment) => ({
+		...comment,
+		avatar: "",
+		mailMd5: "",
+		replies: removeAvatarData(comment.replies || []),
+	}));
+}
+
 async function commentGet(event, request, env, ctx) {
 	if (!event.url) {
 		return json(
@@ -240,7 +249,11 @@ async function commentGet(event, request, env, ctx) {
 
 	const cached = await readPublicCommentCache(event);
 	const uid = event.accessToken || uuid();
-	if (cached) return json({ ...cached, accessToken: uid }, request);
+	if (cached)
+		return json(
+			{ ...cached, data: removeAvatarData(cached.data || []), accessToken: uid },
+			request,
+		);
 
 	const config = await readConfig(env.DB);
 	const isAdmin = !!config.ADMIN_PASS && config.ADMIN_PASS === md5(uid);
@@ -306,10 +319,12 @@ LIMIT ?
 
 	const reply = await getCommentReplies(env.DB, event, spamMarker, uid, main);
 	const rawComments = [...main, ...reply];
-	const data = applyStoredIpRegion(
-		parseComment(rawComments.map(parseLike), uid, config),
-		rawComments,
-		config,
+	const data = removeAvatarData(
+		applyStoredIpRegion(
+			parseComment(rawComments.map(parseLike), uid, config),
+			rawComments,
+			config,
+		),
 	);
 	const response = { data, more, count };
 	await writePublicCommentCache(event, response, ctx);

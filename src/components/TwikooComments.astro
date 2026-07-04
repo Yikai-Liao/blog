@@ -196,7 +196,7 @@ const normalizedPath = path.replace(/\/+/g, "/").replace(/\/+$/, "") || "/";
 }
 
 .twikoo-card .tk-preview-container {
-	margin-left: 3.5rem !important;
+	margin-left: 0 !important;
 	border-color: var(--twikoo-border) !important;
 	border-radius: var(--twikoo-input-radius) !important;
 	background: var(--twikoo-control-bg) !important;
@@ -253,6 +253,7 @@ const normalizedPath = path.replace(/\/+/g, "/").replace(/\/+$/, "") || "/";
 .twikoo-card .tk-row.actions {
 	margin-top: 0.85rem !important;
 	margin-bottom: 1.1rem !important;
+	margin-left: 0 !important;
 }
 
 .twikoo-card .tk-row-actions-start {
@@ -451,8 +452,13 @@ const normalizedPath = path.replace(/\/+/g, "/").replace(/\/+$/, "") || "/";
 	border-radius: 0.75rem;
 }
 
-.twikoo-card .tk-avatar .tk-avatar-img {
-	border-radius: 0.75rem;
+.twikoo-card .tk-avatar {
+	display: none !important;
+	margin: 0 !important;
+}
+
+.twikoo-card .tk-main {
+	width: 100%;
 }
 
 .twikoo-card .tk-content code {
