@@ -184,6 +184,15 @@ const bannerOffset =
 	.enable-banner #top-row {
 		@apply h-[calc(var(--banner-height-home)_-_4.5rem)] transition-all duration-300
 	}
+	@media (max-width: 1023px) {
+		.enable-banner #banner-wrapper {
+			@apply h-[var(--banner-height)];
+			top: 0 !important;
+		}
+		.enable-banner #banner {
+			@apply h-[var(--banner-height)] translate-y-0;
+		}
+	}
 	.enable-banner.is-home #sidebar-sticky {
 		@apply top-[calc(1rem_-_var(--banner-height-extend))]
 	}
