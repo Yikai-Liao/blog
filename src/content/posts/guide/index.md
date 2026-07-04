@@ -2,7 +2,7 @@
 title: Simple Guides for Fuwari
 published: 2024-04-01
 description: "How to use this blog template."
-image: "./cover.jpeg"
+image: "https://blog-img.lyk-ai.com/1783153969920_舔手指的小女孩.webp"
 tags: ["Fuwari", "Blogging", "Customization"]
 category: Guides
 draft: false
