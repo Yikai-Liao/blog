@@ -5,6 +5,8 @@ import { getMd5 } from "twikoo-func/utils/lib";
 const md5 = getMd5();
 const MAX_TIMESTAMP_MILLIS = 41025312000000;
 const MAX_QUERY_LIMIT = 500;
+const PUBLIC_COMMENT_CACHE_TTL_SECONDS = 60 * 60 * 24;
+const PUBLIC_COMMENT_CACHE_SORTS = ["latest", "oldest", "popular"];
 
 function json(data, request, status = 200) {
 	const headers = {
@@ -66,6 +68,109 @@ function sortClause(sort) {
 	return "created DESC";
 }
 
+function getPublicCommentCacheKey(event) {
+	const cacheUrl = new URL("https://twikoo-comment-cache.local/comment-get");
+	cacheUrl.searchParams.set("url", event.url);
+	cacheUrl.searchParams.set("sort", event.sort || "latest");
+	return new Request(cacheUrl.toString(), { method: "GET" });
+}
+
+function isPublicCommentGet(event) {
+	return !event.accessToken && !event.before;
+}
+
+async function readPublicCommentCache(event) {
+	if (!isPublicCommentGet(event) || typeof caches === "undefined")
+		return undefined;
+
+	const cached = await caches.default.match(getPublicCommentCacheKey(event));
+	if (!cached) return undefined;
+
+	try {
+		return await cached.json();
+	} catch {
+		return undefined;
+	}
+}
+
+async function writePublicCommentCache(event, data, ctx) {
+	if (!ctx || !isPublicCommentGet(event) || typeof caches === "undefined")
+		return;
+
+	const response = new Response(JSON.stringify(data), {
+		headers: {
+			"cache-control": `public, max-age=${PUBLIC_COMMENT_CACHE_TTL_SECONDS}`,
+			"content-type": "application/json;charset=UTF-8",
+		},
+	});
+	ctx.waitUntil(caches.default.put(getPublicCommentCacheKey(event), response));
+}
+
+function publicCommentCacheEvents(url) {
+	return getUrlVariants(url).flatMap((urlVariant) =>
+		PUBLIC_COMMENT_CACHE_SORTS.map((sort) => ({ url: urlVariant, sort })),
+	);
+}
+
+async function deletePublicCommentCache(url) {
+	if (!url || typeof caches === "undefined") return;
+
+	await Promise.all(
+		publicCommentCacheEvents(url).map((event) =>
+			caches.default.delete(getPublicCommentCacheKey(event)),
+		),
+	);
+}
+
+async function refreshPublicCommentCache(url, request, env, ctx) {
+	if (!url || typeof caches === "undefined") return;
+
+	await Promise.all(
+		publicCommentCacheEvents(url).map((event) =>
+			commentGet({ event: "COMMENT_GET", ...event }, request, env, ctx),
+		),
+	);
+}
+
+function isSuccessfulTwikooResponse(response, data) {
+	return response.ok && !data?.code;
+}
+
+async function readResponseJson(response) {
+	try {
+		return await response.clone().json();
+	} catch {
+		return undefined;
+	}
+}
+
+async function getCommentUrlById(DB, id) {
+	if (!id) return undefined;
+	return queryFirst(DB, "SELECT url FROM comment WHERE _id = ?", "url", [id]);
+}
+
+async function resolveMutatedCommentUrl(event, env) {
+	if (event.url) return event.url;
+	return getCommentUrlById(env.DB, event.id);
+}
+
+async function handleCommentMutation(event, request, env, ctx) {
+	const mutatedUrl = await resolveMutatedCommentUrl(event, env);
+	const response = await twikooWorker.fetch(request, env, ctx);
+	const data = await readResponseJson(response);
+
+	if (isSuccessfulTwikooResponse(response, data) && mutatedUrl) {
+		ctx.waitUntil(
+			(async () => {
+				await deletePublicCommentCache(mutatedUrl);
+				await refreshPublicCommentCache(mutatedUrl, request, env, ctx);
+			})(),
+		);
+	}
+
+	return response;
+}
+
 async function queryAll(DB, sql, params = []) {
 	return (
 		(
@@ -125,7 +230,7 @@ function applyStoredIpRegion(parsedComments, rawComments, config) {
 	return parsedComments;
 }
 
-async function commentGet(event, request, env) {
+async function commentGet(event, request, env, ctx) {
 	if (!event.url) {
 		return json(
 			{ data: [], message: "Missing required parameter: url" },
@@ -133,8 +238,11 @@ async function commentGet(event, request, env) {
 		);
 	}
 
-	const config = await readConfig(env.DB);
+	const cached = await readPublicCommentCache(event);
 	const uid = event.accessToken || uuid();
+	if (cached) return json({ ...cached, accessToken: uid }, request);
+
+	const config = await readConfig(env.DB);
 	const isAdmin = !!config.ADMIN_PASS && config.ADMIN_PASS === md5(uid);
 	const spamMarker = isAdmin ? 2 : 1;
 	const limit = Number.parseInt(config.COMMENT_PAGE_SIZE, 10) || 8;
@@ -204,6 +312,7 @@ LIMIT ?
 		config,
 	);
 	const response = { data, more, count };
+	await writePublicCommentCache(event, response, ctx);
 	if (!event.accessToken) response.accessToken = uid;
 
 	return json(response, request);
@@ -229,7 +338,18 @@ export default {
 			}
 
 			if (event?.event === "COMMENT_GET") {
-				return commentGet(event, request, env);
+				return commentGet(event, request, env, ctx);
+			}
+
+			if (
+				[
+					"COMMENT_SUBMIT",
+					"COMMENT_LIKE",
+					"COMMENT_SET_FOR_ADMIN",
+					"COMMENT_DELETE_FOR_ADMIN",
+				].includes(event?.event)
+			) {
+				return handleCommentMutation(event, request, env, ctx);
 			}
 		}
 
