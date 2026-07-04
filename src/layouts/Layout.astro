@@ -9,7 +9,6 @@ import {
 	AUTO_MODE,
 	BANNER_HEIGHT,
 	BANNER_HEIGHT_EXTEND,
-	BANNER_HEIGHT_HOME,
 	DARK_MODE,
 	DEFAULT_THEME,
 	LIGHT_MODE,
@@ -160,41 +159,19 @@ const bannerOffset =
 
 <style is:global define:vars={{
 	bannerOffset,
-	'banner-height-home': `${BANNER_HEIGHT_HOME}vh`,
+	'banner-crop-height': `${BANNER_HEIGHT + BANNER_HEIGHT_EXTEND}vh`,
 	'banner-height': `${BANNER_HEIGHT}vh`,
 }}>
 @tailwind components;
 @layer components {
-	.enable-banner.is-home #banner-wrapper {
-		@apply h-[var(--banner-height-home)] translate-y-[var(--banner-height-extend)]
-	}
 	.enable-banner #banner-wrapper {
-		@apply h-[var(--banner-height-home)]
-	}
-
-	.enable-banner.is-home #banner {
-		@apply h-[var(--banner-height-home)] translate-y-0
+		@apply h-[var(--banner-crop-height)]
 	}
 	.enable-banner #banner {
-		@apply h-[var(--banner-height-home)] translate-y-[var(--bannerOffset)]
-	}
-	.enable-banner.is-home #main-grid {
-		@apply translate-y-[var(--banner-height-extend)];
+		@apply h-[var(--banner-crop-height)] translate-y-[var(--bannerOffset)]
 	}
 	.enable-banner #top-row {
-		@apply h-[calc(var(--banner-height-home)_-_4.5rem)] transition-all duration-300
-	}
-	@media (max-width: 1023px) {
-		.enable-banner #banner-wrapper {
-			@apply h-[var(--banner-height)];
-			top: 0 !important;
-		}
-		.enable-banner #banner {
-			@apply h-[var(--banner-height)] translate-y-0;
-		}
-	}
-	.enable-banner.is-home #sidebar-sticky {
-		@apply top-[calc(1rem_-_var(--banner-height-extend))]
+		@apply h-[calc(var(--banner-height)_-_4.5rem)] transition-all duration-300
 	}
 	.navbar-hidden {
 		@apply opacity-0 -translate-y-16
@@ -207,7 +184,6 @@ import {getHue, getStoredTheme, setHue, setTheme} from "../utils/setting-utils";
 import {pathsEqual, url} from "../utils/url-utils";
 import {
 	BANNER_HEIGHT,
-	BANNER_HEIGHT_HOME,
 	BANNER_HEIGHT_EXTEND,
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT
 } from "../constants/constants";
@@ -415,11 +391,7 @@ function scrollFunction() {
 		const NAVBAR_HEIGHT = 72
 		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16			// The height the main panel overlaps the banner
 
-		let bannerHeight = BANNER_HEIGHT
-		if (document.body.classList.contains('lg:is-home') && window.innerWidth >= 1024) {
-			bannerHeight = BANNER_HEIGHT_HOME
-		}
-		let threshold = window.innerHeight * (bannerHeight / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16
+		let threshold = window.innerHeight * (BANNER_HEIGHT / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16
 		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
 			navbar.classList.add('navbar-hidden')
 		} else {
