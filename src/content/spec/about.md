@@ -1,9 +1,5 @@
 # About
-This is the demo site for [Fuwari](https://github.com/Yikai-Liao/blog).
+
+这里是 Yikai Liao 的个人博客，主要记录技术实践、项目折腾和一些阶段性的想法。
 
 ::github{repo="Yikai-Liao/blog"}
-
-> ### Sources of images used in this site
-> - [Unsplash](https://unsplash.com/)
-> - [星と少女](https://www.pixiv.net/artworks/108916539) by [Stella](https://www.pixiv.net/users/93273965)
-> - [Rabbit - v1.4 Showcase](https://civitai.com/posts/586908) by [Rabbit_YourMajesty](https://civitai.com/user/Rabbit_YourMajesty)
