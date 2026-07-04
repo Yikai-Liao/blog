@@ -49,6 +49,30 @@ Local Wrangler D1 and remote Cloudflare D1 are separate stores. A password
 registered while running `pnpm dev` only applies to the local development
 database.
 
+## Public comment caching
+
+`src/index.js` caches public first-page `COMMENT_GET` results with the
+Cloudflare Workers Cache API. This is intentionally implemented in the Worker
+instead of as a Cloudflare Cache Rule because Twikoo sends comment reads as
+`POST` requests to the Worker. A normal CDN/cache-rule setup is a better fit for
+cacheable `GET` URLs, while this wrapper needs to cache a safe read operation
+that arrives as a Twikoo `POST` event.
+
+In this context, "public" or "anonymous" means a comment read request that does
+not include a Twikoo `accessToken`; it does not mean commenters can submit
+without a nickname or email. Submit requests still go through Twikoo validation.
+The cache stores only the shared comment list payload and generates a fresh
+`accessToken` per uncached visitor response, so visitor tokens are not shared
+through the cache.
+
+The Workers Cache API is per Cloudflare data center. A cache hit in one region
+does not guarantee the same object is already warm in every other region. This
+is acceptable for this low-traffic blog because the first request in a region can
+still fall back to D1, and subsequent local requests benefit from the cache. If
+we need one globally shared cache later, consider adding Workers KV as a global
+read-through cache; that would require an additional KV namespace binding and
+corresponding Cloudflare token permissions.
+
 ## GitHub Actions / Cloudflare permissions
 
 The existing `CLOUDFLARE_API_TOKEN` must be able to deploy Workers and read the
