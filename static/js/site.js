@@ -243,25 +243,47 @@ class TableOfContents extends HTMLElement {
 				break;
 			}
 		}
+		const visibleIndexes = this.headings
+			.map((heading, index) => ({ heading, index }))
+			.filter(({ heading }) => {
+				const rect = heading.getBoundingClientRect();
+				return rect.top < innerHeight * 0.85 && rect.bottom > 0;
+			})
+			.map(({ index }) => index);
+		const activeEnd = visibleIndexes.length
+			? Math.max(activeIndex, ...visibleIndexes)
+			: activeIndex;
+		let groupStart = activeIndex;
+		while (
+			groupStart > 0 &&
+			!this.tocEntries[groupStart].classList.contains("toc-depth-1")
+		) {
+			groupStart--;
+		}
 		this.tocEntries.forEach((entry, index) => {
-			entry.classList.toggle("visible", index === activeIndex);
+			entry.classList.toggle(
+				"visible",
+				index >= groupStart && index <= activeEnd,
+			);
 		});
-		this.moveIndicator(activeIndex);
+		this.moveIndicator(groupStart, activeEnd);
 	}
 
-	moveIndicator(index) {
+	moveIndicator(startIndex, endIndex = startIndex) {
 		if (!this.activeIndicator || !this.tocEl) return;
-		const entry = this.tocEntries[index];
-		if (!entry) {
+		const startEntry = this.tocEntries[startIndex];
+		const endEntry = this.tocEntries[endIndex];
+		if (!startEntry || !endEntry) {
 			this.activeIndicator.style.opacity = "0";
 			return;
 		}
 		const parentOffset = this.tocEl.getBoundingClientRect().top;
 		const scrollOffset = this.tocEl.scrollTop || 0;
-		const rect = entry.getBoundingClientRect();
+		const startRect = startEntry.getBoundingClientRect();
+		const endRect = endEntry.getBoundingClientRect();
 		this.activeIndicator.style.opacity = "1";
-		this.activeIndicator.style.top = `${rect.top - parentOffset + scrollOffset}px`;
-		this.activeIndicator.style.height = `${rect.height}px`;
+		this.activeIndicator.style.top = `${startRect.top - parentOffset + scrollOffset}px`;
+		this.activeIndicator.style.height = `${endRect.bottom - startRect.top}px`;
 	}
 }
 

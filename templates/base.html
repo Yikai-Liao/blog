@@ -16,6 +16,7 @@
   <link rel="icon" href="{{ get_url(path="favicon/favicon-light-32.png") }}" sizes="32x32" media="(prefers-color-scheme: light)">
   <link rel="icon" href="{{ get_url(path="favicon/favicon-dark-32.png") }}" sizes="32x32" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="{{ get_url(path="css/main.css") }}">
+  <link rel="stylesheet" href="{{ get_url(path="css/ec.css") }}">
   <script>
     window.__BLOG_CONFIG__ = {
       baseUrl: "{{ get_url(path="/") }}",
@@ -109,7 +110,7 @@
           <div id="sidebar-sticky" class="sidebar-sticky">
             {% if page and page.toc %}
               <section id="sidebar-toc" class="widget card-base onload-animation">
-                <h2>目录</h2>
+                <h2>Contents</h2>
                 <div class="toc-scroll" data-toc-scroll>
                   <table-of-contents class="toc-list">
                     {% set_global toc_index = 0 %}
@@ -118,9 +119,6 @@
                       <a class="toc-entry toc-depth-1" href="{{ h1.permalink | safe }}"><span class="toc-badge">{{ toc_index }}</span><span class="toc-text">{{ h1.title }}</span></a>
                       {% for h2 in h1.children %}
                         <a class="toc-entry toc-depth-2" href="{{ h2.permalink | safe }}"><span class="toc-badge toc-dot"></span><span class="toc-text">{{ h2.title }}</span></a>
-                        {% for h3 in h2.children %}
-                          <a class="toc-entry toc-depth-3" href="{{ h3.permalink | safe }}"><span class="toc-badge toc-dot-small"></span><span class="toc-text">{{ h3.title }}</span></a>
-                        {% endfor %}
                       {% endfor %}
                     {% endfor %}
                     <div data-active-indicator class="toc-active-indicator" style="opacity: 0"></div>
