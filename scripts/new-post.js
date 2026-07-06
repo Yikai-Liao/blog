@@ -28,8 +28,9 @@ if (!fileExtensionRegex.test(fileName)) {
   fileName += ".md"
 }
 
-const targetDir = "./src/content/posts/"
+const targetDir = "./contents/"
 const fullPath = path.join(targetDir, fileName)
+const slug = path.basename(fileName, path.extname(fileName))
 
 if (fs.existsSync(fullPath)) {
   console.error(`Error: File ${fullPath} already exists `)
@@ -44,6 +45,7 @@ if (!fs.existsSync(dirPath)) {
 
 const content = `---
 title: ${args[0]}
+slug: ${slug}
 published: ${getDate()}
 description: ''
 image: ''

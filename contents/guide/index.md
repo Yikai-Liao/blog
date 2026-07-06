@@ -1,5 +1,6 @@
 ---
 title: Simple Guides for Fuwari
+slug: guide
 published: 2024-04-01
 description: "How to use this blog template."
 image: "https://blog-img.lyk-ai.com/1783153969920_舔手指的小女孩.webp"
@@ -17,6 +18,7 @@ This blog template is built with [Astro](https://astro.build/). For the things t
 ```yaml
 ---
 title: My First Blog Post
+slug: my-first-post
 published: 2023-09-09
 description: This is the first post of my new Astro blog.
 image: ./cover.jpg
@@ -36,16 +38,17 @@ private: true
 | `tags`        | The tags of the post.                                                                                                                                                                                       |
 | `category`    | The category of the post.                                                                                                                                                                                   |
 | `draft`        | If this post is still a draft, which won't be displayed.                                                                                                                                                    |
+| `slug`         | Required. Defines the post URL independently from the file path.                                                                                                      |
 | `private`      | If true, the canonical URL is `/posts/private/my-post/`. The original `/posts/my-post/` redirects to the canonical URL.                                             |
 
 ## Where to Place the Post Files
 
 
 
-Your post files should be placed in `src/content/posts/` directory. You can also create sub-directories to better organize your posts and assets.
+Your post files should be placed in `contents/` directory. You can create arbitrary sub-directories to organize posts and assets. The URL is controlled by the frontmatter `slug`, not by the file path.
 
 ```
-src/content/posts/
+contents/
 ├── post-1.md
 └── post-2/
     ├── cover.png

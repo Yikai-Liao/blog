@@ -24,6 +24,16 @@ export async function GET(context: APIContext): Promise<Response> {
 		description: siteConfig.subtitle || "No description",
 		site: context.site ?? "https://fuwari.vercel.app",
 		items: blog.map((post) => {
+			const link = getPostUrlBySlug(post.id, post.data.private);
+			if (post.data.private) {
+				return {
+					title: post.data.title,
+					pubDate: post.data.published,
+					description: "受保护文章入口",
+					link,
+				};
+			}
+
 			const content =
 				typeof post.body === "string" ? post.body : String(post.body || "");
 			const cleanedContent = stripInvalidXmlChars(content);
@@ -31,7 +41,7 @@ export async function GET(context: APIContext): Promise<Response> {
 				title: post.data.title,
 				pubDate: post.data.published,
 				description: post.data.description || "",
-				link: getPostUrlBySlug(post.slug, post.data.private),
+				link,
 				content: sanitizeHtml(parser.render(cleanedContent), {
 					allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
 				}),

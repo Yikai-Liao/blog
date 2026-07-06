@@ -1,5 +1,6 @@
 ---
 title: TiDB vs TiKV 区别
+slug: tidb-vs-tikv
 published: 2026-07-04
 description: TiDB 和 TiKV 的系统边界、抽象层级和职责差异。
 tags: [Database]

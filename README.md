@@ -46,7 +46,7 @@ A static blog template built with [Astro](https://astro.build).
 2. To edit your blog locally, clone your repository, run `pnpm install` to install dependencies.
     - Install [pnpm](https://pnpm.io) `npm install -g pnpm` if you haven't.
 3. Edit the config file `src/config.ts` to customize your blog.
-4. Run `pnpm new-post <filename>` to create a new post and edit it in `src/content/posts/`.
+4. Run `pnpm new-post <filename>` to create a new post and edit it in `contents/`.
 5. Deploy your blog to Vercel, Netlify, GitHub Pages, Cloudflare Pages, etc. following [the guides](https://docs.astro.build/en/guides/deploy/). This repository includes a GitHub Actions workflow for dual deployment to GitHub Pages and Cloudflare Pages.
 
 ## 📝 Frontmatter of Posts
@@ -54,6 +54,7 @@ A static blog template built with [Astro](https://astro.build).
 ```yaml
 ---
 title: My First Blog Post
+slug: my-first-post
 published: 2023-09-09
 description: This is the first post of my new Astro blog.
 image: ./cover.jpg
