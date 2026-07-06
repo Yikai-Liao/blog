@@ -72,11 +72,42 @@
 
 * { box-sizing: border-box; }
 html {
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--primary) 55%, transparent) transparent;
   min-height: 100%;
   background: var(--page-bg);
   color: rgb(0 0 0 / 90%);
   font: 16px/1.65 Roboto, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   transition: background-color .2s, color .2s;
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--primary) 55%, transparent) transparent;
+}
+@media (hover: hover) and (pointer: fine) {
+  html::-webkit-scrollbar,
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  html::-webkit-scrollbar-track,
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  html::-webkit-scrollbar-thumb,
+  *::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--primary) 35%, transparent);
+    background-clip: padding-box;
+  }
+  html::-webkit-scrollbar-thumb:hover,
+  *::-webkit-scrollbar-thumb:hover {
+    border: 2px solid transparent;
+    background: color-mix(in oklab, var(--primary) 55%, transparent);
+    background-clip: padding-box;
+  }
 }
 .dark { color: rgb(255 255 255 / 90%); }
 body { margin: 0; min-height: 100vh; overflow-x: hidden; }
@@ -97,7 +128,7 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
   justify-content: center;
   min-height: 2.75rem;
   border: 0;
-  border-radius: .75rem;
+  border-radius: .5rem;
   color: rgb(0 0 0 / 75%);
   font: 700 .95rem/1 Roboto, sans-serif;
   text-decoration: none;
@@ -166,7 +197,7 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
   align-items: center;
   height: 2.75rem;
   margin-right: .5rem;
-  border-radius: .75rem;
+  border-radius: .5rem;
   color: rgb(0 0 0 / 50%);
   background: rgb(0 0 0 / 4%);
   transition: background .2s ease;
@@ -367,7 +398,7 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
 .profile-bio { color: rgb(0 0 0 / 45%); text-align: center; }
 .dark .profile-bio { color: rgb(255 255 255 / 45%); }
 .profile-links { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; margin-top: .75rem; }
-.profile-links .btn-regular { min-width: 2.5rem; width: 2.5rem; height: 2.5rem; padding: 0; }
+.profile-links .btn-regular { min-width: 2.5rem; width: 2.5rem; height: 2.5rem; min-height: 2.5rem; padding: 0; border-radius: .5rem; }
 .widget { padding: 1rem; }
 .widget h2 { margin: 0 0 .75rem; font-size: 1rem; }
 .category-list { display: flex; flex-direction: column; gap: .5rem; }
@@ -377,7 +408,7 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
   justify-content: space-between;
   min-height: 2.5rem;
   padding: 0 .5rem;
-  border-radius: .75rem;
+  border-radius: .5rem;
   color: rgb(0 0 0 / 72%);
   font-weight: 700;
   text-decoration: none;
@@ -397,7 +428,7 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
   height: 1.75rem;
   margin-left: 1rem;
   padding: 0 .5rem;
-  border-radius: .55rem;
+  border-radius: .5rem;
   color: var(--deep-text);
   background: var(--primary);
   font-size: .875rem;
