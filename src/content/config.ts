@@ -11,6 +11,7 @@ const postsCollection: ReturnType<typeof defineCollection> = defineCollection({
 		image: z.string().optional().default(""),
 		tags: z.array(z.string()).optional().default([]),
 		category: z.string().optional().nullable().default(""),
+		private: z.boolean().optional().default(false),
 		lang: z.string().optional().default(""),
 		toc: z
 			.object({
@@ -21,8 +22,10 @@ const postsCollection: ReturnType<typeof defineCollection> = defineCollection({
 		/* For internal use */
 		prevTitle: z.string().default(""),
 		prevSlug: z.string().default(""),
+		prevPrivate: z.boolean().default(false),
 		nextTitle: z.string().default(""),
 		nextSlug: z.string().default(""),
+		nextPrivate: z.boolean().default(false),
 	}),
 });
 const specCollection: ReturnType<typeof defineCollection> = defineCollection({

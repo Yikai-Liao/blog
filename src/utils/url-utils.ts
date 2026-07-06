@@ -12,8 +12,20 @@ function joinUrl(...parts: string[]): string {
 	return joined.replace(/\/+/g, "/");
 }
 
-export function getPostUrlBySlug(slug: string): string {
-	return url(`/posts/${slug}/`);
+export function normalizePostRoutePart(value: string | null | undefined): string {
+	return (value ?? "").trim().replace(/^\/+|\/+$/g, "");
+}
+
+export function getPostRouteSlug(slug: string, isPrivate?: boolean): string {
+	const normalizedSlug = normalizePostRoutePart(slug);
+	return isPrivate ? `private/${normalizedSlug}` : normalizedSlug;
+}
+
+export function getPostUrlBySlug(
+	slug: string,
+	isPrivate?: boolean,
+): string {
+	return url(`/posts/${getPostRouteSlug(slug, isPrivate)}/`);
 }
 
 export function getTagUrl(tag: string): string {
