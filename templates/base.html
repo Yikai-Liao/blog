@@ -111,19 +111,20 @@
               <section id="sidebar-toc" class="widget card-base onload-animation">
                 <h2>目录</h2>
                 <div class="toc-scroll" data-toc-scroll>
-                  <ul class="toc-list" is="table-of-contents">
+                  <table-of-contents class="toc-list">
                     {% set_global toc_index = 0 %}
                     {% for h1 in page.toc %}
                       {% set_global toc_index = toc_index + 1 %}
-                      <li><a class="toc-entry toc-depth-1" href="{{ h1.permalink | safe }}"><span class="toc-badge">{{ toc_index }}</span><span class="toc-text">{{ h1.title }}</span></a></li>
+                      <a class="toc-entry toc-depth-1" href="{{ h1.permalink | safe }}"><span class="toc-badge">{{ toc_index }}</span><span class="toc-text">{{ h1.title }}</span></a>
                       {% for h2 in h1.children %}
-                        <li><a class="toc-entry toc-depth-2" href="{{ h2.permalink | safe }}"><span class="toc-badge toc-dot"></span><span class="toc-text">{{ h2.title }}</span></a></li>
+                        <a class="toc-entry toc-depth-2" href="{{ h2.permalink | safe }}"><span class="toc-badge toc-dot"></span><span class="toc-text">{{ h2.title }}</span></a>
                         {% for h3 in h2.children %}
-                          <li><a class="toc-entry toc-depth-3" href="{{ h3.permalink | safe }}"><span class="toc-badge toc-dot-small"></span><span class="toc-text">{{ h3.title }}</span></a></li>
+                          <a class="toc-entry toc-depth-3" href="{{ h3.permalink | safe }}"><span class="toc-badge toc-dot-small"></span><span class="toc-text">{{ h3.title }}</span></a>
                         {% endfor %}
                       {% endfor %}
                     {% endfor %}
-                  </ul>
+                    <div data-active-indicator class="toc-active-indicator" style="opacity: 0"></div>
+                  </table-of-contents>
                 </div>
               </section>
             {% else %}
@@ -160,6 +161,6 @@
     </div>
   </div>
   <div id="page-height-extend" class="hidden"></div>
-  <script type="module" src="{{ get_url(path="js/site.js") }}?v=zola-rebuild-2"></script>
+  <script type="module" src="{{ get_url(path="js/site.js") }}?v=zola-rebuild-3"></script>
 </body>
 </html>

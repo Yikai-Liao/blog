@@ -197,6 +197,78 @@ function initBackToTop() {
 	update();
 }
 
+class TableOfContents extends HTMLElement {
+	connectedCallback() {
+		this.tocEl = this.closest("[data-toc-scroll]") || this;
+		this.activeIndicator = qs("[data-active-indicator]", this);
+		this.tocEntries = qsa(".toc-entry[href]", this);
+		this.headings = this.tocEntries
+			.map((entry) => {
+				const id = decodeURIComponent(
+					new URL(entry.href, location.href).hash.substring(1),
+				);
+				return document.getElementById(id);
+			})
+			.filter((heading) => heading instanceof HTMLElement);
+		this.onScroll = this.update.bind(this);
+		this.onClick = this.handleAnchorClick.bind(this);
+		this.tocEl?.addEventListener("click", this.onClick, { capture: true });
+		addEventListener("scroll", this.onScroll, { passive: true });
+		addEventListener("resize", this.onScroll, { passive: true });
+		this.update();
+	}
+
+	disconnectedCallback() {
+		this.tocEl?.removeEventListener("click", this.onClick, { capture: true });
+		removeEventListener("scroll", this.onScroll);
+		removeEventListener("resize", this.onScroll);
+	}
+
+	handleAnchorClick(event) {
+		const anchor = event
+			.composedPath()
+			.find((element) => element instanceof HTMLAnchorElement);
+		const hash = anchor ? new URL(anchor.href, location.href).hash : "";
+		this.anchorNavTarget = anchor ? decodeURIComponent(hash.substring(1)) : "";
+	}
+
+	update() {
+		if (!this.tocEntries?.length || !this.headings?.length) return;
+		const viewportAnchor = innerHeight * 0.32;
+		let activeIndex = 0;
+		for (let i = 0; i < this.headings.length; i++) {
+			if (this.headings[i].getBoundingClientRect().top <= viewportAnchor) {
+				activeIndex = i;
+			} else {
+				break;
+			}
+		}
+		this.tocEntries.forEach((entry, index) => {
+			entry.classList.toggle("visible", index === activeIndex);
+		});
+		this.moveIndicator(activeIndex);
+	}
+
+	moveIndicator(index) {
+		if (!this.activeIndicator || !this.tocEl) return;
+		const entry = this.tocEntries[index];
+		if (!entry) {
+			this.activeIndicator.style.opacity = "0";
+			return;
+		}
+		const parentOffset = this.tocEl.getBoundingClientRect().top;
+		const scrollOffset = this.tocEl.scrollTop || 0;
+		const rect = entry.getBoundingClientRect();
+		this.activeIndicator.style.opacity = "1";
+		this.activeIndicator.style.top = `${rect.top - parentOffset + scrollOffset}px`;
+		this.activeIndicator.style.height = `${rect.height}px`;
+	}
+}
+
+if (!customElements.get("table-of-contents")) {
+	customElements.define("table-of-contents", TableOfContents);
+}
+
 function initCodeCopy() {
 	qsa(".custom-md pre").forEach((pre) => {
 		if (pre.closest(".expressive-code")) return;
