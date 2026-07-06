@@ -1680,6 +1680,7 @@ a.card-github:hover { background: var(--btn-regular-bg-hover); }
   line-height: 1.5;
 }
 .dark .footer { color: rgb(255 255 255 / 50%); }
+.footer-mobile { display: none; }
 .footer-divider {
   margin: 2.5rem 8rem;
   border-top: 1px dashed rgb(0 0 0 / 10%);
@@ -1749,6 +1750,11 @@ html.is-animating .transition-swup-fade { opacity: 0; transform: translateY(1rem
   .main-grid { grid-template-columns: 1fr; }
   .sidebar { order: 2; }
   .content-column { order: 1; }
+  .footer-desktop { display: none; }
+  .footer-mobile {
+    order: 3;
+    display: block;
+  }
   .sidebar-sticky { position: static; }
   #sidebar-toc { display: none; }
 }

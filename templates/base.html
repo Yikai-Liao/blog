@@ -150,19 +150,14 @@
         <main id="swup-container" class="transition-swup-fade content-column">
           <div id="content-wrapper" class="onload-animation">
             {% block content %}{% endblock content %}
-            <footer class="footer onload-animation">
-              <div class="footer-divider"></div>
-              <div class="footer-body">
-                © <span id="copyright-year">{{ now() | date(format="%Y") }}</span> {{ config.extra.author }}. All Rights Reserved. /
-                <a target="_blank" rel="noopener" href="{{ get_url(path="rss.xml") }}">RSS</a> /
-                <a target="_blank" rel="noopener" href="{{ get_url(path="sitemap.xml") }}">Sitemap</a><br>
-                Powered by
-                <a target="_blank" rel="noopener" href="https://www.getzola.org/">Zola</a> &
-                <a target="_blank" rel="noopener" href="https://github.com/Yikai-Liao/blog">Fuwari</a>
-              </div>
+            <footer class="footer footer-desktop onload-animation">
+              {{ macros::footer_content() }}
             </footer>
           </div>
         </main>
+        <footer class="footer footer-mobile onload-animation">
+          {{ macros::footer_content() }}
+        </footer>
       </div>
       <button id="back-to-top-btn" class="back-to-top hide" aria-label="Back to top">{{ macros::icon(name="material-symbols:keyboard-arrow-up-rounded") }}</button>
     </div>
