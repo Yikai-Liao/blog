@@ -1,150 +1,106 @@
-# 🍥Fuwari  
-![Node.js >= 20](https://img.shields.io/badge/node.js-%3E%3D20-brightgreen) 
-![pnpm >= 9](https://img.shields.io/badge/pnpm-%3E%3D9-blue) 
-[![DeepWiki](https://img.shields.io/badge/DeepWiki-saicaca%2Ffuwari-blue.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAyCAYAAAAnWDnqAAAAAXNSR0IArs4c6QAAA05JREFUaEPtmUtyEzEQhtWTQyQLHNak2AB7ZnyXZMEjXMGeK/AIi+QuHrMnbChYY7MIh8g01fJoopFb0uhhEqqcbWTp06/uv1saEDv4O3n3dV60RfP947Mm9/SQc0ICFQgzfc4CYZoTPAswgSJCCUJUnAAoRHOAUOcATwbmVLWdGoH//PB8mnKqScAhsD0kYP3j/Yt5LPQe2KvcXmGvRHcDnpxfL2zOYJ1mFwrryWTz0advv1Ut4CJgf5uhDuDj5eUcAUoahrdY/56ebRWeraTjMt/00Sh3UDtjgHtQNHwcRGOC98BJEAEymycmYcWwOprTgcB6VZ5JK5TAJ+fXGLBm3FDAmn6oPPjR4rKCAoJCal2eAiQp2x0vxTPB3ALO2CRkwmDy5WohzBDwSEFKRwPbknEggCPB/imwrycgxX2NzoMCHhPkDwqYMr9tRcP5qNrMZHkVnOjRMWwLCcr8ohBVb1OMjxLwGCvjTikrsBOiA6fNyCrm8V1rP93iVPpwaE+gO0SsWmPiXB+jikdf6SizrT5qKasx5j8ABbHpFTx+vFXp9EnYQmLx02h1QTTrl6eDqxLnGjporxl3NL3agEvXdT0WmEost648sQOYAeJS9Q7bfUVoMGnjo4AZdUMQku50McDcMWcBPvr0SzbTAFDfvJqwLzgxwATnCgnp4wDl6Aa+Ax283gghmj+vj7feE2KBBRMW3FzOpLOADl0Isb5587h/U4gGvkt5v60Z1VLG8BhYjbzRwyQZemwAd6cCR5/XFWLYZRIMpX39AR0tjaGGiGzLVyhse5C9RKC6ai42ppWPKiBagOvaYk8lO7DajerabOZP46Lby5wKjw1HCRx7p9sVMOWGzb/vA1hwiWc6jm3MvQDTogQkiqIhJV0nBQBTU+3okKCFDy9WwferkHjtxib7t3xIUQtHxnIwtx4mpg26/HfwVNVDb4oI9RHmx5WGelRVlrtiw43zboCLaxv46AZeB3IlTkwouebTr1y2NjSpHz68WNFjHvupy3q8TFn3Hos2IAk4Ju5dCo8B3wP7VPr/FGaKiG+T+v+TQqIrOqMTL1VdWV1DdmcbO8KXBz6esmYWYKPwDL5b5FA1a0hwapHiom0r/cKaoqr+27/XcrS5UwSMbQAAAABJRU5ErkJggg==)](https://deepwiki.com/saicaca/fuwari)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fsaicaca%2Ffuwari.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fsaicaca%2Ffuwari?ref=badge_shield&issueType=license)
+# Yikai Liao 的博客
 
-A static blog template built with [Astro](https://astro.build).
+这是 `Yikai-Liao/blog` 的源码仓库。站点基于 Astro 和 Fuwari 改造，内容放在 `contents/`，评论后端放在 `comments/`。
 
-[**🖥️ Live Demo (Vercel)**](https://fuwari.vercel.app)
+## 技术栈
 
-![Preview Image](https://raw.githubusercontent.com/saicaca/resource/main/fuwari/home.png)
+- Astro 7 + Svelte 5
+- Tailwind CSS 4
+- Pagefind 本地搜索
+- Twikoo + Cloudflare Worker + D1 评论后端
+- pnpm 9
 
-🌏 README in
-[**中文**](https://github.com/saicaca/fuwari/blob/main/docs/README.zh-CN.md) /
-[**日本語**](https://github.com/saicaca/fuwari/blob/main/docs/README.ja.md) /
-[**한국어**](https://github.com/saicaca/fuwari/blob/main/docs/README.ko.md) /
-[**Español**](https://github.com/saicaca/fuwari/blob/main/docs/README.es.md) /
-[**ไทย**](https://github.com/saicaca/fuwari/blob/main/docs/README.th.md) /
-[**Tiếng Việt**](https://github.com/saicaca/fuwari/blob/main/docs/README.vi.md) /
-[**Bahasa Indonesia**](https://github.com/saicaca/fuwari/blob/main/docs/README.id.md) (Provided by the community and may not always be up-to-date)
+## 本地开发
 
-## ✨ Features
+```sh
+pnpm install
+pnpm dev
+```
 
-- [x] Built with [Astro](https://astro.build) and [Tailwind CSS](https://tailwindcss.com)
-- [x] Smooth animations and page transitions
-- [x] Light / dark mode
-- [x] Customizable theme colors & banner
-- [x] Responsive design
-- [x] Search functionality with [Pagefind](https://pagefind.app/)
-- [x] [Markdown extended features](https://github.com/saicaca/fuwari?tab=readme-ov-file#-markdown-extended-syntax)
-- [x] Table of contents
-- [x] RSS feed
+默认开发地址是 `http://localhost:4321`。
 
-## 🚀 Getting Started
+常用命令：
 
-1. Create your blog repository:
-    - [Generate a new repository](https://github.com/saicaca/fuwari/generate) from this template or fork this repository.
-    - Or run one of the following commands:
-       ```sh
-       npm create fuwari@latest
-       yarn create fuwari
-       pnpm create fuwari@latest
-       bun create fuwari@latest
-       deno run -A npm:create-fuwari@latest
-       ```
-2. To edit your blog locally, clone your repository, run `pnpm install` to install dependencies.
-    - Install [pnpm](https://pnpm.io) `npm install -g pnpm` if you haven't.
-3. Edit the config file `src/config.ts` to customize your blog.
-4. Run `pnpm new-post <filename>` to create a new post and edit it in `contents/`.
-5. Deploy your blog to Vercel, Netlify, GitHub Pages, Cloudflare Pages, etc. following [the guides](https://docs.astro.build/en/guides/deploy/). This repository includes a GitHub Actions workflow for dual deployment to GitHub Pages and Cloudflare Pages.
+| 命令 | 用途 |
+| --- | --- |
+| `pnpm dev` | 启动本地站点 |
+| `pnpm build` | 构建生产产物到 `dist/` |
+| `pnpm preview` | 预览生产构建 |
+| `pnpm check` | 运行 Astro 检查 |
+| `pnpm type-check` | 运行 TypeScript 检查 |
+| `pnpm new-post <slug>` | 在 `contents/` 下创建文章 |
 
-## 📝 Frontmatter of Posts
+## 写文章
+
+文章使用 Markdown 或 MDX，路径规则是 `contents/**/*.md` 和 `contents/**/*.mdx`。以下划线开头的文件不会被收录。
+
+最小 frontmatter：
 
 ```yaml
 ---
-title: My First Blog Post
-slug: my-first-post
-published: 2023-09-09
-description: This is the first post of my new Astro blog.
-image: ./cover.jpg
-tags: [Foo, Bar]
-category: Front-end
+title: 文章标题
+slug: article-slug
+published: 2026-07-06
+description: 简短摘要
+tags: []
+category: ''
 draft: false
-lang: jp      # Set only if the post's language differs from the site's language in `config.ts`
+private: true
 ---
 ```
 
-## 🧩 Markdown Extended Syntax
+字段说明：
 
-In addition to Astro's default support for [GitHub Flavored Markdown](https://github.github.com/gfm/), several extra Markdown features are included:
+- `draft: true`：不发布。
+- `private: true`：作为私有文章处理。当前 schema 默认值也是 `true`，公开文章需要显式写 `private: false`。
+- `image`：封面图，可用 URL、`public/` 下的绝对路径，或相对文章文件的路径。
+- `toc.depth`：单篇文章目录深度，可设为 `1`、`2`、`3`。
 
-- Admonitions ([Preview and Usage](https://fuwari.vercel.app/posts/markdown-extended/#admonitions))
-- GitHub repository cards ([Preview and Usage](https://fuwari.vercel.app/posts/markdown-extended/#github-repository-cards))
-- Enhanced code blocks with Expressive Code ([Preview](https://fuwari.vercel.app/posts/expressive-code/) / [Docs](https://expressive-code.com/))
+## 评论后端
 
-## ⚡ Commands
+评论服务在 `comments/` 目录，是一个 Twikoo Cloudflare Worker。
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                    | Action                                              |
-|:---------------------------|:----------------------------------------------------|
-| `pnpm install`             | Installs dependencies                               |
-| `pnpm dev`                 | Starts local dev server at `localhost:4321`         |
-| `pnpm build`               | Build your production site to `./dist/`             |
-| `pnpm preview`             | Preview your build locally, before deploying        |
-| `pnpm check`               | Run checks for errors in your code                  |
-| `pnpm format`              | Format your code using Biome                        |
-| `pnpm new-post <filename>` | Create a new post                                   |
-| `pnpm astro ...`           | Run CLI commands like `astro add`, `astro check`    |
-| `pnpm astro --help`        | Get help using the Astro CLI                        |
-
-## Local Comments Debugging
-
-Run the Twikoo Worker and the blog dev server together when debugging comments.
-
-Initialize the local D1 database once:
+本地调试：
 
 ```sh
 cd comments
+pnpm install
 TWIKOO_D1_DATABASE_ID=local-twikoo pnpm d1:schema:local
-```
-
-Leave `EMOTION_CDN` unset for local debugging. Twikoo then uses its built-in
-default `https://owo.imaegoo.com/owo.json`, matching the default deployment
-packs: `颜文字`, `Emoji`, and `Bilibili`.
-
-Terminal 1:
-
-```sh
-cd comments
 TWIKOO_D1_DATABASE_ID=local-twikoo pnpm dev
 ```
 
-Terminal 2:
+另开一个终端启动站点：
 
 ```sh
 PUBLIC_TWIKOO_ENV_ID=http://127.0.0.1:8787 pnpm dev --host 127.0.0.1
 ```
 
-Open `http://127.0.0.1:4321/posts/markdown/`.
+更完整的 Worker 部署和权限说明见 [comments/README.md](comments/README.md)。
 
-## Dual Deployment
+## 部署
 
-This repository includes [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) to deploy the site to both GitHub Pages and Cloudflare Pages on every push to `main`.
+站点部署由 [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) 处理：
 
-Before enabling the workflow:
+- `GITHUB_PAGES_ENABLED=true` 时部署 GitHub Pages。
+- 配置 `CLOUDFLARE_PAGES_PROJECT_NAME` 时部署 Cloudflare Pages。
+- `TWIKOO_WORKER_ENABLED=true` 且配置 `TWIKOO_D1_DATABASE_ID` 时部署评论 Worker。
 
-1. In GitHub repository settings, set Pages to build from **GitHub Actions**.
-2. Add the Cloudflare GitHub Actions secrets:
-   - `CLOUDFLARE_ACCOUNT_ID`
-   - `CLOUDFLARE_API_TOKEN`
-3. Add the Cloudflare repository variable:
-   - `CLOUDFLARE_PAGES_PROJECT_NAME`
-4. Optional repository variables:
-   - `GITHUB_PAGES_SITE_URL`: overrides the default GitHub Pages site URL.
-   - `GITHUB_PAGES_BASE_PATH`: overrides the default GitHub Pages base path. By default it uses `/` for `<owner>.github.io` repositories and `/<repo>` for project pages.
-   - `CLOUDFLARE_PAGES_SITE_URL`: overrides the default Cloudflare Pages URL (`https://<project>.pages.dev`).
+构建时可用变量：
 
-The workflow builds the site twice so each deployment gets the correct Astro `site` and `base` values. It uses `PUBLIC_SITE_URL` and `PUBLIC_BASE_PATH` during the build instead of hard-coding a single deployment target in `astro.config.mjs`.
-The Cloudflare job is skipped until all required Cloudflare variables and secrets are configured, so GitHub Pages can ship independently first.
+| 名称 | 用途 |
+| --- | --- |
+| `PUBLIC_SITE_URL` | 站点 canonical URL |
+| `PUBLIC_BASE_PATH` | 子路径部署前缀 |
+| `PUBLIC_TWIKOO_ENV_ID` | Twikoo Worker 地址 |
 
-## ✏️ Contributing
+GitHub Actions 中还需要按实际部署目标配置 Cloudflare 的 `CLOUDFLARE_ACCOUNT_ID` 和 `CLOUDFLARE_API_TOKEN`。
 
-Check out the [Contributing Guide](https://github.com/saicaca/fuwari/blob/main/CONTRIBUTING.md) for details on how to contribute to this project.
+## 目录
 
-## 📄 License
-
-This project is licensed under the MIT License.
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fsaicaca%2Ffuwari.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fsaicaca%2Ffuwari?ref=badge_large&issueType=license)
+| 路径 | 用途 |
+| --- | --- |
+| `contents/` | 博客文章 |
+| `src/` | 站点组件、样式、配置和插件 |
+| `comments/` | Twikoo Worker |
+| `scripts/` | 构建和发文脚本 |
+| `docs/` | 上游模板文档，主要作参考 |
