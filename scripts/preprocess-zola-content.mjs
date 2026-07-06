@@ -307,7 +307,7 @@ function transformDirectives(markdown) {
 	out = out.replace(
 		/^:::(note|tip|important|warning|caution)(?:\[([^\]]+)\])?\n([\s\S]*?)\n:::/gm,
 		(_, type, title, body) => {
-			const fallback = type[0].toUpperCase() + type.slice(1);
+			const fallback = type.toUpperCase();
 			return admonitionHtml(type, title || fallback, body.trim());
 		},
 	);

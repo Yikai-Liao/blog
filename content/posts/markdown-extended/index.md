@@ -36,31 +36,31 @@ Create a GitHub repository card with the code `::github{repo="<owner>/<repo>"}`.
 Following types of admonitions are supported: `note` `tip` `important` `warning` `caution`
 
 <blockquote class="admonition bdm-note">
-<p class="bdm-title">Note</p>
+<p class="bdm-title">NOTE</p>
 
 Highlights information that users should take into account, even when skimming.
 </blockquote>
 
 <blockquote class="admonition bdm-tip">
-<p class="bdm-title">Tip</p>
+<p class="bdm-title">TIP</p>
 
 Optional information to help a user be more successful.
 </blockquote>
 
 <blockquote class="admonition bdm-important">
-<p class="bdm-title">Important</p>
+<p class="bdm-title">IMPORTANT</p>
 
 Crucial information necessary for users to succeed.
 </blockquote>
 
 <blockquote class="admonition bdm-warning">
-<p class="bdm-title">Warning</p>
+<p class="bdm-title">WARNING</p>
 
 Critical content demanding immediate user attention due to potential risks.
 </blockquote>
 
 <blockquote class="admonition bdm-caution">
-<p class="bdm-title">Caution</p>
+<p class="bdm-title">CAUTION</p>
 
 Negative potential consequences of an action.
 </blockquote>
