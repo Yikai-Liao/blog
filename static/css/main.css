@@ -1359,24 +1359,119 @@ a.card-github:hover { background: var(--btn-regular-bg-hover); }
 .gc-infobar { display: flex; flex-wrap: wrap; gap: 1rem; font-size: .875rem; color: rgb(0 0 0 / 55%); }
 .dark .gc-infobar { color: rgb(255 255 255 / 55%); }
 
-.archive-toolbar { margin-bottom: 1.5rem; }
-.archive-year h2 {
-  margin: 1.5rem 0 .5rem;
-  color: rgb(0 0 0 / 75%);
-  font-size: 1.6rem;
+.archive-page { padding: 1.5rem 2rem; }
+.archive-toolbar { margin-bottom: 1rem; }
+.archive-year { margin-top: .5rem; }
+.archive-year + .archive-year { margin-top: 1.25rem; }
+.archive-year-head {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 3.75rem;
 }
-.dark .archive-year h2 { color: rgb(255 255 255 / 75%); }
+.archive-year-label {
+  width: 15%;
+  color: rgb(0 0 0 / 75%);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: right;
+}
+.archive-year-count {
+  width: 70%;
+  color: rgb(0 0 0 / 50%);
+  text-align: left;
+}
+.archive-year-node {
+  width: 15%;
+  position: relative;
+}
+.archive-year-node::before {
+  content: "";
+  display: block;
+  width: .75rem;
+  height: .75rem;
+  margin: 0 auto;
+  border-radius: 999px;
+  outline: 3px solid var(--primary);
+  outline-offset: -2px;
+  background: transparent;
+}
+.dark .archive-year-label { color: rgb(255 255 255 / 75%); }
+.dark .archive-year-count { color: rgb(255 255 255 / 50%); }
+.archive-year-posts { width: 100%; }
 .archive-row {
   display: grid;
-  grid-template-columns: 5rem 1fr minmax(6rem, auto);
+  grid-template-columns: 15% 15% minmax(0, 55%) 15%;
   align-items: center;
-  gap: 1rem;
-  padding: .75rem .5rem;
-  border-top: 1px dashed var(--line-divider);
+  width: 100%;
+  height: 2.5rem;
+  border-radius: .5rem;
+  color: inherit;
+  overflow: hidden;
 }
-.archive-row:hover { color: var(--primary); background: var(--btn-plain-bg-hover); }
-.archive-row time { color: rgb(0 0 0 / 45%); }
-.archive-row em { color: rgb(0 0 0 / 45%); font-style: normal; font-size: .85rem; }
+.archive-row:hover { color: initial; background: var(--btn-plain-bg-hover); }
+.archive-row time {
+  color: rgb(0 0 0 / 50%);
+  font-size: .875rem;
+  text-align: right;
+  white-space: nowrap;
+}
+.archive-dot-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.archive-dot-cell::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: var(--line-color);
+}
+.archive-dot-cell span {
+  position: relative;
+  z-index: 1;
+  width: .25rem;
+  height: .25rem;
+  border-radius: 999px;
+  background: oklch(0.5 0.05 var(--hue));
+  outline: 4px solid var(--card-bg);
+  transition: width .2s ease, height .2s ease, background .2s ease, outline-color .2s ease;
+}
+.archive-row:hover .archive-dot-cell span {
+  height: 1.25rem;
+  background: var(--primary);
+  outline-color: var(--btn-plain-bg-hover);
+}
+.archive-title {
+  padding-right: 2rem;
+  overflow: hidden;
+  color: rgb(0 0 0 / 75%);
+  font-weight: 700;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: transform .2s ease, color .2s ease;
+}
+.archive-row:hover .archive-title {
+  color: var(--primary);
+  transform: translateX(.25rem);
+}
+.archive-row em {
+  overflow: hidden;
+  color: rgb(0 0 0 / 30%);
+  font-style: normal;
+  font-size: .875rem;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dark .archive-title { color: rgb(255 255 255 / 75%); }
 .dark .archive-row time, .dark .archive-row em { color: rgb(255 255 255 / 45%); }
 .archive-filter-active {
   color: var(--primary) !important;
@@ -1490,7 +1585,13 @@ html.is-animating .transition-swup-fade { opacity: 0; transform: translateY(1rem
   .post-card-title { font-size: 1.7rem; }
   .post-card-title::before, .post-card-enter { display: none; }
   .post-container, .archive-page, .license-block, .twikoo-card { border-radius: 0; padding: 1.5rem; }
-  .archive-row { grid-template-columns: 4rem 1fr; }
+  .archive-year-label, .archive-row time { width: auto; }
+  .archive-year-label, .archive-year-node, .archive-row time, .archive-dot-cell { flex: none; }
+  .archive-year-label, .archive-row time { width: 18%; }
+  .archive-year-node, .archive-dot-cell { width: 16%; }
+  .archive-year-count { width: 66%; }
+  .archive-row { grid-template-columns: 18% 16% minmax(0, 66%); }
+  .archive-title { padding-right: 0; }
   .archive-row em { display: none; }
 }
 @media (max-width: 559px) {

@@ -11,17 +11,24 @@
     <div class="archive-list">
       {% for year, pages in posts.pages | group_by(attribute="year") %}
         <section class="archive-year">
-          <h2>{{ year }}</h2>
+          <div class="archive-year-head">
+            <div class="archive-year-label">{{ year }}</div>
+            <div class="archive-year-node" aria-hidden="true"></div>
+            <div class="archive-year-count">{{ pages | length }} posts</div>
+          </div>
+          <div class="archive-year-posts">
           {% for post in pages %}
             {% if not post.draft %}
               {% set row_tags = post.taxonomies.tags | default(value=[]) %}
               <a class="archive-row no-styling" href="{{ post.permalink }}" data-title="{{ post.title | lower }}" data-tags="{{ row_tags | join(sep=" ") | lower }}" data-category="{{ post.extra.category | default(value="") }}" data-category-key="{{ post.extra.category | default(value="") | lower }}">
                 <time>{{ post.date | date(format="%m-%d") }}</time>
-                <span>{{ post.title }}</span>
+                <span class="archive-dot-cell" aria-hidden="true"><span></span></span>
+                <span class="archive-title">{{ post.title }}</span>
                 <em>{% if row_tags %}{% for tag in row_tags %}#{{ tag }}{% if not loop.last %} {% endif %}{% endfor %}{% elif post.extra.category %}{{ post.extra.category }}{% endif %}</em>
               </a>
             {% endif %}
           {% endfor %}
+          </div>
         </section>
       {% endfor %}
     </div>
