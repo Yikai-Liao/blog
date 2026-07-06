@@ -38,26 +38,26 @@
     <div id="navbar-wrapper" class="navbar-wrapper">
       <nav id="navbar" class="onload-animation" aria-label="Main navigation">
         <div class="navbar-card card-base">
-          <a href="{{ get_url(path="/") }}" class="btn-plain nav-home" aria-label="Home">{{ macros::icon(name="home") }}</a>
+          <a href="{{ get_url(path="/") }}" class="btn-plain nav-home" aria-label="Home">{{ macros::icon(name="material-symbols:home-outline-rounded") }}</a>
           <div class="nav-links">
             <a href="{{ get_url(path="/") }}" class="btn-plain">主页</a>
             <a href="{{ get_url(path="archive/") }}" class="btn-plain">归档</a>
             <a href="{{ get_url(path="about/") }}" class="btn-plain">关于</a>
-            <a href="{{ config.extra.github_url }}" class="btn-plain" target="_blank" rel="noopener">GitHub {{ macros::icon(name="external") }}</a>
+            <a href="{{ config.extra.github_url }}" class="btn-plain" target="_blank" rel="noopener">GitHub {{ macros::icon(name="fa6-solid:arrow-up-right-from-square") }}</a>
           </div>
           <div class="nav-actions">
             <div id="search-bar" class="search-bar">
-              <span class="search-bar-icon">{{ macros::icon(name="search") }}</span>
+              <span class="search-bar-icon">{{ macros::icon(name="material-symbols:search") }}</span>
               <input id="search-input-desktop" data-search-input type="search" placeholder="搜索" autocomplete="off">
             </div>
-            <button id="search-switch" class="btn-plain icon-btn mobile-only" aria-label="Search">{{ macros::icon(name="search") }}</button>
-            <button id="display-settings-switch" class="btn-plain icon-btn" aria-label="Display Settings">{{ macros::icon(name="palette") }}</button>
-            <button id="scheme-switch" class="btn-plain icon-btn" aria-label="Switch Theme">{{ macros::icon(name="moon") }}</button>
-            <button id="nav-menu-switch" class="btn-plain icon-btn mobile-only" aria-label="Menu">{{ macros::icon(name="menu") }}</button>
+            <button id="search-switch" class="btn-plain icon-btn mobile-only" aria-label="Search">{{ macros::icon(name="material-symbols:search") }}</button>
+            <button id="display-settings-switch" class="btn-plain icon-btn" aria-label="Display Settings">{{ macros::icon(name="material-symbols:palette-outline") }}</button>
+            <button id="scheme-switch" class="btn-plain icon-btn" aria-label="Switch Theme">{{ macros::icon(name="material-symbols:dark-mode-outline-rounded") }}</button>
+            <button id="nav-menu-switch" class="btn-plain icon-btn mobile-only" aria-label="Menu">{{ macros::icon(name="material-symbols:menu-rounded") }}</button>
           </div>
           <div id="search-panel" class="float-panel float-panel-closed search-panel">
             <div id="search-bar-inside" class="search-bar search-bar-panel">
-              <span class="search-bar-icon">{{ macros::icon(name="search") }}</span>
+              <span class="search-bar-icon">{{ macros::icon(name="material-symbols:search") }}</span>
               <input id="search-input-mobile" data-search-input type="search" placeholder="搜索" autocomplete="off">
             </div>
             <div id="search-results"></div>
@@ -66,7 +66,7 @@
             <div class="display-header">
               <div class="panel-label">
                 主题色
-                <button id="hue-reset" aria-label="Reset to Default" class="btn-regular hue-reset" type="button">{{ macros::icon(name="reset") }}</button>
+                <button id="hue-reset" aria-label="Reset to Default" class="btn-regular hue-reset" type="button">{{ macros::icon(name="fa6-solid:arrow-rotate-left") }}</button>
               </div>
               <div id="hue-value" class="hue-value">{{ config.extra.theme_hue }}</div>
             </div>
@@ -102,8 +102,8 @@
               <div class="profile-rule"></div>
               <div class="profile-bio">{{ config.extra.bio }}</div>
               <div class="profile-links">
-                <a rel="me" href="{{ config.extra.github_url }}" target="_blank" class="btn-regular" aria-label="GitHub">{{ macros::icon(name="github") }}</a>
-                <a rel="me" href="{{ config.extra.apt_url }}" target="_blank" class="btn-regular" aria-label="APT">{{ macros::icon(name="debian") }}</a>
+                <a rel="me" href="{{ config.extra.github_url }}" target="_blank" class="btn-regular" aria-label="GitHub">{{ macros::icon(name="fa6-brands:github") }}</a>
+                <a rel="me" href="{{ config.extra.apt_url }}" target="_blank" class="btn-regular" aria-label="APT">{{ macros::icon(name="fa6-brands:debian") }}</a>
               </div>
             </div>
           </section>
@@ -155,7 +155,7 @@
           </div>
         </main>
       </div>
-      <button id="back-to-top-btn" class="back-to-top hide" aria-label="Back to top">{{ macros::icon(name="top") }}</button>
+      <button id="back-to-top-btn" class="back-to-top hide" aria-label="Back to top">{{ macros::icon(name="material-symbols:keyboard-arrow-up-rounded") }}</button>
     </div>
   </div>
   <div id="page-height-extend" class="hidden"></div>

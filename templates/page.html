@@ -7,8 +7,8 @@
       <header class="post-header">
         {% if is_post %}
           <div class="post-stats">
-            <span><span class="meta-icon small">{{ macros::icon(name="notes") }}</span>{{ page.extra.words | default(value=page.word_count) }} 字</span>
-            <span><span class="meta-icon small">{{ macros::icon(name="clock") }}</span>{{ page.extra.minutes | default(value=page.reading_time) }} 分钟</span>
+            <span><span class="meta-icon small">{{ macros::icon(name="material-symbols:notes-rounded") }}</span>{{ page.extra.words | default(value=page.word_count) }} 字</span>
+            <span><span class="meta-icon small">{{ macros::icon(name="material-symbols:schedule-outline-rounded") }}</span>{{ page.extra.minutes | default(value=page.reading_time) }} 分钟</span>
           </div>
         {% endif %}
         <h1>{{ page.title }}</h1>
@@ -20,7 +20,7 @@
       {% if page.extra.image %}
         <figure id="post-cover"><img src="{{ page.extra.image }}" alt="Cover image of {{ page.title }}"></figure>
       {% endif %}
-      <div class="custom-md">
+      <div class="prose dark:prose-invert prose-base custom-md markdown-content">
         {{ page.content | safe }}
       </div>
       {% if is_post %}
@@ -32,7 +32,7 @@
             <span><small>发布于</small>{{ page.date | date(format="%Y-%m-%d") }}</span>
             <span><small>许可协议</small><a href="{{ config.extra.license_url }}" target="_blank" rel="noopener">{{ config.extra.license_name }}</a></span>
           </div>
-          <span class="license-watermark">{{ macros::icon(name="cc") }}</span>
+          <span class="license-watermark">{{ macros::icon(name="fa6-brands:creative-commons") }}</span>
         </section>
       {% endif %}
     </article>
@@ -40,11 +40,11 @@
       <nav class="post-nav">
       {% if page.extra.prev_slug %}
         {% set prev_path = "posts/" ~ page.extra.prev_slug ~ "/" %}
-        <a class="post-nav-card" href="{{ get_url(path=prev_path) }}">{{ macros::icon(name="chevron") }}<span>{{ page.extra.prev_title }}</span></a>
+        <a class="post-nav-card" href="{{ get_url(path=prev_path) }}">{{ macros::icon(name="material-symbols:chevron-left-rounded") }}<span>{{ page.extra.prev_title }}</span></a>
       {% endif %}
       {% if page.extra.next_slug %}
         {% set next_path = "posts/" ~ page.extra.next_slug ~ "/" %}
-        <a class="post-nav-card post-nav-next" href="{{ get_url(path=next_path) }}"><span>{{ page.extra.next_title }}</span>{{ macros::icon(name="chevron") }}</a>
+        <a class="post-nav-card post-nav-next" href="{{ get_url(path=next_path) }}"><span>{{ page.extra.next_title }}</span>{{ macros::icon(name="material-symbols:chevron-right-rounded") }}</a>
       {% endif %}
       </nav>
       <section class="twikoo-card card-base" aria-label="Comments" data-twikoo-root data-env-id="{{ config.extra.twikoo_env_id }}" data-path="{{ page.path }}" data-title="{{ page.title }}" data-lang="{{ config.default_language | replace(from="_", to="-") }}">

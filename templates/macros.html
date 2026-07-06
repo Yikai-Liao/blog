@@ -1,43 +1,7 @@
+{% import "generated/icons.html" as generated %}
+
 {% macro icon(name) %}
-  {% if name == "home" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.7 12 4l8 6.7V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-9.3Z"/></svg>
-  {% elif name == "search" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20.5 19.1-4.7-4.7a7 7 0 1 0-1.4 1.4l4.7 4.7 1.4-1.4ZM5 10a5 5 0 1 1 10 0 5 5 0 0 1-10 0Z"/></svg>
-  {% elif name == "palette" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0 0 18h1.3a2.2 2.2 0 0 0 1.5-3.8 1.2 1.2 0 0 1 .8-2.2H17a4 4 0 0 0 4-4c0-4.4-4-8-9-8Zm-4 9a1.3 1.3 0 1 1 0-2.6A1.3 1.3 0 0 1 8 12Zm2-4a1.3 1.3 0 1 1 0-2.6A1.3 1.3 0 0 1 10 8Zm4 0a1.3 1.3 0 1 1 0-2.6A1.3 1.3 0 0 1 14 8Zm2 4a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6Z"/></svg>
-  {% elif name == "moon" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.8A8.5 8.5 0 0 1 9.2 3.5 9 9 0 1 0 20.5 14.8Z"/></svg>
-  {% elif name == "menu" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v2H4V6Zm0 5h16v2H4v-2Zm0 5h16v2H4v-2Z"/></svg>
-  {% elif name == "github" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5A12 12 0 0 0 8.2 23c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.4-4-1.4-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2A11.4 11.4 0 0 1 12 5.6c1 0 2 .1 2.9.4 2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.4 5.9.4.4.8 1.1.8 2.2v3.1c0 .3.2.7.8.6A12 12 0 0 0 12 .5Z"/></svg>
-  {% elif name == "debian" %}
-    <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M380.2 245.6c3-7.6 5.5-14 5.2-24.4l-4.3 9c4.4-13.2 4-27.1 3.6-40.4c-.2-6-.3-11.8 0-17.4l-1.8-.5c-1.5-45.2-40.6-93.1-75.3-109.4c-30-13.8-76.1-16.2-97.3-5.8c1.3-1.1 4.2-2 6.8-2.7l.3-.1c3.3-1 6-1.7 4-2.9c-19.2 1.9-24.9 5.5-31.1 9.4h-.1c-4.6 2.9-9.5 6-20.3 8.7c-3.5 3.4 1.7 2 5.8.9s7.2-1.9-.1 2.4c-3.5 1-6.6 1.3-9.6 1.6h-.1c-8.3.8-15.8 1.6-30.7 17c.8 1.3 3.4-.2 5.3-1.3l.1-.1c2.3-1.4 3.4-2-1.7 4.4c-19.1-2.4-60.3 43.7-69.1 59l4.6.8c-3.2 8-6.8 14.8-10 20.8c-4.3 8.1-7.9 14.9-8.7 21.3c-.3 5.1-1 11-1.7 17.3l-.3 3l-.1.6c-3 27.3-6.7 60.8 3.9 73l-1.3 13c.6 1.2 1.1 2.3 1.6 3.5c.2.4.4.8.5 1.1c1 2.1 2 4.2 3.3 6.2l-3 .2c7 22.1 10.8 22.5 15.1 22.9c4.4.4 9.3.9 18.7 24.2c-2.7-.9-5.5-1.9-9.4-7.2c-.5 4.1 5.8 16.3 13.1 25.8l-3.1 3.6c2.1 3.7 4.8 6.2 7.6 8.8c1 .9 2.1 1.9 3.1 2.9c-11.9-6.5 3.2 13.7 11.9 25.2c.8 1.1 1.5 2 2.2 2.9c1.4 1.9 2.5 3.4 2.9 4.1l2.4-4.2c-.3 6.1 4.3 13.9 13.1 24.7l7.3-.3c3 6 14 16.7 20.7 17.2l-4.4 5.8c8.1 2.6 10.3 4.3 12.7 6.2c2.6 2.1 5.4 4.3 16.1 8.1l-4.2-7.4c3.5 3 6.2 5.9 8.8 8.7l.1.1c5.2 5.6 9.9 10.6 19.7 15.3c10.7 3.7 16.6 4.7 22.7 5.8c.3 0 .6.1.9.1c5.4.8 11.2 1.8 20.8 4.5c-1.1-.1-2.2-.1-3.3-.1c-2.3-.1-4.7-.1-7-.1c-14.4-.2-29.2-.4-42.7-5.2c-96.6-25.7-184.9-139-178.4-255.6c-.6-9.9-.3-20.9 0-30.7c.4-13.5.7-24.8-1.6-28.3l1-3.1c5.3-17.4 11.7-38.2 23.8-62.8l-.1-.2v-.1c.4.4 3.4 3.4 8.8-5.8c.8-1.8 1.6-3.7 2.4-5.6c.5-1.1.9-2.2 1.4-3.2c2.5-6.1 5.1-12.3 8.4-17.9l2.6-.6c1.7-10.1 17-23.8 29.8-35.2l1.1-1c5.7-5.1 10.7-9.7 13.6-13.1l.7 4.4c17-15.9 44.6-27.5 65.6-36.4l.5-.2c4.8-2 9.3-3.9 13.3-5.7c-3.4 3.8 2.2 2.7 10 1c4.8-1 10.4-2.1 15.3-2.4l-3.9 2.1c-2.7 1.4-5.4 2.8-8 4.6c8.1-2 11.7-1.4 15.7-.8h.3c3.5.6 7.3 1.2 14.6.2c-5.6.8-12.3 3-11.2 3.8c7.9.9 12.8-.1 17.2-1h.2c5.5-1.1 10.3-2 19.3.9l-1-4.8c7.3 2.6 12.7 4.3 17.5 5.8l.5.1c10 3 17.6 5.3 34.2 14.1c3.2.2 5.3-.5 7.4-1.2h.1c3.6-1.1 7-2.1 15.2 1.2c.3.5.5 1 .7 1.4c.1.2.2.5.3.7v.1c1 2.6 1.8 4.6 14.6 12.1c1.7-.7-2.7-4.7-6.4-8.2l-.1-.1c-.2-.1-.3-.3-.5-.4c32.2 17.3 67.3 54.1 78 93.5c-6-11.1-5.2-5.5-4.3.5c.6 4 1.2 8.1-.2 7.5c4.5 12.1 8.1 24.5 10.4 37.4l-.8-2.9l-.1-.3c-3.3-11.9-9.6-34.3-19.9-49.3c-.4 4.3-2.8 3.9-5.2 3.5h-.1c-3.3-.6-6.2-1.1-1.9 12.6c2.6 3.8 3.1 2.4 3.5 1.1c.5-1.5.9-2.7 4.7 5.2c.1 4.1 1 8.2 2.1 12.7l.1.6c.1.3.1.5.2.8l.1.6c.6 2.6 1.3 5.4 1.8 8.4c-1.1-.2-2.3-2.2-3.4-4.2c-1.4-2.4-2.8-4.7-3.7-3.2c2.4 11.5 6.5 17.4 8 18.3c-.3.6-.6.7-1.1.7c-.8 0-1.8.1-1.9 5.3c.7 13.7 3.3 12.5 5.3 11.6c.6-.3 1.2-.6 1.7-.4c-.6 2.5-1.6 5.1-2.7 7.9c-2.8 7.1-6 15.4-3.4 26.1c-.8-3-2-6-3.1-8.9l-.1-.4l-.6-1.5c-.3-.8-.6-1.6-.9-2.3c-.6 4.4-.3 7.7-.1 10.6v.7c.4 5.3.7 10-3 19.9c4.3-14.2 3.8-26.9-.2-20.8c1 10.9-3.7 20.4-8 28.9l-.1.2c-3.6 7.1-6.8 13.5-5.9 19.3l-5.2-7.1c-7.5 10.9-7 13.3-6.5 15.5v.1c.5 1.9 1 3.8-3.4 10.8c1.7-2.9 1.3-3.6 1-4.2c-.4-.8-.7-1.5 1.7-5.1c-1.6.1-5.5 3.9-10.1 8.5c-3.9 3.9-8.5 8.4-12.8 11.8c-37.5 30.1-82.3 34-125.6 17.8c.2-1-.2-2.1-3.1-4.1c-36.8-28.2-58.5-52.1-50.9-107.5c2.1-1.6 3.6-5.8 5.3-10.8l.2-.4l.1-.3v-.1c2.9-8.4 6.5-18.8 14.3-23.8c7.8-17.3 31.3-33.3 56.4-33.7c25.6-1.4 47.2 13.7 58.1 27.9c-19.8-18.4-52.1-24-79.7-10.4c-28.2 12.7-45 43.8-42.5 74.7c.3-.4.6-.6.9-.8l.1-.1l.1-.1c.6-.5 1.1-.9 1.4-3.3c-.9 60.2 64.8 104.3 112.1 82l.6 1.3c12.7-3.5 15.9-6.5 20.3-10.7l.1-.1c2.2-2.1 4.7-4.5 8.9-7.3c-.3.7-1.3 1.7-2.4 2.7c-2.2 2.1-4.6 4.5-1.6 4.6c5-1.3 18.5-13.4 28.5-22.3c.6-.5 1.2-1 1.7-1.5c1.5-1.3 2.8-2.5 4-3.6l.3-.3c1.9-4.2 1.6-5.6 1.3-7v-.1c-.4-1.6-.8-3.3 2.4-9.6l7.3-3.7c.8-2.1 1.5-4.1 2.2-6c.2-.6.5-1.2.7-1.8l-.4-.2zM349.3 34.3l-.2-.1zM247.8 334.1c-6-3-13.7-8.9-14.8-11.4l-.4.3c-.3.6-.5 1.3-.2 2.2c-12.2-5.7-23.4-14.3-32.6-24.9c4.9 7.1 10.1 14.1 17 19.5c-6.9-2.3-15.1-11.8-21.6-19.3l-.1-.1c-4.3-5-7.9-9.1-9.7-9.5c19.8 35.5 80.5 62.3 112.3 49c-14.7.5-33.4.3-49.9-5.8m79.3-119.7l-.1-.2c-.5-1.5-1.1-3.1-1.7-3.4c1.4-5.8 5.4-10.7 4.4 4.6c-1 3.8-1.8 1.5-2.6-1m-4.2 22.2c-1.3 7.9-5 15.5-10.1 22.5c.2-2-1.2-2.4-2.6-2.8c-2.9-.8-5.9-1.6 5.6-16.1c-.5 1.9-2.1 4.6-3.7 7.3l-.3.4c-3.6 5.9-6.7 11 4 4.3l1-1.8c2.6-4.5 5-8.8 6-13.8zm-55.6 33.9c7.1.6 14.1.6 21-1.1c-2.5 2.4-5.2 4.8-8.3 7.2c-11.1-1.7-21.2-6-12.7-6.1m-92.6 11.6c3.6 7.1 6.4 11.5 9 15.7l.1.2c2.3 3.7 4.4 7.1 6.8 11.7c-5.1-4.2-8.7-9.5-12.5-15l-.3-.5c-1.4-2.1-2.8-4.2-4.4-6.2l1.2-5.9zm7.5-9.6c1.6 3.3 3.2 6.4 5.7 9.1l2.6 7.7l-1.3-2.1c-3.2-5.3-6.3-10.6-8-16.7l.8 1.6zm238.9-41.6c-2.3 17.4-7.7 34.6-16 50.3c7.6-14.9 12.5-30.9 14.8-47.2zM35.6 110.6c.4.8 1.4.5 2.3.3c1.9-.5 3.6-.9-.1 7.6c-.5.3-1 .7-1.5 1c-1.4.9-2.8 1.9-3.9 3c1.9-3.8 3.5-7.4 3.2-11.9m-10.3 41.7c-.7 3.7-1.5 7.9-3.4 13.9c.2-1.9 0-3.5-.2-4.9v-.1c-.4-3.4-.7-6.3 4.3-12.8c-.3 1.2-.5 2.5-.7 3.8z"/></svg>
-  {% elif name == "external" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6h-2V7.4l-8.3 8.3-1.4-1.4L16.6 6H14V4ZM5 5h7v2H7v10h10v-5h2v7H5V5Z"/></svg>
-  {% elif name == "chevron-rounded" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.6 12 8.7 8.1q-.275-.275-.275-.7t.275-.7.7-.275.7.275l4.6 4.6q.15.15.213.325T14.7 12t-.062.375-.213.325l-4.6 4.6q-.275.275-.7.275t-.7-.275-.275-.7.275-.7z"/></svg>
-  {% elif name == "chevron" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6-1.4 1.4 4.6 4.6-4.6 4.6L9 18Z"/></svg>
-  {% elif name == "top" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5 5 12l1.4 1.4L11 8.8V20h2V8.8l4.6 4.6L19 12l-7-7Z"/></svg>
-  {% elif name == "reset" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.3 4H3.5A9 9 0 1 0 12 3v2ZM4 4v5h5V7H7.4A6.98 6.98 0 0 1 12 5V3A8.96 8.96 0 0 0 5.6 5.6L4 4Z"/></svg>
-  {% elif name == "lock" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 9h-1V7a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2Zm-7-2a2 2 0 0 1 4 0v2h-4V7Zm7 12H7v-8h10v8Z"/></svg>
-  {% elif name == "notes" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v2H5V4Zm0 5h14v2H5V9Zm0 5h9v2H5v-2Z"/></svg>
-  {% elif name == "clock" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 .1 0H12Zm1 11.6 4 2.4-1 1.7-5-3V6h2v7.6Z"/></svg>
-  {% elif name == "calendar" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h2v2h6V2h2v2h3v18H4V4h3V2Zm13 8H6v10h14V10ZM6 8h14V6H6v2Z"/></svg>
-  {% elif name == "book" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11a3 3 0 0 1 3 3v15H7a3 3 0 0 1-3-3V4a1 1 0 0 1 1-1Zm2 14h10V6a1 1 0 0 0-1-1H6v13a1 1 0 0 0 1 1Zm1-9h7v2H8V8Z"/></svg>
-  {% elif name == "tag" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20 13-7 7L4 11V4h7l9 9Zm-12.5-5A1.5 1.5 0 1 0 8 5a1.5 1.5 0 0 0-.5 3Z"/></svg>
-  {% elif name == "cc" %}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 .1 0H12Zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm-2 5.5c-1.5 0-2.5 1.1-2.5 2.5s1 2.5 2.5 2.5c.8 0 1.4-.3 1.9-.8l-1-1.2c-.3.3-.6.4-.9.4-.5 0-.9-.4-.9-.9s.4-.9.9-.9c.3 0 .6.1.9.4l1-1.2c-.5-.5-1.1-.8-1.9-.8Zm5 0c-1.5 0-2.5 1.1-2.5 2.5s1 2.5 2.5 2.5c.8 0 1.4-.3 1.9-.8l-1-1.2c-.3.3-.6.4-.9.4-.5 0-.9-.4-.9-.9s.4-.9.9-.9c.3 0 .6.1.9.4l1-1.2c-.5-.5-1.1-.8-1.9-.8Z"/></svg>
-  {% endif %}
+  {{ generated::icon(name=name) }}
 {% endmacro icon %}
 
 {% macro post_url(page) %}
@@ -46,16 +10,16 @@
 
 {% macro post_meta(page) %}
   <div class="post-meta">
-    <span class="post-meta-item"><span class="meta-icon">{{ self::icon(name="calendar") }}</span><span>{{ page.date | date(format="%Y-%m-%d") }}</span></span>
+    <span class="post-meta-item"><span class="meta-icon">{{ self::icon(name="material-symbols:calendar-today-outline-rounded") }}</span><span>{{ page.date | date(format="%Y-%m-%d") }}</span></span>
     {% if page.extra.updated %}<span>{{ page.extra.updated }}</span>{% endif %}
     {% if page.taxonomies.categories %}
-      {% for category in page.taxonomies.categories %}<a class="post-meta-item" href="{{ get_taxonomy_url(kind="categories", name=category) }}"><span class="meta-icon">{{ self::icon(name="book") }}</span><span>{{ category }}</span></a>{% endfor %}
+      {% for category in page.taxonomies.categories %}<a class="post-meta-item" href="{{ get_taxonomy_url(kind="categories", name=category) }}"><span class="meta-icon">{{ self::icon(name="material-symbols:book-2-outline-rounded") }}</span><span>{{ category }}</span></a>{% endfor %}
     {% elif page.extra.category %}
-      <span class="post-meta-item"><span class="meta-icon">{{ self::icon(name="book") }}</span><span>{{ page.extra.category }}</span></span>
+      <span class="post-meta-item"><span class="meta-icon">{{ self::icon(name="material-symbols:book-2-outline-rounded") }}</span><span>{{ page.extra.category }}</span></span>
     {% endif %}
     {% set meta_tags = page.taxonomies.tags | default(value=[]) %}
     {% if meta_tags %}
-      <span class="post-meta-item post-meta-tags"><span class="meta-icon">{{ self::icon(name="tag") }}</span><span>{% for tag in meta_tags %}{% if not loop.first %}<em>/</em>{% endif %}<a href="{{ get_taxonomy_url(kind="tags", name=tag) }}">{{ tag }}</a>{% endfor %}</span></span>
+      <span class="post-meta-item post-meta-tags"><span class="meta-icon">{{ self::icon(name="material-symbols:tag-rounded") }}</span><span>{% for tag in meta_tags %}{% if not loop.first %}<em>/</em>{% endif %}<a href="{{ get_taxonomy_url(kind="tags", name=tag) }}">{{ tag }}</a>{% endfor %}</span></span>
     {% endif %}
   </div>
 {% endmacro post_meta %}
@@ -64,14 +28,14 @@
   <article class="post-card card-base onload-animation" style="animation-delay: calc(var(--content-delay) + {{ index * 50 }}ms);">
     {% if page.extra.image %}
       <a class="post-card-cover no-styling" href="{{ page.permalink }}" aria-label="{{ page.title }}">
-        <span class="cover-overlay">{{ self::icon(name="chevron-rounded") }}</span>
+        <span class="cover-overlay">{{ self::icon(name="material-symbols:chevron-right-rounded") }}</span>
         <img src="{{ page.extra.image }}" alt="Cover image of {{ page.title }}" loading="lazy">
       </a>
     {% endif %}
     <div class="post-card-body {% if not page.extra.image %}post-card-body-no-cover{% endif %}">
       <a class="post-card-title no-styling" href="{{ page.permalink }}">
         {{ page.title }}
-        <span class="post-card-arrow">{{ self::icon(name="chevron-rounded") }}</span>
+        <span class="post-card-arrow">{{ self::icon(name="material-symbols:chevron-right-rounded") }}</span>
       </a>
       {{ self::post_meta(page=page) }}
       <p class="post-card-desc">{{ page.description | default(value=page.summary | striptags | truncate(length=160)) }}</p>
@@ -82,7 +46,7 @@
       </div>
     </div>
     {% if not page.extra.image %}
-      <a class="post-card-enter no-styling" href="{{ page.permalink }}" aria-label="{{ page.title }}">{{ self::icon(name="chevron-rounded") }}</a>
+      <a class="post-card-enter no-styling" href="{{ page.permalink }}" aria-label="{{ page.title }}">{{ self::icon(name="material-symbols:chevron-right-rounded") }}</a>
     {% endif %}
   </article>
 {% endmacro post_card %}

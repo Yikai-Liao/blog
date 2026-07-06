@@ -15,6 +15,7 @@ const normalizedBase = base === "/" ? "" : `/${base.replace(/^\/+|\/+$/g, "")}`;
 const baseUrl = `${site}${normalizedBase}`;
 
 run("node", ["scripts/preprocess-zola-content.mjs"]);
+run("node", ["scripts/generate-icon-macros.mjs"]);
 run("zola", [
 	"build",
 	"--base-url",

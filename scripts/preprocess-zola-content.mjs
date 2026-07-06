@@ -7,12 +7,14 @@ import { pluginFrames } from "@expressive-code/plugin-frames";
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
 import { loadShikiTheme, pluginShiki } from "@expressive-code/plugin-shiki";
 import { pluginTextMarkers } from "@expressive-code/plugin-text-markers";
+import MarkdownIt from "markdown-it";
 import getReadingTime from "reading-time";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const sourceDir = path.join(root, "contents");
 const targetDir = path.join(root, "content", "posts");
 const theme = await loadShikiTheme("github-dark");
+const markdownParser = new MarkdownIt({ html: true });
 
 function pluginCustomCopyButton() {
 	return definePlugin({
@@ -323,28 +325,51 @@ ${body}
 }
 
 async function transformCodeBlocks(markdown) {
-	const pattern = /```([^\n`]*)\n([\s\S]*?)```/g;
-	let result = "";
-	let lastIndex = 0;
-	for (const match of markdown.matchAll(pattern)) {
-		result += markdown.slice(lastIndex, match.index);
-		const info = match[1].trim();
-		const code = match[2].replace(/\n$/, "");
+	const lines = markdown.split("\n");
+	const codeTokens = markdownParser
+		.parse(markdown, {})
+		.filter(
+			(token) => token.map && ["fence", "code_block"].includes(token.type),
+		);
+
+	for (const token of codeTokens.toReversed()) {
+		const [start, end] = token.map;
+		const originalLines = lines.slice(start, end);
+		const info = token.type === "fence" ? token.info.trim() : "";
 		const [language = "text", ...metaParts] = info.split(/\s+/);
+		const code = token.content.replace(/\n$/, "");
 		try {
 			const rendered = await codeEngine.render({
 				code,
 				language: language || "text",
 				meta: metaParts.join(" "),
 			});
-			result += hastToHtml(rendered.renderedGroupAst);
-		} catch {
-			result += `\`\`\`${info}\n${code}\n\`\`\``;
-		}
-		lastIndex = match.index + match[0].length;
+			const html = indentHtmlForMarkdownContainer(
+				hastToHtml(rendered.renderedGroupAst),
+				token,
+				originalLines,
+			);
+			lines.splice(start, end - start, html);
+		} catch {}
 	}
-	result += markdown.slice(lastIndex);
-	return result;
+	return lines.join("\n");
+}
+
+function indentHtmlForMarkdownContainer(html, token, originalLines) {
+	if (token.level === 0) return html;
+	const minIndent = originalLines
+		.filter((line) => line.trim())
+		.reduce(
+			(min, line) => Math.min(min, line.match(/^ */)[0].length),
+			Number.POSITIVE_INFINITY,
+		);
+	const indentSize =
+		token.type === "code_block" ? Math.max(0, minIndent - 4) : minIndent;
+	const indent = " ".repeat(Number.isFinite(indentSize) ? indentSize : 0);
+	return html
+		.split("\n")
+		.map((line) => (line ? `${indent}${line}` : line))
+		.join("\n");
 }
 
 async function cleanGeneratedPosts() {

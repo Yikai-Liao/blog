@@ -12,22 +12,29 @@ const preprocess = spawn("node", ["scripts/preprocess-zola-content.mjs"], {
 });
 preprocess.on("exit", (code) => {
 	if (code !== 0) process.exit(code || 1);
-	const zola = spawn(
-		"zola",
-		[
-			"serve",
-			"--interface",
-			"127.0.0.1",
-			"--port",
-			process.env.PORT || "1111",
-			"--output-dir",
-			".zola-dev-public",
-			"--force",
-		],
-		{
-			stdio: "inherit",
-			env,
-		},
-	);
-	zola.on("exit", (zolaCode) => process.exit(zolaCode || 0));
+	const icons = spawn("node", ["scripts/generate-icon-macros.mjs"], {
+		stdio: "inherit",
+		env,
+	});
+	icons.on("exit", (iconCode) => {
+		if (iconCode !== 0) process.exit(iconCode || 1);
+		const zola = spawn(
+			"zola",
+			[
+				"serve",
+				"--interface",
+				"127.0.0.1",
+				"--port",
+				process.env.PORT || "1111",
+				"--output-dir",
+				".zola-dev-public",
+				"--force",
+			],
+			{
+				stdio: "inherit",
+				env,
+			},
+		);
+		zola.on("exit", (zolaCode) => process.exit(zolaCode || 0));
+	});
 });

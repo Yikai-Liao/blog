@@ -197,10 +197,45 @@ function initBackToTop() {
 	update();
 }
 
+function syncFootnotesHeadingAndToc() {
+	const markdown = qs(".custom-md");
+	const firstFootnote = qs(".footnote-definition", markdown);
+	if (!markdown || !firstFootnote) return;
+
+	let heading = qs("#footnotes", markdown);
+	if (!heading) {
+		heading = document.createElement("h2");
+		heading.id = "footnotes";
+		heading.textContent = "Footnotes";
+		firstFootnote.parentNode?.insertBefore(heading, firstFootnote);
+	}
+
+	const toc = qs("table-of-contents");
+	if (!toc || qs('a[href$="#footnotes"]', toc)) return;
+
+	const entry = document.createElement("a");
+	entry.className = "toc-entry toc-depth-2";
+	entry.href = `${location.pathname.replace(/\/?$/, "/")}#footnotes`;
+	entry.innerHTML =
+		'<span class="toc-badge toc-dot"></span><span class="toc-text">Footnotes</span>';
+	const indicator = qs("[data-active-indicator]", toc);
+	toc.insertBefore(entry, indicator || null);
+	toc.refresh?.();
+}
+
 class TableOfContents extends HTMLElement {
 	connectedCallback() {
 		this.tocEl = this.closest("[data-toc-scroll]") || this;
 		this.activeIndicator = qs("[data-active-indicator]", this);
+		this.onScroll = this.update.bind(this);
+		this.onClick = this.handleAnchorClick.bind(this);
+		this.tocEl?.addEventListener("click", this.onClick, { capture: true });
+		addEventListener("scroll", this.onScroll, { passive: true });
+		addEventListener("resize", this.onScroll, { passive: true });
+		this.refresh();
+	}
+
+	refresh() {
 		this.tocEntries = qsa(".toc-entry[href]", this);
 		this.headings = this.tocEntries
 			.map((entry) => {
@@ -210,11 +245,6 @@ class TableOfContents extends HTMLElement {
 				return document.getElementById(id);
 			})
 			.filter((heading) => heading instanceof HTMLElement);
-		this.onScroll = this.update.bind(this);
-		this.onClick = this.handleAnchorClick.bind(this);
-		this.tocEl?.addEventListener("click", this.onClick, { capture: true });
-		addEventListener("scroll", this.onScroll, { passive: true });
-		addEventListener("resize", this.onScroll, { passive: true });
 		this.update();
 	}
 
@@ -244,11 +274,15 @@ class TableOfContents extends HTMLElement {
 			}
 		}
 		const visibleIndexes = this.headings
-			.map((heading, index) => ({ heading, index }))
-			.filter(({ heading }) => {
-				const rect = heading.getBoundingClientRect();
-				return rect.top < innerHeight * 0.85 && rect.bottom > 0;
+			.map((heading, index) => {
+				const top = heading.getBoundingClientRect().top;
+				const next = this.headings[index + 1];
+				const bottom = next
+					? next.getBoundingClientRect().top
+					: document.documentElement.scrollHeight - scrollY;
+				return { index, top, bottom };
 			})
+			.filter(({ top, bottom }) => top < innerHeight && bottom > 0)
 			.map(({ index }) => index);
 		const activeEnd = visibleIndexes.length
 			? Math.max(activeIndex, ...visibleIndexes)
@@ -267,6 +301,7 @@ class TableOfContents extends HTMLElement {
 			);
 		});
 		this.moveIndicator(groupStart, activeEnd);
+		this.scrollToActiveHeading(groupStart, activeEnd);
 	}
 
 	moveIndicator(startIndex, endIndex = startIndex) {
@@ -285,8 +320,31 @@ class TableOfContents extends HTMLElement {
 		this.activeIndicator.style.top = `${startRect.top - parentOffset + scrollOffset}px`;
 		this.activeIndicator.style.height = `${endRect.bottom - startRect.top}px`;
 	}
+
+	scrollToActiveHeading(startIndex, endIndex) {
+		if (this.anchorNavTarget || !this.tocEl) return;
+		const topmost = this.tocEntries[startIndex];
+		const bottommost = this.tocEntries[endIndex];
+		if (!topmost || !bottommost) return;
+
+		const tocHeight = this.tocEl.clientHeight;
+		const visibleHeight =
+			bottommost.getBoundingClientRect().bottom -
+			topmost.getBoundingClientRect().top;
+		const top =
+			visibleHeight < 0.9 * tocHeight
+				? topmost.offsetTop - 32
+				: bottommost.offsetTop - tocHeight * 0.8;
+
+		this.tocEl.scrollTo({
+			top,
+			left: 0,
+			behavior: "smooth",
+		});
+	}
 }
 
+syncFootnotesHeadingAndToc();
 if (!customElements.get("table-of-contents")) {
 	customElements.define("table-of-contents", TableOfContents);
 }
@@ -493,6 +551,7 @@ function initVideoEmbeds() {
 function initPage() {
 	document.documentElement.style.setProperty("--content-delay", "150ms");
 	qs("#banner")?.classList.add("banner-ready");
+	syncFootnotesHeadingAndToc();
 	initThemeControls();
 	initArchiveFilter();
 	initBackToTop();

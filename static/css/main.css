@@ -653,9 +653,13 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
   font-size: 2.5rem;
 }
 
-.post-container, .archive-page, .twikoo-card {
+.archive-page, .twikoo-card {
   margin-bottom: 1rem;
   padding: 2rem;
+}
+.post-container {
+  margin-bottom: 1rem;
+  padding: 1.5rem 2.25rem 1rem;
 }
 .post-header h1, .archive-page h1 {
   margin: 0 0 .75rem;
@@ -1186,20 +1190,40 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
 }
 
 .custom-md {
-  color: rgb(0 0 0 / 78%);
+  margin-bottom: 1.5rem;
+  color: rgb(55 65 81);
   font-size: 1rem;
   line-height: 1.75;
 }
-.dark .custom-md { color: rgb(255 255 255 / 78%); }
+.dark .custom-md { color: rgb(209 213 219); }
 .custom-md h1, .custom-md h2, .custom-md h3, .custom-md h4 {
-  color: rgb(0 0 0 / 90%);
+  color: rgb(17 24 39);
   line-height: 1.25;
   scroll-margin-top: 6rem;
 }
-.dark .custom-md h1, .dark .custom-md h2, .dark .custom-md h3, .dark .custom-md h4 { color: rgb(255 255 255 / 90%); }
-.custom-md h1 { font-size: 1.875rem; }
-.custom-md h2 { margin-top: 2rem; font-size: 1.75rem; }
-.custom-md h3 { margin-top: 1.5rem; font-size: 1.35rem; }
+.dark .custom-md h1, .dark .custom-md h2, .dark .custom-md h3, .dark .custom-md h4 { color: rgb(255 255 255); }
+.custom-md h1 {
+  margin-top: 0;
+  margin-bottom: .8888889em;
+  font-size: 1.875rem;
+  line-height: 1.2;
+}
+.custom-md h2 {
+  margin-top: 2em;
+  margin-bottom: 1em;
+  font-size: 1.5rem;
+  line-height: 1.3333333;
+}
+.custom-md h3 {
+  margin-top: 1.6em;
+  margin-bottom: .6em;
+  font-size: 1.25rem;
+  line-height: 1.6;
+}
+.custom-md p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
 .custom-md a:not(.no-styling) {
   display: inline-block;
   color: var(--primary);
@@ -1224,7 +1248,7 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
 .custom-md hr { border: 0; border-top: 1px dashed var(--line-divider); }
 .custom-md blockquote {
   position: relative;
-  margin: 1rem 0;
+  margin: 1.6em 0;
   padding: .25rem 0 .25rem 1.25rem;
   border: 0;
 }
