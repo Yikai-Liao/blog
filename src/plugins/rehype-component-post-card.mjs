@@ -187,7 +187,6 @@ export function PostCardComponent(properties, children, context) {
 					: undefined,
 		},
 		[
-			h("div", { class: "pc-label" }, "站内引用"),
 			h("div", { class: "pc-title" }, post.title || post.slug),
 			post.description
 				? h("div", { class: "pc-description" }, post.description)
@@ -196,6 +195,9 @@ export function PostCardComponent(properties, children, context) {
 				post.published || "",
 				post.category ? ` · ${post.category}` : "",
 			]),
+			post.private !== "false"
+				? h("div", { class: "pc-private" }, "private")
+				: undefined,
 		].filter(Boolean),
 	);
 }
