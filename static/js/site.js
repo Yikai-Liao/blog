@@ -179,7 +179,7 @@ function initArchiveFilter() {
 function initBackToTop() {
 	const btn = qs("#back-to-top-btn");
 	const navbar = qs("#navbar-wrapper");
-	const toc = qs("#sidebar-toc");
+	const toc = qs("#toc-wrapper");
 	const update = () => {
 		const threshold = innerHeight * 0.35;
 		btn?.classList.toggle("hide", scrollY <= threshold);

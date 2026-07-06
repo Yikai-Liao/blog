@@ -109,9 +109,10 @@
           </section>
           <div id="sidebar-sticky" class="sidebar-sticky">
             {% if page and page.toc %}
-              <section id="sidebar-toc" class="widget card-base onload-animation">
-                <h2>Contents</h2>
-                <div class="toc-scroll" data-toc-scroll>
+              <section id="toc-wrapper" class="toc-widget card-base onload-animation">
+                <div class="widget-title">Contents</div>
+                <div id="sidebar-toc" class="collapse-wrapper">
+                  <div class="toc-scroll" data-toc-scroll>
                   <table-of-contents class="toc-list">
                     {% set_global toc_index = 0 %}
                     {% for h1 in page.toc %}
@@ -123,6 +124,7 @@
                     {% endfor %}
                     <div data-active-indicator class="toc-active-indicator" style="opacity: 0"></div>
                   </table-of-contents>
+                  </div>
                 </div>
               </section>
             {% else %}
@@ -149,8 +151,15 @@
           <div id="content-wrapper" class="onload-animation">
             {% block content %}{% endblock content %}
             <footer class="footer onload-animation">
-              <span>© {{ now() | date(format="%Y") }} {{ config.extra.author }}</span>
-              <a href="{{ config.extra.license_url }}" target="_blank" rel="noopener">{{ config.extra.license_name }}</a>
+              <div class="footer-divider"></div>
+              <div class="footer-body">
+                © <span id="copyright-year">{{ now() | date(format="%Y") }}</span> {{ config.extra.author }}. All Rights Reserved. /
+                <a target="_blank" rel="noopener" href="{{ get_url(path="rss.xml") }}">RSS</a> /
+                <a target="_blank" rel="noopener" href="{{ get_url(path="sitemap.xml") }}">Sitemap</a><br>
+                Powered by
+                <a target="_blank" rel="noopener" href="https://www.getzola.org/">Zola</a> &
+                <a target="_blank" rel="noopener" href="https://github.com/Yikai-Liao/blog">Fuwari</a>
+              </div>
             </footer>
           </div>
         </main>

@@ -183,13 +183,14 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
 .float-panel {
   position: absolute;
   top: 5.25rem;
-  right: 1rem;
+  right: 2rem;
   z-index: 80;
   min-width: 18rem;
   padding: 1rem;
   border-radius: var(--radius-large);
   background: var(--float-panel-bg);
   box-shadow: 0 1rem 2rem rgb(0 0 0 / 16%);
+  line-height: 1.5;
 }
 .float-panel-closed {
   opacity: 0;
@@ -424,6 +425,35 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
 .profile-links .btn-regular { min-width: 2.5rem; width: 2.5rem; height: 2.5rem; min-height: 2.5rem; padding: 0; border-radius: .5rem; }
 .widget { padding: 1rem; }
 .widget h2 { margin: 0 0 .75rem; font-size: 1rem; }
+.toc-widget {
+  padding: 0 0 1rem;
+  line-height: 1.5;
+}
+.widget-title {
+  position: relative;
+  margin: 1rem 0 .5rem 2rem;
+  color: rgb(17 24 39);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.75rem;
+}
+.dark .widget-title {
+  color: rgb(245 245 245);
+}
+.widget-title::before {
+  content: "";
+  position: absolute;
+  left: -1rem;
+  top: .34375rem;
+  width: .25rem;
+  height: 1rem;
+  border-radius: .375rem;
+  background: var(--primary);
+}
+.collapse-wrapper {
+  overflow: hidden;
+  padding: 0 1rem;
+}
 .category-list { display: flex; flex-direction: column; gap: .5rem; }
 .category-link {
   display: flex;
@@ -459,7 +489,15 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
 }
 .tag-list { display: flex; flex-wrap: wrap; gap: .5rem; }
 .tag-list .btn-regular { min-height: 2.25rem; padding: 0 .75rem; font-size: .85rem; }
-.toc-scroll { max-height: calc(100vh - 8rem); overflow: auto; scrollbar-width: none; }
+.toc-scroll {
+  max-height: calc(100vh - 8rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+.toc-scroll::-webkit-scrollbar {
+  display: none;
+}
 .toc-list {
   position: relative;
   display: block;
@@ -529,7 +567,10 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
   border-color: var(--toc-btn-active);
   background: transparent;
 }
-.toc-hide { opacity: 0; pointer-events: none; }
+.toc-hide {
+  opacity: 0 !important;
+  pointer-events: none;
+}
 
 .content-column { overflow: hidden; }
 .card-list {
@@ -653,9 +694,14 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
   font-size: 2.5rem;
 }
 
-.archive-page, .twikoo-card {
+.archive-page {
   margin-bottom: 1rem;
   padding: 2rem;
+}
+.twikoo-card {
+  margin-bottom: 1rem;
+  padding: 1.25rem 1.75rem;
+  line-height: 1.5;
 }
 .post-container {
   margin-bottom: 1rem;
@@ -1438,6 +1484,14 @@ svg.copy-btn-icon {
   background: var(--codeblock-bg);
 }
 .video-embed iframe { width: 100%; height: 100%; border: 0; }
+.custom-md iframe {
+  display: block;
+  max-width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  border-radius: .75rem;
+  vertical-align: middle;
+}
 
 a.card-github {
   display: block;
@@ -1592,15 +1646,42 @@ a.card-github:hover { background: var(--btn-regular-bg-hover); }
 .taxonomy-heading { padding-top: 1.5rem; padding-bottom: 1.5rem; }
 
 .footer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .5rem 1rem;
-  margin: 1rem 0;
-  color: rgb(0 0 0 / 45%);
-  font-size: .9rem;
+  display: block;
+  margin: 0;
+  color: rgb(0 0 0 / 50%);
+  font-size: 1rem;
+  line-height: 1.5;
 }
-.dark .footer { color: rgb(255 255 255 / 45%); }
-.footer a { color: inherit; }
+.dark .footer { color: rgb(255 255 255 / 50%); }
+.footer-divider {
+  margin: 2.5rem 8rem;
+  border-top: 1px dashed rgb(0 0 0 / 10%);
+}
+.dark .footer-divider {
+  border-color: rgb(255 255 255 / 15%);
+}
+.footer-body {
+  margin-bottom: 3rem;
+  padding: 0 1.5rem;
+  border-radius: 1rem;
+  color: rgb(0 0 0 / 50%);
+  font-size: .875rem;
+  text-align: center;
+}
+.dark .footer-body {
+  color: rgb(255 255 255 / 50%);
+}
+.footer a {
+  margin: -.25rem;
+  padding: .25rem;
+  border-radius: .375rem;
+  color: var(--primary);
+  font-weight: 500;
+  text-decoration: none;
+}
+.footer a:hover {
+  background: var(--btn-plain-bg-hover);
+}
 .back-to-top {
   position: fixed;
   right: calc((100vw - min(var(--page-width), 100vw)) / 2 + 1rem);

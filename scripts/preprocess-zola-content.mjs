@@ -324,6 +324,15 @@ ${body}
 </blockquote>`;
 }
 
+function transformEmbeds(markdown) {
+	return markdown.replace(/<iframe\b([^>]*)>/gi, (tag, attrs) => {
+		if (/\sstyle\s*=/.test(attrs)) return tag;
+		const height = attrs.match(/\sheight=(["']?)(\d+)\1/i);
+		const style = height ? ` style="height: ${height[2]}px"` : "";
+		return `<iframe${attrs}${style}>`;
+	});
+}
+
 async function transformCodeBlocks(markdown) {
 	const lines = markdown.split("\n");
 	const codeTokens = markdownParser
@@ -420,7 +429,9 @@ async function main() {
 	}
 	for (const { file, data, body, slug } of posts) {
 		const target = path.join(targetDir, slug, "index.md");
-		const transformed = transformDirectives(await transformCodeBlocks(body));
+		const transformed = transformEmbeds(
+			transformDirectives(await transformCodeBlocks(body)),
+		);
 		const readingStats = getReadingTime(body);
 		const nav = navBySlug.get(slug) || {};
 		await fs.mkdir(path.dirname(target), { recursive: true });
