@@ -38,13 +38,13 @@
     </article>
     {% if is_post %}
       <nav class="post-nav">
-      {% if page.extra.prev_slug %}
-        {% set prev_path = "posts/" ~ page.extra.prev_slug ~ "/" %}
-        <a class="post-nav-card" href="{{ get_url(path=prev_path) }}">{{ macros::icon(name="material-symbols:chevron-left-rounded") }}<span>{{ page.extra.prev_title }}</span></a>
-      {% endif %}
       {% if page.extra.next_slug %}
         {% set next_path = "posts/" ~ page.extra.next_slug ~ "/" %}
-        <a class="post-nav-card post-nav-next" href="{{ get_url(path=next_path) }}"><span>{{ page.extra.next_title }}</span>{{ macros::icon(name="material-symbols:chevron-right-rounded") }}</a>
+        <a class="post-nav-card" href="{{ get_url(path=next_path) }}">{{ macros::icon(name="material-symbols:chevron-left-rounded") }}<span>{{ page.extra.next_title }}</span></a>
+      {% endif %}
+      {% if page.extra.prev_slug %}
+        {% set prev_path = "posts/" ~ page.extra.prev_slug ~ "/" %}
+        <a class="post-nav-card post-nav-next" href="{{ get_url(path=prev_path) }}"><span>{{ page.extra.prev_title }}</span>{{ macros::icon(name="material-symbols:chevron-right-rounded") }}</a>
       {% endif %}
       </nav>
       <section class="twikoo-card card-base" aria-label="Comments" data-twikoo-root data-env-id="{{ config.extra.twikoo_env_id }}" data-path="{{ page.path }}" data-title="{{ page.title }}" data-lang="{{ config.default_language | replace(from="_", to="-") }}">

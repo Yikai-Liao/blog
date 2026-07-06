@@ -548,6 +548,14 @@ function initVideoEmbeds() {
 	});
 }
 
+function initExpressiveCodeFrames() {
+	qsa(".expressive-code .frame pre[data-language]").forEach((pre) => {
+		const frame = pre.closest(".frame");
+		if (!frame) return;
+		frame.dataset.language = pre.dataset.language || "";
+	});
+}
+
 function initPage() {
 	document.documentElement.style.setProperty("--content-delay", "150ms");
 	qs("#banner")?.classList.add("banner-ready");
@@ -559,6 +567,7 @@ function initPage() {
 	initTwikoo();
 	initGithubCards();
 	initVideoEmbeds();
+	initExpressiveCodeFrames();
 }
 
 initPanels();
