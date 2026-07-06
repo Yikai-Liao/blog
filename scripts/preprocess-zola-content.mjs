@@ -254,14 +254,9 @@ function buildFrontmatter(data, sourcePath, options = {}) {
 	const tags = Array.isArray(data.tags) ? data.tags : [];
 	const category = data.category || "Uncategorized";
 	const draft = Boolean(data.draft);
-	const privatePost = Boolean(data.private);
-	const privateFallback = Boolean(options.privateFallback);
-	const taxonomyTags = privateFallback ? [] : tags;
-	const taxonomyCategories = privateFallback ? [] : [category];
 	const readingStats = options.readingStats || { words: 0, minutes: 1 };
 	const nav = options.nav || {};
-	const postPath =
-		privatePost && !privateFallback ? `posts/private/${slug}` : `posts/${slug}`;
+	const postPath = `posts/${slug}`;
 	const lines = [
 		"+++",
 		`title = ${tomlString(data.title || slug)}`,
@@ -271,8 +266,8 @@ function buildFrontmatter(data, sourcePath, options = {}) {
 		`slug = ${tomlString(slug)}`,
 		`path = ${tomlString(postPath)}`,
 		"[taxonomies]",
-		`tags = ${tomlArray(taxonomyTags)}`,
-		`categories = ${tomlArray(taxonomyCategories)}`,
+		`tags = ${tomlArray(tags)}`,
+		`categories = ${tomlArray([category])}`,
 		"[extra]",
 		`published = ${tomlString(date)}`,
 		`updated = ${data.updated ? tomlString(data.updated) : '""'}`,
@@ -280,17 +275,12 @@ function buildFrontmatter(data, sourcePath, options = {}) {
 		`category = ${tomlString(category)}`,
 		`tags = ${tomlArray(tags)}`,
 		`draft = ${draft}`,
-		`private = ${privatePost}`,
-		`private_fallback = ${privateFallback}`,
-		`canonical_path = ${tomlString(privatePost ? `posts/private/${slug}/` : `posts/${slug}/`)}`,
 		`words = ${Math.max(0, Math.round(readingStats.words || 0))}`,
 		`minutes = ${Math.max(1, Math.round(readingStats.minutes || 1))}`,
 		`prev_slug = ${tomlString(nav.prevSlug || "")}`,
 		`prev_title = ${tomlString(nav.prevTitle || "")}`,
-		`prev_private = ${Boolean(nav.prevPrivate)}`,
 		`next_slug = ${tomlString(nav.nextSlug || "")}`,
 		`next_title = ${tomlString(nav.nextTitle || "")}`,
-		`next_private = ${Boolean(nav.nextPrivate)}`,
 		"+++",
 		"",
 	];
@@ -372,17 +362,6 @@ generate_feeds = true
 +++
 `,
 	);
-	await fs.mkdir(path.join(targetDir, "private"), { recursive: true });
-	await fs.writeFile(
-		path.join(targetDir, "private", "_index.md"),
-		`+++
-title = "Private"
-render = false
-page_template = "page.html"
-sort_by = "date"
-+++
-`,
-	);
 }
 
 async function main() {
@@ -410,17 +389,12 @@ async function main() {
 		navBySlug.set(sorted[index].slug, {
 			prevSlug: previousOlder?.slug || "",
 			prevTitle: previousOlder?.data.title || "",
-			prevPrivate: Boolean(previousOlder?.data.private),
 			nextSlug: nextNewer?.slug || "",
 			nextTitle: nextNewer?.data.title || "",
-			nextPrivate: Boolean(nextNewer?.data.private),
 		});
 	}
 	for (const { file, data, body, slug } of posts) {
-		const privatePost = Boolean(data.private);
-		const target = privatePost
-			? path.join(targetDir, "private", slug, "index.md")
-			: path.join(targetDir, slug, "index.md");
+		const target = path.join(targetDir, slug, "index.md");
 		const transformed = transformDirectives(await transformCodeBlocks(body));
 		const readingStats = getReadingTime(body);
 		const nav = navBySlug.get(slug) || {};
@@ -429,14 +403,6 @@ async function main() {
 			target,
 			`${buildFrontmatter(data, file, { readingStats, nav })}${transformed}`,
 		);
-		if (privatePost) {
-			const fallbackTarget = path.join(targetDir, slug, "index.md");
-			await fs.mkdir(path.dirname(fallbackTarget), { recursive: true });
-			await fs.writeFile(
-				fallbackTarget,
-				`${buildFrontmatter(data, file, { privateFallback: true, readingStats, nav })}受保护文章入口。`,
-			);
-		}
 	}
 }
 

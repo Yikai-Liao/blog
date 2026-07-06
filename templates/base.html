@@ -21,8 +21,7 @@
       baseUrl: "{{ get_url(path="/") }}",
       twikooEnvId: "{{ config.extra.twikoo_env_id }}",
       lang: "{{ config.default_language | replace(from="_", to="-") }}",
-      hue: "{{ config.extra.theme_hue }}",
-      hiddenCategories: [{% for category in config.extra.hidden_categories | default(value=[]) %}"{{ category }}"{% if not loop.last %}, {% endif %}{% endfor %}]
+      hue: "{{ config.extra.theme_hue }}"
     };
   </script>
   <script>
@@ -46,13 +45,20 @@
             <a href="{{ config.extra.github_url }}" class="btn-plain" target="_blank" rel="noopener">GitHub {{ macros::icon(name="external") }}</a>
           </div>
           <div class="nav-actions">
-            <button id="search-switch" class="btn-plain icon-btn" aria-label="Search">{{ macros::icon(name="search") }}</button>
+            <div id="search-bar" class="search-bar">
+              <span class="search-bar-icon">{{ macros::icon(name="search") }}</span>
+              <input id="search-input-desktop" data-search-input type="search" placeholder="搜索" autocomplete="off">
+            </div>
+            <button id="search-switch" class="btn-plain icon-btn mobile-only" aria-label="Search">{{ macros::icon(name="search") }}</button>
             <button id="display-settings-switch" class="btn-plain icon-btn" aria-label="Display Settings">{{ macros::icon(name="palette") }}</button>
             <button id="scheme-switch" class="btn-plain icon-btn" aria-label="Switch Theme">{{ macros::icon(name="moon") }}</button>
             <button id="nav-menu-switch" class="btn-plain icon-btn mobile-only" aria-label="Menu">{{ macros::icon(name="menu") }}</button>
           </div>
           <div id="search-panel" class="float-panel float-panel-closed search-panel">
-            <input id="search-input" type="search" placeholder="搜索" autocomplete="off">
+            <div id="search-bar-inside" class="search-bar search-bar-panel">
+              <span class="search-bar-icon">{{ macros::icon(name="search") }}</span>
+              <input id="search-input-mobile" data-search-input type="search" placeholder="搜索" autocomplete="off">
+            </div>
             <div id="search-results"></div>
           </div>
           <div id="display-setting" class="float-panel float-panel-closed display-panel">
@@ -123,10 +129,10 @@
             {% else %}
               <section class="widget card-base onload-animation">
                 <h2>分类</h2>
-                <div class="tag-list">
+                <div class="category-list">
                   {% set categories = get_taxonomy(kind="categories") %}
                   {% for term in categories.items %}
-                    <a class="btn-regular archive-filter-link" data-archive-filter="category" data-archive-value="{{ term.name }}" data-no-swup="true" href="{{ get_url(path="archive/") }}?category={{ term.name | urlencode }}">{{ term.name }} <span>{{ term.pages | length }}</span></a>
+                    <a class="category-link archive-filter-link" data-archive-filter="category" data-archive-value="{{ term.name }}" data-no-swup="true" href="{{ get_url(path="archive/") }}?category={{ term.name | urlencode }}" aria-label="View all posts in the {{ term.name }} category"><span>{{ term.name }}</span><span class="category-count">{{ term.pages | length }}</span></a>
                   {% endfor %}
                 </div>
               </section>

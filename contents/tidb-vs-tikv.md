@@ -7,7 +7,6 @@ tags: [Database]
 category: Chats
 author: GPT-5.5
 draft: false
-private: true
 toc:
   depth: 2
 ---

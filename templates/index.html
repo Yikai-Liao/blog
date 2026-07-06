@@ -3,10 +3,9 @@
 
 {% block content %}
   {% set posts = get_section(path="posts/_index.md") %}
-  {% set hidden_categories = config.extra.hidden_categories | default(value=[]) %}
   <section class="post-list card-list">
     {% for post in posts.pages %}
-      {% if not post.draft and not post.extra.private_fallback and post.extra.category not in hidden_categories %}
+      {% if not post.draft %}
         {{ macros::post_card(page=post, index=loop.index0) }}
       {% endif %}
     {% endfor %}

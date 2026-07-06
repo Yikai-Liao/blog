@@ -3,9 +3,8 @@
 
 {% block content %}
   <section class="post-list card-list">
-    {% set hidden_categories = config.extra.hidden_categories | default(value=[]) %}
     {% for post in paginator.pages | default(value=section.pages) %}
-      {% if not post.draft and not post.extra.private_fallback and post.extra.category not in hidden_categories %}
+      {% if not post.draft %}
         {{ macros::post_card(page=post, index=loop.index0) }}
       {% endif %}
     {% endfor %}

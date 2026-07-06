@@ -3,7 +3,6 @@
 
 {% block content %}
   {% set posts = get_section(path="posts/_index.md") %}
-  {% set hidden_categories = config.extra.hidden_categories | default(value=[]) %}
   <section class="archive-page card-base">
     <h1>归档</h1>
     <div class="archive-toolbar">
@@ -15,16 +14,8 @@
           <h2>{{ year }}</h2>
           {% for post in pages %}
             {% if not post.draft %}
-              {% set is_hidden_category = post.extra.category in hidden_categories %}
               {% set row_tags = post.taxonomies.tags | default(value=[]) %}
-              {% if post.extra.private_fallback %}
-                {% set row_tags = post.extra.tags | default(value=[]) %}
-              {% endif %}
-              {% set row_href = post.permalink %}
-              {% if post.extra.private_fallback %}
-                {% set row_href = get_url(path=post.extra.canonical_path) %}
-              {% endif %}
-              <a class="archive-row no-styling{% if is_hidden_category %} archive-hidden-category{% endif %}" href="{{ row_href }}" data-title="{{ post.title | lower }}" data-tags="{{ row_tags | join(sep=" ") | lower }}" data-category="{{ post.extra.category | default(value="") }}" data-category-key="{{ post.extra.category | default(value="") | lower }}" data-private="{{ post.extra.private }}" data-hidden-category="{{ is_hidden_category }}" {% if is_hidden_category %}hidden{% endif %}>
+              <a class="archive-row no-styling" href="{{ post.permalink }}" data-title="{{ post.title | lower }}" data-tags="{{ row_tags | join(sep=" ") | lower }}" data-category="{{ post.extra.category | default(value="") }}" data-category-key="{{ post.extra.category | default(value="") | lower }}">
                 <time>{{ post.date | date(format="%m-%d") }}</time>
                 <span>{{ post.title }}</span>
                 <em>{% if row_tags %}{% for tag in row_tags %}#{{ tag }}{% if not loop.last %} {% endif %}{% endfor %}{% elif post.extra.category %}{{ post.extra.category }}{% endif %}</em>

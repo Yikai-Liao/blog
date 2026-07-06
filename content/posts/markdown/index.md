@@ -15,17 +15,12 @@ image = ""
 category = "Examples"
 tags = ["Markdown", "Blogging", "Demo"]
 draft = false
-private = false
-private_fallback = false
-canonical_path = "posts/markdown/"
 words = 536
 minutes = 3
 prev_slug = "video"
 prev_title = "Include Video in the Posts"
-prev_private = false
 next_slug = "guide"
 next_title = "Simple Guides for Fuwari"
-next_private = false
 +++
 
 # An h1 header

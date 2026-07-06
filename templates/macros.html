@@ -52,18 +52,11 @@
       <span class="post-meta-item"><span class="meta-icon">{{ self::icon(name="book") }}</span><span>{{ page.extra.category }}</span></span>
     {% endif %}
     {% set meta_tags = page.taxonomies.tags | default(value=[]) %}
-    {% if page.extra.private_fallback or page.extra.private %}
-      {% set meta_tags = page.extra.tags | default(value=[]) %}
-    {% endif %}
     {% if meta_tags %}
       <span class="post-meta-item post-meta-tags"><span class="meta-icon">{{ self::icon(name="tag") }}</span><span>{% for tag in meta_tags %}{% if not loop.first %}<em>/</em>{% endif %}<a href="{{ get_taxonomy_url(kind="tags", name=tag) }}">{{ tag }}</a>{% endfor %}</span></span>
     {% endif %}
   </div>
 {% endmacro post_meta %}
-
-{% macro post_path(slug, private=false) %}
-  {% if private %}posts/private/{{ slug }}/{% else %}posts/{{ slug }}/{% endif %}
-{% endmacro post_path %}
 
 {% macro post_card(page, index=0) %}
   <article class="post-card card-base onload-animation" style="animation-delay: calc(var(--content-delay) + {{ index * 50 }}ms);">

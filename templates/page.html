@@ -3,24 +3,7 @@
 
 {% block content %}
   {% set is_post = current_path is starting_with("/posts/") %}
-  {% if page.extra.private_fallback %}
-    <article id="post-container" class="post-container card-base private-fallback" data-private-target="{{ get_url(path=page.extra.canonical_path) }}" data-pagefind-ignore>
-      <header class="post-header">
-        <div class="post-stats">
-          <span><span class="meta-icon small">{{ macros::icon(name="notes") }}</span>{{ page.extra.words }} 字</span>
-          <span><span class="meta-icon small">{{ macros::icon(name="clock") }}</span>{{ page.extra.minutes }} 分钟</span>
-        </div>
-        <h1>{{ page.title }}</h1>
-        {{ macros::post_meta(page=page) }}
-        <div class="post-meta-divider"></div>
-      </header>
-      <div class="custom-md private-entry">
-        <p><span class="private-lock">{{ macros::icon(name="lock") }}</span>正在前往受保护的站内入口。</p>
-        <a class="btn-regular private-continue" href="{{ get_url(path=page.extra.canonical_path) }}">{{ macros::icon(name="chevron") }} 继续阅读</a>
-      </div>
-    </article>
-  {% else %}
-    <article id="post-container" class="post-container card-base"{% if page.extra.private %} data-pagefind-ignore{% endif %}>
+    <article id="post-container" class="post-container card-base">
       <header class="post-header">
         {% if is_post %}
           <div class="post-stats">
@@ -56,19 +39,11 @@
     {% if is_post %}
       <nav class="post-nav">
       {% if page.extra.prev_slug %}
-        {% if page.extra.prev_private %}
-          {% set prev_path = "posts/private/" ~ page.extra.prev_slug ~ "/" %}
-        {% else %}
-          {% set prev_path = "posts/" ~ page.extra.prev_slug ~ "/" %}
-        {% endif %}
+        {% set prev_path = "posts/" ~ page.extra.prev_slug ~ "/" %}
         <a class="post-nav-card" href="{{ get_url(path=prev_path) }}">{{ macros::icon(name="chevron") }}<span>{{ page.extra.prev_title }}</span></a>
       {% endif %}
       {% if page.extra.next_slug %}
-        {% if page.extra.next_private %}
-          {% set next_path = "posts/private/" ~ page.extra.next_slug ~ "/" %}
-        {% else %}
-          {% set next_path = "posts/" ~ page.extra.next_slug ~ "/" %}
-        {% endif %}
+        {% set next_path = "posts/" ~ page.extra.next_slug ~ "/" %}
         <a class="post-nav-card post-nav-next" href="{{ get_url(path=next_path) }}"><span>{{ page.extra.next_title }}</span>{{ macros::icon(name="chevron") }}</a>
       {% endif %}
       </nav>
@@ -76,5 +51,4 @@
         <div id="tcomment" class="twikoo-host" aria-live="polite"><p class="twikoo-lazy-placeholder">评论区将在滚动到这里时加载</p></div>
       </section>
     {% endif %}
-  {% endif %}
 {% endblock content %}

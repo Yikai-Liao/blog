@@ -32,7 +32,9 @@ function initPanels() {
 	document.addEventListener("click", (event) => {
 		for (const [, panelId] of panels) {
 			const panel = qs(`#${panelId}`);
-			if (panel && !panel.contains(event.target))
+			const related =
+				panelId === "search-panel" && event.target.closest?.("#search-bar");
+			if (panel && !panel.contains(event.target) && !related)
 				panel.classList.add("float-panel-closed");
 		}
 	});
@@ -69,9 +71,10 @@ function initThemeControls() {
 }
 
 async function initSearch() {
-	const input = qs("#search-input");
+	const inputs = qsa("[data-search-input]");
 	const results = qs("#search-results");
-	if (!input || !results) return;
+	const panel = qs("#search-panel");
+	if (!inputs.length || !results || !panel) return;
 	let pagefind;
 	try {
 		const configuredBase = new URL(config.baseUrl || "/", location.href);
@@ -84,10 +87,17 @@ async function initSearch() {
 	} catch {
 		pagefind = null;
 	}
-	input.addEventListener("input", async () => {
-		const keyword = input.value.trim();
+	const runSearch = async (source) => {
+		const keyword = source.value.trim();
+		for (const input of inputs) {
+			if (input !== source) input.value = source.value;
+		}
 		results.innerHTML = "";
-		if (!keyword) return;
+		if (!keyword) {
+			panel.classList.add("float-panel-closed");
+			return;
+		}
+		panel.classList.remove("float-panel-closed");
 		if (!pagefind) {
 			results.innerHTML = `<p class="search-empty">搜索索引仅在生产构建后可用。</p>`;
 			return;
@@ -104,7 +114,13 @@ async function initSearch() {
 					)
 					.join("")
 			: `<p class="search-empty">No results</p>`;
-	});
+	};
+	for (const input of inputs) {
+		input.addEventListener("input", () => runSearch(input));
+		input.addEventListener("focus", () => {
+			if (input.value.trim()) runSearch(input);
+		});
+	}
 }
 
 function initArchiveFilter() {
@@ -113,10 +129,6 @@ function initArchiveFilter() {
 	const params = new URLSearchParams(location.search);
 	const selectedCategories = params.getAll("category");
 	const selectedTags = params.getAll("tag");
-	const hiddenCategories = new Set(config.hiddenCategories || []);
-	const selectedHiddenCategories = new Set(
-		selectedCategories.filter((category) => hiddenCategories.has(category)),
-	);
 
 	qsa("[data-archive-filter][data-archive-value]").forEach((link) => {
 		const filter = link.dataset.archiveFilter;
@@ -147,9 +159,6 @@ function initArchiveFilter() {
 		qsa(".archive-row").forEach((row) => {
 			const rowCategory = row.dataset.category || "";
 			const rowTags = (row.dataset.tags || "").split(/\s+/).filter(Boolean);
-			const hiddenByCategory =
-				row.dataset.hiddenCategory === "true" &&
-				!selectedHiddenCategories.has(rowCategory);
 			const hiddenBySelectedCategory =
 				selectedCategories.length > 0 &&
 				!selectedCategories.includes(rowCategory);
@@ -159,10 +168,7 @@ function initArchiveFilter() {
 			const haystack = `${row.dataset.title || ""} ${row.dataset.tags || ""} ${row.dataset.categoryKey || ""}`;
 			const hiddenByText = textValue && !haystack.includes(textValue);
 			row.hidden = Boolean(
-				hiddenByCategory ||
-					hiddenBySelectedCategory ||
-					hiddenBySelectedTag ||
-					hiddenByText,
+				hiddenBySelectedCategory || hiddenBySelectedTag || hiddenByText,
 			);
 		});
 	};
@@ -400,7 +406,6 @@ function initPage() {
 	initTwikoo();
 	initGithubCards();
 	initVideoEmbeds();
-	initPrivateFallback();
 }
 
 initPanels();
@@ -478,19 +483,3 @@ document.addEventListener("click", (event) => {
 });
 
 addEventListener("popstate", initArchiveFilter);
-
-function initPrivateFallback() {
-	const fallback = qs(".private-fallback[data-private-target]");
-	if (!fallback) return;
-	const target = fallback.dataset.privateTarget;
-	setTimeout(() => {
-		if (!target) return;
-		if (window.swup && typeof window.swup.navigate === "function") {
-			try {
-				window.swup.navigate(target, { history: "replace", animate: true });
-				return;
-			} catch {}
-		}
-		location.replace(target);
-	}, 180);
-}

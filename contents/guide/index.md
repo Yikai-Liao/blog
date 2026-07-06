@@ -25,7 +25,6 @@ image: ./cover.jpg
 tags: [Foo, Bar]
 category: Front-end
 draft: false
-private: true
 ---
 ```
 
@@ -39,7 +38,6 @@ private: true
 | `category`    | The category of the post.                                                                                                                                                                                   |
 | `draft`        | If this post is still a draft, which won't be displayed.                                                                                                                                                    |
 | `slug`         | Required. Defines the post URL independently from the file path.                                                                                                      |
-| `private`      | If true, the canonical URL is `/posts/private/my-post/`. The original `/posts/my-post/` redirects to the canonical URL.                                             |
 
 ## Where to Place the Post Files
 

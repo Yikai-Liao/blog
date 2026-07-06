@@ -15,17 +15,12 @@ image = ""
 category = "Examples"
 tags = ["Example", "Video"]
 draft = false
-private = false
-private_fallback = false
-canonical_path = "posts/video/"
 words = 70
 minutes = 1
 prev_slug = ""
 prev_title = ""
-prev_private = false
 next_slug = "markdown"
 next_title = "Markdown Example"
-next_private = false
 +++
 
 Just copy the embed code from YouTube or other platforms, and paste it in the markdown file.

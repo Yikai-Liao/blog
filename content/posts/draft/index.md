@@ -15,17 +15,12 @@ image = ""
 category = "Examples"
 tags = ["Markdown", "Blogging", "Demo"]
 draft = true
-private = false
-private_fallback = false
-canonical_path = "posts/draft/"
 words = 77
 minutes = 1
 prev_slug = ""
 prev_title = ""
-prev_private = false
 next_slug = ""
 next_title = ""
-next_private = false
 +++
 
 # This Article is a Draft

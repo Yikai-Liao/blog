@@ -15,17 +15,12 @@ image = ""
 category = "Examples"
 tags = ["Demo", "Example", "Markdown", "Fuwari"]
 draft = false
-private = false
-private_fallback = false
-canonical_path = "posts/markdown-extended/"
 words = 230
 minutes = 1
 prev_slug = "expressive-code"
 prev_title = "Expressive Code Example"
-prev_private = false
 next_slug = "tidb-vs-tikv"
 next_title = "TiDB vs TiKV 区别"
-next_private = true
 +++
 
 ## GitHub Repository Cards

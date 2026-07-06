@@ -15,17 +15,12 @@ image = ""
 category = "Examples"
 tags = ["Markdown", "Blogging", "Demo"]
 draft = false
-private = false
-private_fallback = false
-canonical_path = "posts/expressive-code/"
 words = 945
 minutes = 5
 prev_slug = "guide"
 prev_title = "Simple Guides for Fuwari"
-prev_private = false
 next_slug = "markdown-extended"
 next_title = "Markdown Extended Features"
-next_private = false
 +++
 
 Here, we'll explore how code blocks look using [Expressive Code](https://expressive-code.com/). The provided examples are based on the official documentation, which you can refer to for further details.
