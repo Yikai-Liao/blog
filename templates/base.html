@@ -21,7 +21,8 @@
       baseUrl: "{{ get_url(path="/") }}",
       twikooEnvId: "{{ config.extra.twikoo_env_id }}",
       lang: "{{ config.default_language | replace(from="_", to="-") }}",
-      hue: "{{ config.extra.theme_hue }}"
+      hue: "{{ config.extra.theme_hue }}",
+      hiddenCategories: [{% for category in config.extra.hidden_categories | default(value=[]) %}"{{ category }}"{% if not loop.last %}, {% endif %}{% endfor %}]
     };
   </script>
   <script>
@@ -55,8 +56,16 @@
             <div id="search-results"></div>
           </div>
           <div id="display-setting" class="float-panel float-panel-closed display-panel">
-            <div class="panel-label">主题色</div>
-            <input id="hue-slider" type="range" min="0" max="360" value="{{ config.extra.theme_hue }}">
+            <div class="display-header">
+              <div class="panel-label">
+                主题色
+                <button id="hue-reset" aria-label="Reset to Default" class="btn-regular hue-reset" type="button">{{ macros::icon(name="reset") }}</button>
+              </div>
+              <div id="hue-value" class="hue-value">{{ config.extra.theme_hue }}</div>
+            </div>
+            <div class="hue-slider-wrap">
+              <input id="colorSlider" type="range" min="0" max="360" step="5" value="{{ config.extra.theme_hue }}" aria-label="主题色">
+            </div>
           </div>
           <div id="nav-menu-panel" class="float-panel float-panel-closed mobile-menu">
             <a href="{{ get_url(path="/") }}">主页</a>
@@ -95,11 +104,18 @@
             {% if page and page.toc %}
               <section id="sidebar-toc" class="widget card-base onload-animation">
                 <h2>目录</h2>
-                <div class="toc-scroll">
-                  <ul class="toc-list">
+                <div class="toc-scroll" data-toc-scroll>
+                  <ul class="toc-list" is="table-of-contents">
+                    {% set_global toc_index = 0 %}
                     {% for h1 in page.toc %}
-                      <li><a href="{{ h1.permalink | safe }}">{{ h1.title }}</a></li>
-                      {% for h2 in h1.children %}<li class="toc-level-2"><a href="{{ h2.permalink | safe }}">{{ h2.title }}</a></li>{% endfor %}
+                      {% set_global toc_index = toc_index + 1 %}
+                      <li><a class="toc-entry toc-depth-1" href="{{ h1.permalink | safe }}"><span class="toc-badge">{{ toc_index }}</span><span class="toc-text">{{ h1.title }}</span></a></li>
+                      {% for h2 in h1.children %}
+                        <li><a class="toc-entry toc-depth-2" href="{{ h2.permalink | safe }}"><span class="toc-badge toc-dot"></span><span class="toc-text">{{ h2.title }}</span></a></li>
+                        {% for h3 in h2.children %}
+                          <li><a class="toc-entry toc-depth-3" href="{{ h3.permalink | safe }}"><span class="toc-badge toc-dot-small"></span><span class="toc-text">{{ h3.title }}</span></a></li>
+                        {% endfor %}
+                      {% endfor %}
                     {% endfor %}
                   </ul>
                 </div>
@@ -109,14 +125,16 @@
                 <h2>分类</h2>
                 <div class="tag-list">
                   {% set categories = get_taxonomy(kind="categories") %}
-                  {% for term in categories.items %}<a class="btn-regular" href="{{ term.permalink }}">{{ term.name }}</a>{% endfor %}
+                  {% for term in categories.items %}
+                    <a class="btn-regular archive-filter-link" data-archive-filter="category" data-archive-value="{{ term.name }}" data-no-swup="true" href="{{ get_url(path="archive/") }}?category={{ term.name | urlencode }}">{{ term.name }} <span>{{ term.pages | length }}</span></a>
+                  {% endfor %}
                 </div>
               </section>
               <section class="widget card-base onload-animation">
                 <h2>标签</h2>
                 <div class="tag-list">
                   {% set tags = get_taxonomy(kind="tags") %}
-                  {% for term in tags.items %}<a class="btn-regular" href="{{ term.permalink }}">#{{ term.name }}</a>{% endfor %}
+                  {% for term in tags.items %}<a class="btn-regular archive-filter-link" data-archive-filter="tag" data-archive-value="{{ term.name }}" data-no-swup="true" href="{{ get_url(path="archive/") }}?tag={{ term.name | urlencode }}">{{ term.name }}</a>{% endfor %}
                 </div>
               </section>
             {% endif %}

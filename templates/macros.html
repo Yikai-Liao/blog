@@ -17,6 +17,22 @@
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6-1.4 1.4 4.6 4.6-4.6 4.6L9 18Z"/></svg>
   {% elif name == "top" %}
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5 5 12l1.4 1.4L11 8.8V20h2V8.8l4.6 4.6L19 12l-7-7Z"/></svg>
+  {% elif name == "reset" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5a7 7 0 1 1-6.3 4H3.5A9 9 0 1 0 12 3v2ZM4 4v5h5V7H7.4A6.98 6.98 0 0 1 12 5V3A8.96 8.96 0 0 0 5.6 5.6L4 4Z"/></svg>
+  {% elif name == "lock" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 9h-1V7a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2Zm-7-2a2 2 0 0 1 4 0v2h-4V7Zm7 12H7v-8h10v8Z"/></svg>
+  {% elif name == "notes" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v2H5V4Zm0 5h14v2H5V9Zm0 5h9v2H5v-2Z"/></svg>
+  {% elif name == "clock" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 .1 0H12Zm1 11.6 4 2.4-1 1.7-5-3V6h2v7.6Z"/></svg>
+  {% elif name == "calendar" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h2v2h6V2h2v2h3v18H4V4h3V2Zm13 8H6v10h14V10ZM6 8h14V6H6v2Z"/></svg>
+  {% elif name == "book" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11a3 3 0 0 1 3 3v15H7a3 3 0 0 1-3-3V4a1 1 0 0 1 1-1Zm2 14h10V6a1 1 0 0 0-1-1H6v13a1 1 0 0 0 1 1Zm1-9h7v2H8V8Z"/></svg>
+  {% elif name == "tag" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20 13-7 7L4 11V4h7l9 9Zm-12.5-5A1.5 1.5 0 1 0 8 5a1.5 1.5 0 0 0-.5 3Z"/></svg>
+  {% elif name == "cc" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 .1 0H12Zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16Zm-2 5.5c-1.5 0-2.5 1.1-2.5 2.5s1 2.5 2.5 2.5c.8 0 1.4-.3 1.9-.8l-1-1.2c-.3.3-.6.4-.9.4-.5 0-.9-.4-.9-.9s.4-.9.9-.9c.3 0 .6.1.9.4l1-1.2c-.5-.5-1.1-.8-1.9-.8Zm5 0c-1.5 0-2.5 1.1-2.5 2.5s1 2.5 2.5 2.5c.8 0 1.4-.3 1.9-.8l-1-1.2c-.3.3-.6.4-.9.4-.5 0-.9-.4-.9-.9s.4-.9.9-.9c.3 0 .6.1.9.4l1-1.2c-.5-.5-1.1-.8-1.9-.8Z"/></svg>
   {% endif %}
 {% endmacro icon %}
 
@@ -26,18 +42,26 @@
 
 {% macro post_meta(page) %}
   <div class="post-meta">
-    <span>{{ page.date | date(format="%Y-%m-%d") }}</span>
+    <span class="post-meta-item"><span class="meta-icon">{{ self::icon(name="calendar") }}</span><span>{{ page.date | date(format="%Y-%m-%d") }}</span></span>
     {% if page.extra.updated %}<span>{{ page.extra.updated }}</span>{% endif %}
     {% if page.taxonomies.categories %}
-      {% for category in page.taxonomies.categories %}<a href="{{ get_taxonomy_url(kind="categories", name=category) }}">{{ category }}</a>{% endfor %}
+      {% for category in page.taxonomies.categories %}<a class="post-meta-item" href="{{ get_taxonomy_url(kind="categories", name=category) }}"><span class="meta-icon">{{ self::icon(name="book") }}</span><span>{{ category }}</span></a>{% endfor %}
     {% elif page.extra.category %}
-      <span>{{ page.extra.category }}</span>
+      <span class="post-meta-item"><span class="meta-icon">{{ self::icon(name="book") }}</span><span>{{ page.extra.category }}</span></span>
     {% endif %}
-    {% if page.taxonomies.tags %}
-      {% for tag in page.taxonomies.tags %}<a href="{{ get_taxonomy_url(kind="tags", name=tag) }}">#{{ tag }}</a>{% endfor %}
+    {% set meta_tags = page.taxonomies.tags | default(value=[]) %}
+    {% if page.extra.private_fallback or page.extra.private %}
+      {% set meta_tags = page.extra.tags | default(value=[]) %}
+    {% endif %}
+    {% if meta_tags %}
+      <span class="post-meta-item post-meta-tags"><span class="meta-icon">{{ self::icon(name="tag") }}</span><span>{% for tag in meta_tags %}{% if not loop.first %}<em>/</em>{% endif %}<a href="{{ get_taxonomy_url(kind="tags", name=tag) }}">{{ tag }}</a>{% endfor %}</span></span>
     {% endif %}
   </div>
 {% endmacro post_meta %}
+
+{% macro post_path(slug, private=false) %}
+  {% if private %}posts/private/{{ slug }}/{% else %}posts/{{ slug }}/{% endif %}
+{% endmacro post_path %}
 
 {% macro post_card(page, index=0) %}
   <article class="post-card card-base onload-animation" style="animation-delay: calc(var(--content-delay) + {{ index * 50 }}ms);">
@@ -55,9 +79,9 @@
       {{ self::post_meta(page=page) }}
       <p class="post-card-desc">{{ page.description | default(value=page.summary | striptags | truncate(length=160)) }}</p>
       <div class="post-card-stats">
-        <span>{{ page.word_count }} words</span>
+        <span>{{ page.extra.words | default(value=page.word_count) }} 字</span>
         <span>|</span>
-        <span>{{ page.reading_time }} min</span>
+        <span>{{ page.extra.minutes | default(value=page.reading_time) }} 分钟</span>
       </div>
     </div>
     {% if not page.extra.image %}

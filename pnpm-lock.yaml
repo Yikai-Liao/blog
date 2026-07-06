@@ -29,8 +29,17 @@ importers:
       '@expressive-code/plugin-collapsible-sections':
         specifier: ^0.44.0
         version: 0.44.0
+      '@expressive-code/plugin-frames':
+        specifier: 0.44.0
+        version: 0.44.0
       '@expressive-code/plugin-line-numbers':
         specifier: ^0.44.0
+        version: 0.44.0
+      '@expressive-code/plugin-shiki':
+        specifier: 0.44.0
+        version: 0.44.0
+      '@expressive-code/plugin-text-markers':
+        specifier: 0.44.0
         version: 0.44.0
       '@fontsource-variable/jetbrains-mono':
         specifier: ^5.2.8
@@ -8589,7 +8598,7 @@ snapshots:
       detect-libc: 2.1.2
       is-glob: 4.0.3
       node-addon-api: 7.1.1
-      picomatch: 4.0.3
+      picomatch: 4.0.5
     optionalDependencies:
       '@parcel/watcher-android-arm64': 2.5.6
       '@parcel/watcher-darwin-arm64': 2.5.6

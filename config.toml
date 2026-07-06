@@ -43,4 +43,5 @@ github_url = "https://github.com/Yikai-Liao/"
 apt_url = "https://deb.lyk-ai.com/"
 license_name = "CC BY-NC-SA 4.0"
 license_url = "https://creativecommons.org/licenses/by-nc-sa/4.0/"
-twikoo_env_id = ""
+twikoo_env_id = "https://blog-comment.lyk-ai.com"
+hidden_categories = ["Chats"]

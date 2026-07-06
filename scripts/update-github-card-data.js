@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 
 const contentDir = "src/content";
 const outputFile = ".cache/github-card-data.json";
@@ -91,7 +91,9 @@ for (const repo of findRepos()) {
 	} catch (error) {
 		if (previousData[repo]) {
 			nextData[repo] = previousData[repo];
-			console.warn(`Using cached GitHub card data for ${repo}: ${error.message}`);
+			console.warn(
+				`Using cached GitHub card data for ${repo}: ${error.message}`,
+			);
 		} else {
 			missingRepos.push(repo);
 			console.warn(`Skipping GitHub card data for ${repo}: ${error.message}`);

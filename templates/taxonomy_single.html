@@ -2,12 +2,15 @@
 {% import "macros.html" as macros %}
 
 {% block content %}
+  {% set hidden_categories = config.extra.hidden_categories | default(value=[]) %}
   <section class="archive-page card-base taxonomy-heading">
     <h1>{{ term.name }}</h1>
   </section>
   <section class="post-list card-list">
     {% for post in term.pages %}
-      {{ macros::post_card(page=post, index=loop.index0) }}
+      {% if not post.extra.private and not post.extra.private_fallback and post.extra.category not in hidden_categories %}
+        {{ macros::post_card(page=post, index=loop.index0) }}
+      {% endif %}
     {% endfor %}
   </section>
 {% endblock content %}

@@ -2,26 +2,79 @@
 {% import "macros.html" as macros %}
 
 {% block content %}
-  <article id="post-container" class="post-container card-base">
-    <header class="post-header">
-      <h1>{{ page.title }}</h1>
-      {{ macros::post_meta(page=page) }}
-      {% if page.description %}<p class="post-description">{{ page.description }}</p>{% endif %}
-    </header>
-    {% if page.extra.image %}
-      <figure id="post-cover"><img src="{{ page.extra.image }}" alt="Cover image of {{ page.title }}"></figure>
+  {% set is_post = current_path is starting_with("/posts/") %}
+  {% if page.extra.private_fallback %}
+    <article id="post-container" class="post-container card-base private-fallback" data-private-target="{{ get_url(path=page.extra.canonical_path) }}" data-pagefind-ignore>
+      <header class="post-header">
+        <div class="post-stats">
+          <span><span class="meta-icon small">{{ macros::icon(name="notes") }}</span>{{ page.extra.words }} 字</span>
+          <span><span class="meta-icon small">{{ macros::icon(name="clock") }}</span>{{ page.extra.minutes }} 分钟</span>
+        </div>
+        <h1>{{ page.title }}</h1>
+        {{ macros::post_meta(page=page) }}
+        <div class="post-meta-divider"></div>
+      </header>
+      <div class="custom-md private-entry">
+        <p><span class="private-lock">{{ macros::icon(name="lock") }}</span>正在前往受保护的站内入口。</p>
+        <a class="btn-regular private-continue" href="{{ get_url(path=page.extra.canonical_path) }}">{{ macros::icon(name="chevron") }} 继续阅读</a>
+      </div>
+    </article>
+  {% else %}
+    <article id="post-container" class="post-container card-base"{% if page.extra.private %} data-pagefind-ignore{% endif %}>
+      <header class="post-header">
+        {% if is_post %}
+          <div class="post-stats">
+            <span><span class="meta-icon small">{{ macros::icon(name="notes") }}</span>{{ page.extra.words | default(value=page.word_count) }} 字</span>
+            <span><span class="meta-icon small">{{ macros::icon(name="clock") }}</span>{{ page.extra.minutes | default(value=page.reading_time) }} 分钟</span>
+          </div>
+        {% endif %}
+        <h1>{{ page.title }}</h1>
+        {% if is_post %}
+          {{ macros::post_meta(page=page) }}
+          {% if not page.extra.image %}<div class="post-meta-divider"></div>{% endif %}
+        {% endif %}
+      </header>
+      {% if page.extra.image %}
+        <figure id="post-cover"><img src="{{ page.extra.image }}" alt="Cover image of {{ page.title }}"></figure>
+      {% endif %}
+      <div class="custom-md">
+        {{ page.content | safe }}
+      </div>
+      {% if is_post %}
+        <section class="license-block">
+          <strong>{{ page.title }}</strong>
+          <a href="{{ page.permalink }}" class="license-url">{{ page.permalink }}</a>
+          <div class="license-grid">
+            <span><small>作者</small>{{ config.extra.author }}</span>
+            <span><small>发布于</small>{{ page.date | date(format="%Y-%m-%d") }}</span>
+            <span><small>许可协议</small><a href="{{ config.extra.license_url }}" target="_blank" rel="noopener">{{ config.extra.license_name }}</a></span>
+          </div>
+          <span class="license-watermark">{{ macros::icon(name="cc") }}</span>
+        </section>
+      {% endif %}
+    </article>
+    {% if is_post %}
+      <nav class="post-nav">
+      {% if page.extra.prev_slug %}
+        {% if page.extra.prev_private %}
+          {% set prev_path = "posts/private/" ~ page.extra.prev_slug ~ "/" %}
+        {% else %}
+          {% set prev_path = "posts/" ~ page.extra.prev_slug ~ "/" %}
+        {% endif %}
+        <a class="post-nav-card" href="{{ get_url(path=prev_path) }}">{{ macros::icon(name="chevron") }}<span>{{ page.extra.prev_title }}</span></a>
+      {% endif %}
+      {% if page.extra.next_slug %}
+        {% if page.extra.next_private %}
+          {% set next_path = "posts/private/" ~ page.extra.next_slug ~ "/" %}
+        {% else %}
+          {% set next_path = "posts/" ~ page.extra.next_slug ~ "/" %}
+        {% endif %}
+        <a class="post-nav-card post-nav-next" href="{{ get_url(path=next_path) }}"><span>{{ page.extra.next_title }}</span>{{ macros::icon(name="chevron") }}</a>
+      {% endif %}
+      </nav>
+      <section class="twikoo-card card-base" aria-label="Comments" data-twikoo-root data-env-id="{{ config.extra.twikoo_env_id }}" data-path="{{ page.path }}" data-title="{{ page.title }}" data-lang="{{ config.default_language | replace(from="_", to="-") }}">
+        <div id="tcomment" class="twikoo-host" aria-live="polite"><p class="twikoo-lazy-placeholder">评论区将在滚动到这里时加载</p></div>
+      </section>
     {% endif %}
-    <div class="custom-md">
-      {{ page.content | safe }}
-    </div>
-  </article>
-  {% if page.path is starting_with("posts/") and not page.extra.private %}
-    <section class="license-block card-base">
-      <strong>{{ config.extra.license_name }}</strong>
-      <span>This post is licensed under <a href="{{ config.extra.license_url }}" target="_blank" rel="noopener">{{ config.extra.license_name }}</a>.</span>
-    </section>
-    <section class="twikoo-card card-base" data-twikoo-root data-path="{{ page.path }}" data-title="{{ page.title }}">
-      <div id="tcomment"><p class="twikoo-lazy-placeholder">评论区将在滚动到这里时加载</p></div>
-    </section>
   {% endif %}
 {% endblock content %}
