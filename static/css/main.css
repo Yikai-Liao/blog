@@ -577,7 +577,9 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
   width: 28%;
   overflow: hidden;
   border-radius: .75rem;
+  transition: transform .2s ease;
 }
+.post-card-cover:active { transform: scale(.95); }
 .post-card-cover img { width: 100%; height: 100%; object-fit: cover; }
 .cover-overlay {
   position: absolute;
@@ -588,10 +590,18 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
   justify-content: center;
   color: white;
   font-size: 3rem;
-  opacity: 0;
+  opacity: 1;
   background: rgb(0 0 0 / 0%);
+  transition: background .2s ease;
 }
-.post-card-cover:hover .cover-overlay { opacity: 1; background: rgb(0 0 0 / 30%); }
+.cover-overlay svg {
+  opacity: 0;
+  transform: scale(.5);
+  transition: opacity .2s ease, transform .2s ease;
+}
+.post-card-cover:hover .cover-overlay { background: rgb(0 0 0 / 30%); }
+.post-card-cover:active .cover-overlay { background: rgb(0 0 0 / 50%); }
+.post-card-cover:hover .cover-overlay svg { opacity: 1; transform: scale(1); }
 .post-card-enter {
   position: absolute;
   top: .75rem;
