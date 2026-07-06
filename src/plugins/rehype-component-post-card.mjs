@@ -194,10 +194,11 @@ export function PostCardComponent(properties, children, context) {
 			h("div", { class: "pc-meta" }, [
 				post.published || "",
 				post.category ? ` · ${post.category}` : "",
+				post.private !== "false" ? " · " : "",
+				post.private !== "false"
+					? h("span", { class: "pc-private" }, "private")
+					: undefined,
 			]),
-			post.private !== "false"
-				? h("div", { class: "pc-private" }, "private")
-				: undefined,
 		].filter(Boolean),
 	);
 }
