@@ -2,8 +2,10 @@ import SwupPreloadPlugin from "https://unpkg.com/@swup/preload-plugin@3?module";
 import Swup from "https://unpkg.com/swup@4?module";
 
 const config = window.__BLOG_CONFIG__ || {};
-const qs = (selector, root = document) => root.querySelector(selector);
-const qsa = (selector, root = document) => [...root.querySelectorAll(selector)];
+const qs = (selector, root = document) => root?.querySelector(selector) ?? null;
+const qsa = (selector, root = document) => [
+	...(root?.querySelectorAll(selector) ?? []),
+];
 
 function setTheme(theme) {
 	localStorage.setItem("theme", theme);
@@ -199,8 +201,9 @@ function initBackToTop() {
 
 function syncFootnotesHeadingAndToc() {
 	const markdown = qs(".custom-md");
+	if (!markdown) return;
 	const firstFootnote = qs(".footnote-definition", markdown);
-	if (!markdown || !firstFootnote) return;
+	if (!firstFootnote) return;
 
 	let heading = qs("#footnotes", markdown);
 	if (!heading) {
