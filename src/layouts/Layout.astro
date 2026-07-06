@@ -18,6 +18,13 @@ import { defaultFavicons } from "../constants/icon";
 import type { Favicon } from "../types/config";
 import { pathsEqual, url } from "../utils/url-utils";
 import "katex/dist/katex.css";
+import "../styles/variables.styl";
+import "../styles/main.css";
+import "../styles/transition.css";
+import "../styles/markdown.css";
+import "../styles/markdown-extend.styl";
+import "../styles/expressive-code.css";
+import "../styles/photoswipe.css";
 import "../styles/scrollbar.css";
 
 interface Props {
@@ -162,8 +169,9 @@ const bannerOffset =
 	'banner-crop-height': `${BANNER_HEIGHT + BANNER_HEIGHT_EXTEND}vh`,
 	'banner-height': `${BANNER_HEIGHT}vh`,
 }}>
-@tailwind components;
-@layer components {
+@reference "../styles/main.css";
+
+@layer utilities {
 	.enable-banner #banner-wrapper {
 		@apply h-[var(--banner-crop-height)]
 	}
