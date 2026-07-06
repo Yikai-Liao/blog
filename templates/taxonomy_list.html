@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="archive-page card-base">
+    <h1>{{ taxonomy.name | title }}</h1>
+    <div class="tag-list large">
+      {% for term in terms %}
+        <a class="btn-regular" href="{{ term.permalink }}">{{ term.name }} <span>{{ term.page_count }}</span></a>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock content %}

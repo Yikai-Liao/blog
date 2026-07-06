@@ -1,19 +1,19 @@
 {
-  "name": "fuwari",
+  "name": "zola-fuwari",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "check": "astro check",
+    "dev": "node scripts/dev-zola.mjs",
+    "start": "node scripts/dev-zola.mjs",
+    "check": "zola check --skip-external-links",
     "github-cards": "node scripts/update-github-card-data.js",
-    "build": "pnpm github-cards && astro build && pagefind --site dist",
-    "preview": "astro preview",
+    "build": "node scripts/build-zola.mjs",
+    "preview": "zola serve --interface 127.0.0.1 --port 1112 --output-dir dist",
     "astro": "astro",
     "type-check": "tsc --noEmit --isolatedDeclarations",
     "new-post": "node scripts/new-post.js",
-    "format": "biome format --write ./src",
-    "lint": "biome check --write ./src",
+    "format": "biome format --write ./scripts ./static/js",
+    "lint": "biome check --write ./scripts ./static/js",
     "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block content %}
+  {% set posts = get_section(path="posts/_index.md") %}
+  <section class="archive-page card-base">
+    <h1>Archive</h1>
+    <div class="archive-toolbar">
+      <input id="archive-filter-input" type="search" placeholder="Filter posts">
+    </div>
+    <div class="archive-list">
+      {% for year, pages in posts.pages | group_by(attribute="year") %}
+        <section class="archive-year">
+          <h2>{{ year }}</h2>
+          {% for post in pages %}
+            {% if not post.draft %}
+              <a class="archive-row no-styling" href="{{ post.permalink }}" data-title="{{ post.title | lower }}" data-tags="{{ post.taxonomies.tags | join(sep=" ") | lower }}" data-category="{{ post.extra.category | default(value="") | lower }}">
+                <time>{{ post.date | date(format="%m-%d") }}</time>
+                <span>{{ post.title }}</span>
+                {% if post.extra.category %}<em>{{ post.extra.category }}</em>{% endif %}
+              </a>
+            {% endif %}
+          {% endfor %}
+        </section>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock content %}

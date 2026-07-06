@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block content %}
+  <section class="post-list card-list">
+    {% for post in paginator.pages | default(value=section.pages) %}
+      {% if not post.draft %}
+        {{ macros::post_card(page=post, index=loop.index0) }}
+      {% endif %}
+    {% endfor %}
+  </section>
+{% endblock content %}

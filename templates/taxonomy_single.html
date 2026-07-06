@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block content %}
+  <section class="archive-page card-base taxonomy-heading">
+    <h1>{{ term.name }}</h1>
+  </section>
+  <section class="post-list card-list">
+    {% for post in term.pages %}
+      {{ macros::post_card(page=post, index=loop.index0) }}
+    {% endfor %}
+  </section>
+{% endblock content %}

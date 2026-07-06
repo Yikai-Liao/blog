@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block content %}
+  <article id="post-container" class="post-container card-base">
+    <header class="post-header">
+      <h1>{{ page.title }}</h1>
+      {{ macros::post_meta(page=page) }}
+      {% if page.description %}<p class="post-description">{{ page.description }}</p>{% endif %}
+    </header>
+    {% if page.extra.image %}
+      <figure id="post-cover"><img src="{{ page.extra.image }}" alt="Cover image of {{ page.title }}"></figure>
+    {% endif %}
+    <div class="custom-md">
+      {{ page.content | safe }}
+    </div>
+  </article>
+  {% if page.path is starting_with("posts/") and not page.extra.private %}
+    <section class="license-block card-base">
+      <strong>{{ config.extra.license_name }}</strong>
+      <span>This post is licensed under <a href="{{ config.extra.license_url }}" target="_blank" rel="noopener">{{ config.extra.license_name }}</a>.</span>
+    </section>
+    <section class="twikoo-card card-base" data-twikoo-root data-path="{{ page.path }}" data-title="{{ page.title }}">
+      <div id="tcomment"><p class="twikoo-lazy-placeholder">评论区将在滚动到这里时加载</p></div>
+    </section>
+  {% endif %}
+{% endblock content %}

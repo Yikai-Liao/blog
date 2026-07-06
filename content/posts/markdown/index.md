@@ -1,12 +1,21 @@
----
-title: Markdown Example
-slug: markdown
-published: 2023-10-01
-description: A simple example of a Markdown blog post.
-tags: [Markdown, Blogging, Demo]
-category: Examples
-draft: false
----
++++
+title = "Markdown Example"
+description = "A simple example of a Markdown blog post."
+date = 2023-10-01
+draft = false
+slug = "markdown"
+path = "posts/markdown"
+[taxonomies]
+tags = ["Markdown", "Blogging", "Demo"]
+categories = ["Examples"]
+[extra]
+published = "2023-10-01"
+updated = ""
+image = ""
+category = "Examples"
+draft = false
+private = false
++++
 
 # An h1 header
 
@@ -51,23 +60,12 @@ from the left side). Here's a code sample:
 As you probably guessed, indented 4 spaces. By the way, instead of
 indenting the block, you can use delimited blocks, if you like:
 
-```
-define foobar() {
-    print "Welcome to flavor country!";
-}
-```
+<div class="expressive-code"><pre data-language="text" class="wrap" style="--ecMaxLine:39ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code">define foobar() {</div></div><div class="ec-line" style="--ecIndent:4ch"><div class="gutter"><div class="ln" aria-hidden="true">2</div></div><div class="code"><span class="indent">    </span>print &quot;Welcome to flavor country!&quot;;</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">3</div></div><div class="code">}</div></div></code></pre></div>
 
 (which makes copying & pasting easier). You can optionally mark the
 delimited block for Pandoc to syntax highlight it:
 
-```python
-import time
-# Quick, count to ten!
-for i in range(10):
-    # (but not *too* quick)
-    time.sleep(0.5)
-    print i
-```
+<div class="expressive-code"><pre data-language="python" class="wrap" style="--ecMaxLine:27ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code">import time</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">2</div></div><div class="code"># Quick, count to ten!</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">3</div></div><div class="code">for i in range(10):</div></div><div class="ec-line" style="--ecIndent:4ch"><div class="gutter"><div class="ln" aria-hidden="true">4</div></div><div class="code"><span class="indent">    </span># (but not *too* quick)</div></div><div class="ec-line" style="--ecIndent:4ch"><div class="gutter"><div class="ln" aria-hidden="true">5</div></div><div class="code"><span class="indent">    </span>time.sleep(0.5)</div></div><div class="ec-line" style="--ecIndent:4ch"><div class="gutter"><div class="ln" aria-hidden="true">6</div></div><div class="code"><span class="indent">    </span>print i</div></div></code></pre></div>
 
 ### An h3 header
 

@@ -1,0 +1,141 @@
+{% import "macros.html" as macros %}
+<!doctype html>
+<html lang="{{ lang | default(value=config.default_language) | replace(from="_", to="-") }}" class="bg-page">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <meta name="description" content="{% if page and page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}">
+  <meta name="author" content="{{ config.extra.author }}">
+  <title>{% if page and page.title %}{{ page.title }} - {{ config.title }}{% elif section and section.title and section.title != "Home" %}{{ section.title }} - {{ config.title }}{% else %}{{ config.title }} - {{ config.extra.site_subtitle }}{% endif %}</title>
+  <meta property="og:site_name" content="{{ config.title }}">
+  <meta property="og:title" content="{% if page and page.title %}{{ page.title }} - {{ config.title }}{% else %}{{ config.title }} - {{ config.extra.site_subtitle }}{% endif %}">
+  <meta property="og:description" content="{% if page and page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}">
+  <meta property="og:type" content="{% if page and page.path is starting_with("posts/") %}article{% else %}website{% endif %}">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="alternate" type="application/rss+xml" title="{{ config.extra.author }}" href="{{ get_url(path="rss.xml") }}">
+  <link rel="icon" href="{{ get_url(path="favicon/favicon-light-32.png") }}" sizes="32x32" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="{{ get_url(path="favicon/favicon-dark-32.png") }}" sizes="32x32" media="(prefers-color-scheme: dark)">
+  <link rel="stylesheet" href="{{ get_url(path="css/main.css") }}">
+  <script>
+    window.__BLOG_CONFIG__ = {
+      baseUrl: "{{ get_url(path="/") }}",
+      twikooEnvId: "{{ config.extra.twikoo_env_id }}",
+      lang: "{{ config.default_language | replace(from="_", to="-") }}",
+      hue: "{{ config.extra.theme_hue }}"
+    };
+  </script>
+  <script>
+    const theme = localStorage.getItem("theme") || "auto";
+    if (theme === "dark" || (theme === "auto" && matchMedia("(prefers-color-scheme: dark)").matches)) document.documentElement.classList.add("dark");
+    document.documentElement.style.setProperty("--hue", localStorage.getItem("hue") || "{{ config.extra.theme_hue }}");
+    let bannerOffset = Math.floor(innerHeight * 0.3); bannerOffset = bannerOffset - bannerOffset % 4;
+    document.documentElement.style.setProperty("--banner-height-extend", `${bannerOffset}px`);
+  </script>
+</head>
+<body class="enable-banner {% if current_path == "/" %}lg-is-home{% endif %}">
+  <div id="top-row" class="top-row">
+    <div id="navbar-wrapper" class="navbar-wrapper">
+      <nav id="navbar" class="onload-animation" aria-label="Main navigation">
+        <div class="navbar-card card-base">
+          <a href="{{ get_url(path="/") }}" class="btn-plain nav-home" aria-label="Home">{{ macros::icon(name="home") }}</a>
+          <div class="nav-links">
+            <a href="{{ get_url(path="/") }}" class="btn-plain">Home</a>
+            <a href="{{ get_url(path="archive/") }}" class="btn-plain">Archive</a>
+            <a href="{{ get_url(path="about/") }}" class="btn-plain">About</a>
+            <a href="{{ config.extra.github_url }}" class="btn-plain" target="_blank" rel="noopener">GitHub {{ macros::icon(name="external") }}</a>
+          </div>
+          <div class="nav-actions">
+            <button id="search-switch" class="btn-plain icon-btn" aria-label="Search">{{ macros::icon(name="search") }}</button>
+            <button id="display-settings-switch" class="btn-plain icon-btn" aria-label="Display Settings">{{ macros::icon(name="palette") }}</button>
+            <button id="scheme-switch" class="btn-plain icon-btn" aria-label="Switch Theme">{{ macros::icon(name="moon") }}</button>
+            <button id="nav-menu-switch" class="btn-plain icon-btn mobile-only" aria-label="Menu">{{ macros::icon(name="menu") }}</button>
+          </div>
+          <div id="search-panel" class="float-panel float-panel-closed search-panel">
+            <input id="search-input" type="search" placeholder="Search" autocomplete="off">
+            <div id="search-results"></div>
+          </div>
+          <div id="display-setting" class="float-panel float-panel-closed display-panel">
+            <div class="panel-label">Theme color</div>
+            <input id="hue-slider" type="range" min="0" max="360" value="{{ config.extra.theme_hue }}">
+          </div>
+          <div id="nav-menu-panel" class="float-panel float-panel-closed mobile-menu">
+            <a href="{{ get_url(path="/") }}">Home</a>
+            <a href="{{ get_url(path="archive/") }}">Archive</a>
+            <a href="{{ get_url(path="about/") }}">About</a>
+            <a href="{{ config.extra.github_url }}" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <div id="banner-wrapper" class="banner-wrapper">
+    <img id="banner" class="banner-image" src="{{ config.extra.banner }}" alt="Banner image of the blog">
+  </div>
+
+  <div class="main-panel">
+    <div class="page-shell">
+      <div id="main-grid" class="main-grid">
+        <aside id="sidebar" class="sidebar onload-animation">
+          <section class="profile-card card-base">
+            <a href="{{ get_url(path="about/") }}" class="profile-avatar no-styling" aria-label="Go to About Page">
+              <img src="{{ config.extra.avatar }}" alt="{{ config.extra.author }}">
+            </a>
+            <div class="profile-copy">
+              <div class="profile-name">{{ config.extra.author }}</div>
+              <div class="profile-rule"></div>
+              <div class="profile-bio">{{ config.extra.bio }}</div>
+              <div class="profile-links">
+                <a rel="me" href="{{ config.extra.github_url }}" target="_blank" class="btn-regular" aria-label="GitHub">{{ macros::icon(name="github") }}</a>
+                <a rel="me" href="{{ config.extra.apt_url }}" target="_blank" class="btn-regular" aria-label="APT">APT</a>
+              </div>
+            </div>
+          </section>
+          <div id="sidebar-sticky" class="sidebar-sticky">
+            {% if page and page.toc %}
+              <section id="sidebar-toc" class="widget card-base onload-animation">
+                <h2>Contents</h2>
+                <div class="toc-scroll">
+                  <ul class="toc-list">
+                    {% for h1 in page.toc %}
+                      <li><a href="{{ h1.permalink | safe }}">{{ h1.title }}</a></li>
+                      {% for h2 in h1.children %}<li class="toc-level-2"><a href="{{ h2.permalink | safe }}">{{ h2.title }}</a></li>{% endfor %}
+                    {% endfor %}
+                  </ul>
+                </div>
+              </section>
+            {% else %}
+              <section class="widget card-base onload-animation">
+                <h2>Categories</h2>
+                <div class="tag-list">
+                  {% set categories = get_taxonomy(kind="categories") %}
+                  {% for term in categories.items %}<a class="btn-regular" href="{{ term.permalink }}">{{ term.name }}</a>{% endfor %}
+                </div>
+              </section>
+              <section class="widget card-base onload-animation">
+                <h2>Tags</h2>
+                <div class="tag-list">
+                  {% set tags = get_taxonomy(kind="tags") %}
+                  {% for term in tags.items %}<a class="btn-regular" href="{{ term.permalink }}">#{{ term.name }}</a>{% endfor %}
+                </div>
+              </section>
+            {% endif %}
+          </div>
+        </aside>
+        <main id="swup-container" class="transition-swup-fade content-column">
+          <div id="content-wrapper" class="onload-animation">
+            {% block content %}{% endblock content %}
+            <footer class="footer onload-animation">
+              <span>© {{ now() | date(format="%Y") }} {{ config.extra.author }}</span>
+              <a href="{{ config.extra.license_url }}" target="_blank" rel="noopener">{{ config.extra.license_name }}</a>
+            </footer>
+          </div>
+        </main>
+      </div>
+      <button id="back-to-top-btn" class="back-to-top hide" aria-label="Back to top">{{ macros::icon(name="top") }}</button>
+    </div>
+  </div>
+  <div id="page-height-extend" class="hidden"></div>
+  <script type="module" src="{{ get_url(path="js/site.js") }}"></script>
+</body>
+</html>

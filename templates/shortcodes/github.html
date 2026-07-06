@@ -1,0 +1,8 @@
+<a class="card-github" href="https://github.com/{{ repo }}" target="_blank" rel="noopener" data-github-card="{{ repo }}">
+  <div class="gc-titlebar">
+    <span class="gc-titlebar-left"><span class="github-logo"></span><span class="gc-owner">{{ repo | split(pat="/") | first }}</span>/<span class="gc-repo">{{ repo | split(pat="/") | last }}</span></span>
+    <span class="gc-external">↗</span>
+  </div>
+  <div class="gc-description">GitHub repository</div>
+  <div class="gc-infobar"><span class="gc-stars">Stars</span><span class="gc-forks">Forks</span><span class="gc-license">License</span></div>
+</a>

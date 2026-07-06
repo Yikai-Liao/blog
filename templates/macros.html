@@ -1,0 +1,67 @@
+{% macro icon(name) %}
+  {% if name == "home" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.7 12 4l8 6.7V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-9.3Z"/></svg>
+  {% elif name == "search" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m20.5 19.1-4.7-4.7a7 7 0 1 0-1.4 1.4l4.7 4.7 1.4-1.4ZM5 10a5 5 0 1 1 10 0 5 5 0 0 1-10 0Z"/></svg>
+  {% elif name == "palette" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0 0 18h1.3a2.2 2.2 0 0 0 1.5-3.8 1.2 1.2 0 0 1 .8-2.2H17a4 4 0 0 0 4-4c0-4.4-4-8-9-8Zm-4 9a1.3 1.3 0 1 1 0-2.6A1.3 1.3 0 0 1 8 12Zm2-4a1.3 1.3 0 1 1 0-2.6A1.3 1.3 0 0 1 10 8Zm4 0a1.3 1.3 0 1 1 0-2.6A1.3 1.3 0 0 1 14 8Zm2 4a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6Z"/></svg>
+  {% elif name == "moon" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.8A8.5 8.5 0 0 1 9.2 3.5 9 9 0 1 0 20.5 14.8Z"/></svg>
+  {% elif name == "menu" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v2H4V6Zm0 5h16v2H4v-2Zm0 5h16v2H4v-2Z"/></svg>
+  {% elif name == "github" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5A12 12 0 0 0 8.2 23c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.4-4-1.4-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2A11.4 11.4 0 0 1 12 5.6c1 0 2 .1 2.9.4 2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.4 5.9.4.4.8 1.1.8 2.2v3.1c0 .3.2.7.8.6A12 12 0 0 0 12 .5Z"/></svg>
+  {% elif name == "external" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6h-2V7.4l-8.3 8.3-1.4-1.4L16.6 6H14V4ZM5 5h7v2H7v10h10v-5h2v7H5V5Z"/></svg>
+  {% elif name == "chevron" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6-1.4 1.4 4.6 4.6-4.6 4.6L9 18Z"/></svg>
+  {% elif name == "top" %}
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5 5 12l1.4 1.4L11 8.8V20h2V8.8l4.6 4.6L19 12l-7-7Z"/></svg>
+  {% endif %}
+{% endmacro icon %}
+
+{% macro post_url(page) %}
+  {{ page.permalink }}
+{% endmacro post_url %}
+
+{% macro post_meta(page) %}
+  <div class="post-meta">
+    <span>{{ page.date | date(format="%Y-%m-%d") }}</span>
+    {% if page.extra.updated %}<span>{{ page.extra.updated }}</span>{% endif %}
+    {% if page.taxonomies.categories %}
+      {% for category in page.taxonomies.categories %}<a href="{{ get_taxonomy_url(kind="categories", name=category) }}">{{ category }}</a>{% endfor %}
+    {% elif page.extra.category %}
+      <span>{{ page.extra.category }}</span>
+    {% endif %}
+    {% if page.taxonomies.tags %}
+      {% for tag in page.taxonomies.tags %}<a href="{{ get_taxonomy_url(kind="tags", name=tag) }}">#{{ tag }}</a>{% endfor %}
+    {% endif %}
+  </div>
+{% endmacro post_meta %}
+
+{% macro post_card(page, index=0) %}
+  <article class="post-card card-base onload-animation" style="animation-delay: calc(var(--content-delay) + {{ index * 50 }}ms);">
+    {% if page.extra.image %}
+      <a class="post-card-cover no-styling" href="{{ page.permalink }}" aria-label="{{ page.title }}">
+        <span class="cover-overlay">{{ self::icon(name="chevron") }}</span>
+        <img src="{{ page.extra.image }}" alt="Cover image of {{ page.title }}" loading="lazy">
+      </a>
+    {% endif %}
+    <div class="post-card-body {% if not page.extra.image %}post-card-body-no-cover{% endif %}">
+      <a class="post-card-title no-styling" href="{{ page.permalink }}">
+        {{ page.title }}
+        <span class="post-card-arrow">{{ self::icon(name="chevron") }}</span>
+      </a>
+      {{ self::post_meta(page=page) }}
+      <p class="post-card-desc">{{ page.description | default(value=page.summary | striptags | truncate(length=160)) }}</p>
+      <div class="post-card-stats">
+        <span>{{ page.word_count }} words</span>
+        <span>|</span>
+        <span>{{ page.reading_time }} min</span>
+      </div>
+    </div>
+    {% if not page.extra.image %}
+      <a class="post-card-enter no-styling" href="{{ page.permalink }}" aria-label="{{ page.title }}">{{ self::icon(name="chevron") }}</a>
+    {% endif %}
+  </article>
+{% endmacro post_card %}

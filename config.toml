@@ -1,0 +1,46 @@
+base_url = "https://yikai-liao.github.io/blog"
+title = "Fuwari"
+description = "Demo Site"
+default_language = "zh_CN"
+compile_sass = false
+build_search_index = false
+generate_feeds = true
+feed_filenames = ["rss.xml"]
+minify_html = false
+ignored_content = ["*.draft.md"]
+
+[markdown]
+render_emoji = true
+external_links_target_blank = true
+external_links_no_follow = false
+external_links_no_referrer = true
+smart_punctuation = true
+
+[slugify]
+paths = "safe"
+taxonomies = "safe"
+anchors = "safe"
+
+[[taxonomies]]
+name = "tags"
+feed = true
+paginate_by = 8
+
+[[taxonomies]]
+name = "categories"
+feed = true
+paginate_by = 8
+
+[extra]
+site_subtitle = "Demo Site"
+author = "Yikai Liao"
+bio = "Hope is not a strategy."
+theme_hue = 270
+banner = "https://blog-img.lyk-ai.com/1783153604206_忽如远行客.webp"
+banner_position = "center"
+avatar = "https://blog-img.lyk-ai.com/1783153601561_伊蕾娜.webp"
+github_url = "https://github.com/Yikai-Liao/"
+apt_url = "https://deb.lyk-ai.com/"
+license_name = "CC BY-NC-SA 4.0"
+license_url = "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+twikoo_env_id = ""
