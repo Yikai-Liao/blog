@@ -6,12 +6,15 @@ import { url } from "@utils/url-utils.ts";
 import { onMount } from "svelte";
 import type { SearchResult } from "@/global";
 
+export let privateContext = false;
+
 let keywordDesktop = "";
 let keywordMobile = "";
 let result: SearchResult[] = [];
 let isSearching = false;
 let pagefindLoaded = false;
 let initialized = false;
+let resolvedPrivateContext = privateContext;
 
 const fakeResult: SearchResult[] = [
 	{
@@ -86,8 +89,36 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 	}
 };
 
+const getResultUrl = (itemUrl: string): string => {
+	if (typeof window === "undefined") return itemUrl;
+	const parsed = new URL(itemUrl, window.location.origin);
+	const privatePrefix = url("/private/");
+
+	if (!resolvedPrivateContext) return itemUrl;
+	if (
+		parsed.origin !== window.location.origin ||
+		parsed.pathname.startsWith(privatePrefix)
+	) {
+		return itemUrl;
+	}
+	parsed.searchParams.set("private", "true");
+	return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+};
+
+const syncPrivateContext = () => {
+	resolvedPrivateContext =
+		privateContext ||
+		window.location.pathname.startsWith(url("/private/")) ||
+		new URLSearchParams(window.location.search).get("private") === "true";
+};
+
 onMount(() => {
+	syncPrivateContext();
+	document.addEventListener("swup:page:view", syncPrivateContext);
+	window.addEventListener("popstate", syncPrivateContext);
+
 	const initializeSearch = () => {
+		syncPrivateContext();
 		initialized = true;
 		pagefindLoaded =
 			typeof window !== "undefined" &&
@@ -123,6 +154,11 @@ onMount(() => {
 			}
 		}, 2000); // Adjust timeout as needed
 	}
+
+	return () => {
+		document.removeEventListener("swup:page:view", syncPrivateContext);
+		window.removeEventListener("popstate", syncPrivateContext);
+	};
 });
 
 $: if (initialized && keywordDesktop) {
@@ -174,7 +210,7 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
 
     <!-- search results -->
     {#each result as item}
-        <a href={item.url}
+	        <a href={getResultUrl(item.url)}
            class="transition first-of-type:mt-2 lg:first-of-type:mt-0 group block
        rounded-xl text-lg px-3 py-2 hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)]">
             <div class="transition text-90 inline-flex font-bold group-hover:text-[var(--primary)]">

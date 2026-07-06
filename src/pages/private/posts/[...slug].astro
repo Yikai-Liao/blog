@@ -1,0 +1,19 @@
+---
+import PostEntryPage from "@components/PostEntryPage.astro";
+import { getSortedPosts } from "@utils/content-utils";
+import { getPostRouteSlug } from "@utils/url-utils";
+
+export async function getStaticPaths() {
+	const blogEntries = await getSortedPosts(true);
+	return blogEntries
+		.filter((entry) => entry.data.private)
+		.map((entry) => ({
+			params: { slug: getPostRouteSlug(entry.id) },
+			props: { entry },
+		}));
+}
+
+const { entry } = Astro.props;
+---
+
+<PostEntryPage entry={entry} privateContext />

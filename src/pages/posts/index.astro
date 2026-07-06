@@ -1,0 +1,19 @@
+---
+import { url } from "@utils/url-utils";
+
+const target = url("/");
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="refresh" content={`0;url=${target}`} />
+		<link rel="canonical" href={target} />
+		<script is:inline define:vars={{ target }}>
+			window.location.replace(target);
+		</script>
+	</head>
+	<body>
+		<a href={target}>Home</a>
+	</body>
+</html>

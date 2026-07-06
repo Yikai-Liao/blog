@@ -323,20 +323,37 @@ const setup = () => {
 			navbar.classList.add('navbar-hidden')
 		}
 	})
-	function isPostPage(rawUrl: string) {
-		const pathname = new URL(rawUrl, window.location.href).pathname;
-		const postsPath = new URL(url('/posts/'), window.location.origin).pathname;
-		return pathname.replace(/\/+$/, '/').startsWith(postsPath);
+	function isPrivateModeUrl(value: string) {
+		const parsed = new URL(value, window.location.origin);
+		return parsed.pathname.startsWith(url('/private/')) || parsed.searchParams.get('private') === 'true';
 	}
 
-	window.swup.hooks.on('visit:start', (visit: {to: {url: string}, containers?: string[]}) => {
-		const shouldUpdateSidebarContent =
-			isPostPage(window.location.href) || isPostPage(visit.to.url);
-		visit.containers = shouldUpdateSidebarContent
-			? ['main', '#sidebar-sticky', '#toc']
-			: ['main', '#toc'];
+	function isSameContentPrivateToggle(from: string, to: string) {
+		const fromUrl = new URL(from, window.location.origin);
+		const toUrl = new URL(to, window.location.origin);
+		const sameContentPath =
+			fromUrl.pathname === toUrl.pathname &&
+			(fromUrl.pathname.startsWith(url('/posts/')) || fromUrl.pathname === url('/about/'));
 
-		// change banner height immediately when a link is clicked
+		if (!sameContentPath) return false;
+		fromUrl.searchParams.delete('private');
+		toUrl.searchParams.delete('private');
+		return fromUrl.toString() === toUrl.toString() && isPrivateModeUrl(from) !== isPrivateModeUrl(to);
+	}
+
+		window.swup.hooks.on('visit:start', (visit: {from: {url: string}, to: {url: string}, containers?: string[], animation?: {animate: boolean}, scroll?: {reset: boolean, target?: string | false}}) => {
+			if (isSameContentPrivateToggle(visit.from.url, visit.to.url)) {
+				visit.containers = [];
+				if (visit.animation) visit.animation.animate = false;
+				if (visit.scroll) {
+					visit.scroll.reset = false;
+					visit.scroll.target = false;
+				}
+			} else {
+				visit.containers = ['main', '#sidebar-sticky', '#toc'];
+			}
+
+			// change banner height immediately when a link is clicked
 		const bodyElement = document.querySelector('body')
 		if (pathsEqual(visit.to.url, url('/'))) {
 			bodyElement!.classList.add('lg:is-home');

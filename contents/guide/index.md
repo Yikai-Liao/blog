@@ -7,6 +7,7 @@ image: "https://blog-img.lyk-ai.com/1783153969920_舔手指的小女孩.webp"
 tags: ["Fuwari", "Blogging", "Customization"]
 category: Guides
 draft: false
+private: false
 ---
 
 > Cover image source: [Source](https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/208fc754-890d-4adb-9753-2c963332675d/width=2048/01651-1456859105-(colour_1.5),girl,_Blue,yellow,green,cyan,purple,red,pink,_best,8k,UHD,masterpiece,male%20focus,%201boy,gloves,%20ponytail,%20long%20hair,.jpeg)
@@ -39,7 +40,7 @@ private: true
 | `category`    | The category of the post.                                                                                                                                                                                   |
 | `draft`        | If this post is still a draft, which won't be displayed.                                                                                                                                                    |
 | `slug`         | Required. Defines the post URL independently from the file path.                                                                                                      |
-| `private`      | If true, the canonical URL is `/posts/private/my-post/`. The original `/posts/my-post/` redirects to the canonical URL.                                             |
+| `private`      | Public posts must set this to `false`. Private posts are available at `/private/posts/my-post/`.                                                                     |
 
 ## Where to Place the Post Files
 

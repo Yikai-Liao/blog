@@ -4,9 +4,11 @@ import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils.ts";
 
 // // Retrieve posts and sort them by publication date
-async function getRawSortedPosts(): Promise<CollectionEntry<"posts">[]> {
+async function getRawSortedPosts(
+	includePrivate = false,
+): Promise<CollectionEntry<"posts">[]> {
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
-		return import.meta.env.PROD ? data.draft !== true : true;
+		return data.draft !== true && (includePrivate || data.private !== true);
 	});
 
 	const sorted = allBlogPosts.sort((a, b) => {
@@ -17,19 +19,84 @@ async function getRawSortedPosts(): Promise<CollectionEntry<"posts">[]> {
 	return sorted;
 }
 
-export async function getSortedPosts(): Promise<CollectionEntry<"posts">[]> {
-	const sorted = await getRawSortedPosts();
+type AdjacentFields = {
+	prevTitle: "prevTitle" | "publicPrevTitle" | "allPrevTitle";
+	prevSlug: "prevSlug" | "publicPrevSlug" | "allPrevSlug";
+	prevPrivate: "prevPrivate" | "publicPrevPrivate" | "allPrevPrivate";
+	nextTitle: "nextTitle" | "publicNextTitle" | "allNextTitle";
+	nextSlug: "nextSlug" | "publicNextSlug" | "allNextSlug";
+	nextPrivate: "nextPrivate" | "publicNextPrivate" | "allNextPrivate";
+};
 
-	for (let i = 1; i < sorted.length; i++) {
-		sorted[i].data.nextSlug = sorted[i - 1].id;
-		sorted[i].data.nextTitle = sorted[i - 1].data.title;
-		sorted[i].data.nextPrivate = sorted[i - 1].data.private;
+function clearAdjacentFields(post: CollectionEntry<"posts">) {
+	post.data.prevSlug = "";
+	post.data.prevTitle = "";
+	post.data.prevPrivate = false;
+	post.data.nextSlug = "";
+	post.data.nextTitle = "";
+	post.data.nextPrivate = false;
+	post.data.publicPrevSlug = "";
+	post.data.publicPrevTitle = "";
+	post.data.publicPrevPrivate = false;
+	post.data.publicNextSlug = "";
+	post.data.publicNextTitle = "";
+	post.data.publicNextPrivate = false;
+	post.data.allPrevSlug = "";
+	post.data.allPrevTitle = "";
+	post.data.allPrevPrivate = false;
+	post.data.allNextSlug = "";
+	post.data.allNextTitle = "";
+	post.data.allNextPrivate = false;
+}
+
+function setAdjacentFields(
+	posts: CollectionEntry<"posts">[],
+	fields: AdjacentFields,
+) {
+	for (let i = 1; i < posts.length; i++) {
+		posts[i].data[fields.nextSlug] = posts[i - 1].id;
+		posts[i].data[fields.nextTitle] = posts[i - 1].data.title;
+		posts[i].data[fields.nextPrivate] = posts[i - 1].data.private;
 	}
-	for (let i = 0; i < sorted.length - 1; i++) {
-		sorted[i].data.prevSlug = sorted[i + 1].id;
-		sorted[i].data.prevTitle = sorted[i + 1].data.title;
-		sorted[i].data.prevPrivate = sorted[i + 1].data.private;
+	for (let i = 0; i < posts.length - 1; i++) {
+		posts[i].data[fields.prevSlug] = posts[i + 1].id;
+		posts[i].data[fields.prevTitle] = posts[i + 1].data.title;
+		posts[i].data[fields.prevPrivate] = posts[i + 1].data.private;
 	}
+}
+
+export async function getSortedPosts(
+	includePrivate = false,
+): Promise<CollectionEntry<"posts">[]> {
+	const allSorted = await getRawSortedPosts(true);
+	const publicSorted = allSorted.filter((post) => post.data.private !== true);
+	const sorted = includePrivate ? allSorted : publicSorted;
+
+	for (const post of allSorted) clearAdjacentFields(post);
+	setAdjacentFields(sorted, {
+		prevSlug: "prevSlug",
+		prevTitle: "prevTitle",
+		prevPrivate: "prevPrivate",
+		nextSlug: "nextSlug",
+		nextTitle: "nextTitle",
+		nextPrivate: "nextPrivate",
+	});
+	setAdjacentFields(publicSorted, {
+		prevSlug: "publicPrevSlug",
+		prevTitle: "publicPrevTitle",
+		prevPrivate: "publicPrevPrivate",
+		nextSlug: "publicNextSlug",
+		nextTitle: "publicNextTitle",
+		nextPrivate: "publicNextPrivate",
+	});
+	setAdjacentFields(allSorted, {
+		prevSlug: "allPrevSlug",
+		prevTitle: "allPrevTitle",
+		prevPrivate: "allPrevPrivate",
+		nextSlug: "allNextSlug",
+		nextTitle: "allNextTitle",
+		nextPrivate: "allNextPrivate",
+	});
 
 	return sorted;
 }
@@ -37,8 +104,10 @@ export type PostForList = {
 	slug: string;
 	data: CollectionEntry<"posts">["data"];
 };
-export async function getSortedPostsList(): Promise<PostForList[]> {
-	const sortedFullPosts = await getRawSortedPosts();
+export async function getSortedPostsList(
+	includePrivate = false,
+): Promise<PostForList[]> {
+	const sortedFullPosts = await getRawSortedPosts(includePrivate);
 
 	// delete post.body
 	const sortedPostsList = sortedFullPosts.map((post) => ({
@@ -53,10 +122,8 @@ export type Tag = {
 	count: number;
 };
 
-export async function getTagList(): Promise<Tag[]> {
-	const allBlogPosts = await getCollection<"posts">("posts", ({ data }) => {
-		return import.meta.env.PROD ? data.draft !== true : true;
-	});
+export async function getTagList(includePrivate = false): Promise<Tag[]> {
+	const allBlogPosts = await getRawSortedPosts(includePrivate);
 
 	const countMap: { [key: string]: number } = {};
 	allBlogPosts.forEach((post: { data: { tags: string[] } }) => {
@@ -80,10 +147,11 @@ export type Category = {
 	url: string;
 };
 
-export async function getCategoryList(): Promise<Category[]> {
-	const allBlogPosts = await getCollection<"posts">("posts", ({ data }) => {
-		return import.meta.env.PROD ? data.draft !== true : true;
-	});
+export async function getCategoryList(
+	includePrivate = false,
+	privateContext = includePrivate,
+): Promise<Category[]> {
+	const allBlogPosts = await getRawSortedPosts(includePrivate);
 	const count: { [key: string]: number } = {};
 	allBlogPosts.forEach((post: { data: { category: string | null } }) => {
 		if (!post.data.category) {
@@ -109,7 +177,7 @@ export async function getCategoryList(): Promise<Category[]> {
 		ret.push({
 			name: c,
 			count: count[c],
-			url: getCategoryUrl(c),
+			url: getCategoryUrl(c, privateContext),
 		});
 	}
 	return ret;

@@ -34,8 +34,6 @@ export type SiteConfig = {
 		enable: boolean;
 		depth: 1 | 2 | 3;
 	};
-	hiddenCategories: string[];
-
 	favicon: Favicon[];
 };
 

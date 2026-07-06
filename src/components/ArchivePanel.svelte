@@ -7,8 +7,8 @@ import { getPostUrlBySlug } from "../utils/url-utils";
 
 export let tags: string[] = [];
 export let categories: string[] = [];
-export let hiddenCategories: string[] = [];
 export let sortedPosts: PostForList[] = [];
+export let privateContext = false;
 
 let uncategorized = false;
 
@@ -34,17 +34,7 @@ function applyFilters() {
 	tags = params.getAll("tag");
 	categories = params.getAll("category");
 	uncategorized = params.has("uncategorized");
-	const selectedHiddenCategories = new Set(
-		categories.filter((category) => hiddenCategories.includes(category)),
-	);
-	let filteredPosts: PostForList[] = sortedPosts.filter((post) => {
-		const category = post.data.category?.trim();
-		return (
-			!category ||
-			!hiddenCategories.includes(category) ||
-			selectedHiddenCategories.has(category)
-		);
-	});
+	let filteredPosts: PostForList[] = sortedPosts;
 
 	if (tags.length > 0) {
 		filteredPosts = filteredPosts.filter(
@@ -118,7 +108,7 @@ onMount(() => {
 
             {#each group.posts as post}
                 <a
-                        href={getPostUrlBySlug(post.slug, post.data.private)}
+                        href={getPostUrlBySlug(post.slug, post.data.private, privateContext)}
                         aria-label={post.data.title}
                         class="group btn-plain !block h-10 w-full rounded-lg hover:text-[initial]"
                 >

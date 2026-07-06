@@ -3,13 +3,20 @@ import { Icon } from "astro-icon/components";
 import { navBarConfig, siteConfig } from "../config";
 import { LinkPresets } from "../constants/link-presets";
 import { LinkPreset, type NavBarLink } from "../types/config";
-import { url } from "../utils/url-utils";
+import { getNavUrl, getPrivacyToggleUrl, url } from "../utils/url-utils";
 import LightDarkSwitch from "./LightDarkSwitch.svelte";
 import Search from "./Search.svelte";
 import DisplaySettings from "./widget/DisplaySettings.svelte";
 import NavMenuPanel from "./widget/NavMenuPanel.astro";
 
 const className = Astro.props.class;
+const { privateContext = false } = Astro.props;
+const privacyToggleUrl = getPrivacyToggleUrl(
+	Astro.url.pathname,
+	Astro.url.search,
+);
+const publicPagefindScriptUrl = url("/pagefind/pagefind.js");
+const privatePagefindScriptUrl = url("/private/pagefind/pagefind.js");
 
 let links: NavBarLink[] = navBarConfig.links.map(
 	(item: NavBarLink | LinkPreset): NavBarLink => {
@@ -25,14 +32,14 @@ let links: NavBarLink[] = navBarConfig.links.map(
     <div class:list={[
         className,
         "card-base !overflow-visible max-w-[var(--page-width)] h-[4.5rem] !rounded-t-none mx-auto flex items-center justify-between px-4"]}>
-        <a href={url('/')} class="btn-plain scale-animation rounded-lg h-[3.25rem] px-5 font-bold active:scale-95">
+		        <a data-private-nav-home href={getNavUrl('/', privateContext)} class="btn-plain scale-animation rounded-lg h-[3.25rem] px-5 font-bold active:scale-95">
             <div class="flex flex-row text-[var(--primary)] items-center text-md">
                 <Icon name="material-symbols:home-outline-rounded" class="text-[1.75rem] mb-1" />
             </div>
         </a>
         <div class="hidden md:flex">
             {links.map((l) => {
-                return <a aria-label={l.name} href={l.external ? l.url : url(l.url)} target={l.external ? "_blank" : null}
+		                return <a aria-label={l.name} data-private-nav-url={l.external ? null : l.url} href={l.external ? l.url : getNavUrl(l.url, privateContext)} target={l.external ? "_blank" : null}
                           class="btn-plain scale-animation rounded-lg h-11 font-bold px-5 active:scale-95"
                 >
                     <div class="flex items-center">
@@ -43,8 +50,12 @@ let links: NavBarLink[] = navBarConfig.links.map(
             })}
         </div>
         <div class="flex">
-            <!--<SearchPanel client:load>-->
-            <Search client:only="svelte"></Search>
+	            <!--<SearchPanel client:load>-->
+	            <Search privateContext={privateContext} client:only="svelte"></Search>
+			            <a id="privacy-mode-switch" aria-label={privateContext ? "Public mode" : "Private mode"} href={privacyToggleUrl} class:list={["btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90", { "privacy-mode-active": privateContext }]}>
+		                <Icon data-lock-private name="material-symbols:lock-outline" class:list={["text-[1.25rem]", { hidden: !privateContext }]}></Icon>
+		                <Icon data-lock-public name="material-symbols:lock-open-outline" class:list={["text-[1.25rem]", { hidden: privateContext }]}></Icon>
+		            </a>
             {!siteConfig.themeColor.fixed && (
                     <button aria-label="Display Settings" class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90" id="display-settings-switch">
                         <Icon name="material-symbols:palette-outline" class="text-[1.25rem]"></Icon>
@@ -55,7 +66,7 @@ let links: NavBarLink[] = navBarConfig.links.map(
                 <Icon name="material-symbols:menu-rounded" class="text-[1.25rem]"></Icon>
             </button>
         </div>
-        <NavMenuPanel links={links}></NavMenuPanel>
+	        <NavMenuPanel links={links} privateContext={privateContext}></NavMenuPanel>
         <DisplaySettings client:only="svelte"></DisplaySettings>
     </div>
 </div>
@@ -101,11 +112,143 @@ function loadButtonScript() {
 }
 
 loadButtonScript();
-</script>
+	</script>
 
-{import.meta.env.PROD && <script is:inline define:vars={{scriptUrl: url('/pagefind/pagefind.js')}}>
-async function loadPagefind() {
-    try {
+	<script is:inline define:vars={{
+		publicHomeUrl: url("/"),
+		privateHomeUrl: url("/private/"),
+		publicArchiveUrl: url("/archive/"),
+		privateArchiveUrl: url("/private/archive/"),
+		publicAboutUrl: url("/about/"),
+		privateAboutUrl: url("/about/?private=true"),
+		publicPostPrefix: url("/posts/"),
+		privatePostPrefix: url("/private/posts/"),
+	}}>
+	function isPrivateMode() {
+		return (
+			window.location.pathname.startsWith(privateHomeUrl) ||
+			new URLSearchParams(window.location.search).get("private") === "true"
+		);
+	}
+
+	function navUrl(rawUrl, privateMode) {
+		if (!privateMode) {
+			if (rawUrl === "/") return publicHomeUrl;
+			if (rawUrl === "/archive/") return publicArchiveUrl;
+			if (rawUrl === "/about/") return publicAboutUrl;
+			return rawUrl;
+		}
+		if (rawUrl === "/") return privateHomeUrl;
+		if (rawUrl === "/archive/") return privateArchiveUrl;
+		if (rawUrl === "/about/") return privateAboutUrl;
+		return rawUrl;
+	}
+
+	function privateToggleUrl(privateMode) {
+		if (privateMode) {
+			if (window.location.pathname.startsWith(privatePostPrefix)) return publicHomeUrl;
+			const next = new URL(window.location.href);
+			next.searchParams.delete("private");
+			if (window.location.pathname.startsWith(publicPostPrefix)) {
+				return `${next.pathname}${next.search}${next.hash}`;
+			}
+			if (window.location.pathname === privateArchiveUrl) {
+				return `${publicArchiveUrl}${window.location.search}`;
+			}
+			if (window.location.pathname === publicAboutUrl) {
+				return `${next.pathname}${next.search}${next.hash}`;
+			}
+			return publicHomeUrl;
+		}
+		if (window.location.pathname.startsWith(publicPostPrefix)) {
+			const next = new URL(window.location.href);
+			next.searchParams.set("private", "true");
+			return `${next.pathname}${next.search}${next.hash}`;
+		}
+		if (window.location.pathname === publicArchiveUrl) {
+			return `${privateArchiveUrl}${window.location.search}`;
+		}
+		if (window.location.pathname === publicAboutUrl) return privateAboutUrl;
+		return privateHomeUrl;
+	}
+
+	function syncPrivateNav() {
+		const privateMode = isPrivateMode();
+		document
+			.querySelectorAll("[data-private-nav-home]")
+			.forEach((link) => link.setAttribute("href", navUrl("/", privateMode)));
+		document.querySelectorAll("[data-private-nav-url]").forEach((link) => {
+			const rawUrl = link.getAttribute("data-private-nav-url");
+			if (rawUrl) link.setAttribute("href", navUrl(rawUrl, privateMode));
+		});
+
+		const switchLink = document.getElementById("privacy-mode-switch");
+		if (switchLink) {
+			switchLink.setAttribute("href", privateToggleUrl(privateMode));
+			switchLink.setAttribute(
+				"aria-label",
+				privateMode ? "Public mode" : "Private mode",
+			);
+			switchLink.classList.toggle("privacy-mode-active", privateMode);
+		}
+		document
+			.querySelectorAll("[data-lock-private]")
+			.forEach((icon) => icon.classList.toggle("hidden", !privateMode));
+		document
+			.querySelectorAll("[data-lock-public]")
+			.forEach((icon) => icon.classList.toggle("hidden", privateMode));
+		document.querySelectorAll("[data-private-sidebar-panel]").forEach((panel) => {
+			const panelMode = panel.getAttribute("data-private-sidebar-panel");
+			panel.classList.toggle(
+				"hidden",
+				panelMode !== (privateMode ? "private" : "public"),
+			);
+		});
+		document.querySelectorAll("[data-private-mode-panel]").forEach((panel) => {
+			const panelMode = panel.getAttribute("data-private-mode-panel");
+			panel.classList.toggle(
+				"hidden",
+				panelMode !== (privateMode ? "private" : "public"),
+			);
+		});
+	}
+
+	syncPrivateNav();
+	document.addEventListener("DOMContentLoaded", syncPrivateNav);
+	document.addEventListener("swup:page:view", syncPrivateNav);
+	window.addEventListener("popstate", syncPrivateNav);
+	</script>
+
+<style>
+#privacy-mode-switch.privacy-mode-active {
+	color: var(--primary);
+}
+
+#privacy-mode-switch.privacy-mode-active svg {
+	opacity: 0.85;
+}
+</style>
+
+{import.meta.env.PROD && <script is:inline define:vars={{publicScriptUrl: publicPagefindScriptUrl, privateScriptUrl: privatePagefindScriptUrl, siteBaseUrl: url("/")}}>
+	let loadedPrivatePagefind = null;
+
+	function isPrivatePagefindMode() {
+		return (
+			window.location.pathname.startsWith(
+				new URL(privateScriptUrl, window.location.origin).pathname.replace(/pagefind\/pagefind\.js$/, ""),
+			) ||
+			new URLSearchParams(window.location.search).get("private") === "true"
+		);
+	}
+
+	async function loadPagefind() {
+		const privateMode = isPrivatePagefindMode();
+		if (loadedPrivatePagefind === privateMode && window.pagefind) {
+			document.dispatchEvent(new CustomEvent('pagefindready'));
+			return;
+		}
+	    const scriptUrl = privateMode ? privateScriptUrl : publicScriptUrl;
+	    try {
         const response = await fetch(scriptUrl, { method: 'HEAD' });
         if (!response.ok) {
             throw new Error(`Pagefind script not found: ${response.status}`);
@@ -114,10 +257,12 @@ async function loadPagefind() {
         const pagefind = await import(scriptUrl);
 
         await pagefind.options({
-            excerptLength: 20
+            excerptLength: 20,
+            baseUrl: siteBaseUrl,
         });
 
         window.pagefind = pagefind;
+        loadedPrivatePagefind = privateMode;
 
         document.dispatchEvent(new CustomEvent('pagefindready'));
         console.log('Pagefind loaded and initialized successfully, event dispatched.');
@@ -137,4 +282,6 @@ if (document.readyState === 'loading') {
 } else {
     loadPagefind();
 }
+document.addEventListener("swup:page:view", loadPagefind);
+window.addEventListener("popstate", loadPagefind);
 </script>}

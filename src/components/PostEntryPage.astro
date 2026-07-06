@@ -1,0 +1,157 @@
+---
+import path from "node:path";
+import { render, type CollectionEntry } from "astro:content";
+import { Icon } from "astro-icon/components";
+import { licenseConfig, profileConfig, siteConfig } from "@/config";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { formatDateToYYYYMMDD } from "@utils/date-utils";
+import { getDir, getPostUrlBySlug } from "@utils/url-utils";
+import ImageWrapper from "./misc/ImageWrapper.astro";
+import License from "./misc/License.astro";
+import Markdown from "./misc/Markdown.astro";
+import PostMetadata from "./PostMeta.astro";
+import TwikooComments from "./TwikooComments.astro";
+
+interface Props {
+	entry: CollectionEntry<"posts">;
+	privateContext?: boolean;
+}
+
+const { entry, privateContext = false } = Astro.props;
+const { Content, headings, remarkPluginFrontmatter } = await render(entry);
+const commentPath = getPostUrlBySlug(entry.id, false);
+const contentBasePath = path.join("..", getDir(entry.filePath ?? ""));
+const adjacentPanels = [
+	{
+		mode: "public",
+		hidden: privateContext,
+		nextSlug: entry.data.publicNextSlug,
+		nextTitle: entry.data.publicNextTitle,
+		nextPrivate: entry.data.publicNextPrivate,
+		prevSlug: entry.data.publicPrevSlug,
+		prevTitle: entry.data.publicPrevTitle,
+		prevPrivate: entry.data.publicPrevPrivate,
+	},
+	{
+		mode: "private",
+		hidden: !privateContext,
+		nextSlug: entry.data.allNextSlug,
+		nextTitle: entry.data.allNextTitle,
+		nextPrivate: entry.data.allNextPrivate,
+		prevSlug: entry.data.allPrevSlug,
+		prevTitle: entry.data.allPrevTitle,
+		prevPrivate: entry.data.allPrevPrivate,
+	},
+];
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "BlogPosting",
+	headline: entry.data.title,
+	description: entry.data.description || entry.data.title,
+	keywords: entry.data.tags,
+	author: {
+		"@type": "Person",
+		name: entry.data.author || profileConfig.name,
+		url: Astro.site,
+	},
+	datePublished: formatDateToYYYYMMDD(entry.data.published),
+	inLanguage: entry.data.lang
+		? entry.data.lang.replace("_", "-")
+		: siteConfig.lang.replace("_", "-"),
+};
+---
+
+<MainGridLayout banner={entry.data.image} title={entry.data.title} description={entry.data.description} lang={entry.data.lang} setOGTypeArticle headings={headings} tocDepth={entry.data.toc?.depth}>
+    <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+
+    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative mb-4">
+        <div id="post-container" class="card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full">
+            <div class="flex flex-row text-black/30 dark:text-white/30 gap-5 mb-3 transition onload-animation">
+                <div class="flex flex-row items-center">
+                    <div class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2">
+                        <Icon name="material-symbols:notes-rounded"></Icon>
+                    </div>
+                    <div class="text-sm">{remarkPluginFrontmatter?.words} {" " + i18n(I18nKey.wordsCount)}</div>
+                </div>
+                <div class="flex flex-row items-center">
+                    <div class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2">
+                        <Icon name="material-symbols:schedule-outline-rounded"></Icon>
+                    </div>
+                    <div class="text-sm">
+                        {remarkPluginFrontmatter?.minutes} {" " + i18n(remarkPluginFrontmatter?.minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount)}
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative onload-animation">
+                <div
+                    data-pagefind-body data-pagefind-weight="10" data-pagefind-meta="title"
+                    class="transition w-full block font-bold mb-3
+                    text-3xl md:text-[2.25rem]/[2.75rem]
+                    text-black/90 dark:text-white/90
+                    md:before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
+                    before:absolute before:top-[0.75rem] before:left-[-1.125rem]
+                ">
+                    {entry.data.title}
+                </div>
+            </div>
+
+            <div class="onload-animation">
+                <PostMetadata
+                        class="mb-5"
+                        published={entry.data.published}
+                        updated={entry.data.updated}
+                        tags={entry.data.tags}
+                        category={entry.data.category}
+                        privateContext={privateContext}
+                ></PostMetadata>
+                {!entry.data.image && <div class="border-[var(--line-divider)] border-dashed border-b-[1px] mb-5"></div>}
+            </div>
+
+            {entry.data.image &&
+                <ImageWrapper id="post-cover" src={entry.data.image} basePath={contentBasePath} class="mb-8 rounded-xl banner-container onload-animation"/>
+            }
+
+            <Markdown class="mb-6 markdown-content onload-animation">
+                <Content />
+            </Markdown>
+
+            {licenseConfig.enable && <License title={entry.data.title} slug={entry.id} pubDate={entry.data.published} author={entry.data.author} class="mb-6 rounded-xl license-container onload-animation"></License>}
+        </div>
+    </div>
+
+    {adjacentPanels.map((panel) => (
+        <div
+            data-private-mode-panel={panel.mode}
+            class:list={[
+                "flex flex-col md:flex-row justify-between mb-4 gap-4 overflow-hidden w-full",
+                { hidden: panel.hidden },
+            ]}
+        >
+            <a href={panel.nextSlug ? getPostUrlBySlug(panel.nextSlug, panel.nextPrivate, panel.mode === "private") : "#"}
+               class:list={["w-full font-bold overflow-hidden active:scale-95", {"pointer-events-none": !panel.nextSlug}]}>
+                {panel.nextSlug && <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-start gap-4" >
+                    <Icon name="material-symbols:chevron-left-rounded" class="text-[2rem] text-[var(--primary)]" />
+                    <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75">
+                        {panel.nextTitle}
+                    </div>
+                </div>}
+            </a>
+
+            <a href={panel.prevSlug ? getPostUrlBySlug(panel.prevSlug, panel.prevPrivate, panel.mode === "private") : "#"}
+               class:list={["w-full font-bold overflow-hidden active:scale-95", {"pointer-events-none": !panel.prevSlug}]}>
+                {panel.prevSlug && <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-end gap-4">
+                    <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75">
+                        {panel.prevTitle}
+                    </div>
+                    <Icon name="material-symbols:chevron-right-rounded" class="text-[2rem] text-[var(--primary)]" />
+                </div>}
+            </a>
+        </div>
+    ))}
+
+    <TwikooComments path={commentPath} title={entry.data.title} />
+</MainGridLayout>

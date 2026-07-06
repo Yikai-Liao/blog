@@ -12,35 +12,93 @@ function joinUrl(...parts: string[]): string {
 	return joined.replace(/\/+/g, "/");
 }
 
-export function normalizePostRoutePart(value: string | null | undefined): string {
+export function normalizePostRoutePart(
+	value: string | null | undefined,
+): string {
 	return (value ?? "").trim().replace(/^\/+|\/+$/g, "");
 }
 
-export function getPostRouteSlug(slug: string, isPrivate?: boolean): string {
-	const normalizedSlug = normalizePostRoutePart(slug);
-	return isPrivate ? `private/${normalizedSlug}` : normalizedSlug;
+function withPrivateQuery(path: string): string {
+	const [pathname, search = ""] = path.split("?");
+	const params = new URLSearchParams(search);
+	params.set("private", "true");
+	return `${pathname}?${params.toString()}`;
+}
+
+function withoutPrivateQuery(pathname: string, search = ""): string {
+	const params = new URLSearchParams(search);
+	params.delete("private");
+	const nextSearch = params.toString();
+	return nextSearch ? `${pathname}?${nextSearch}` : pathname;
+}
+
+export function isPrivateView(pathname: string, search = ""): boolean {
+	const params = new URLSearchParams(search);
+	const normalizedPath = `/${normalizePostRoutePart(pathname)}/`;
+	return (
+		normalizedPath.startsWith("/private/") || params.get("private") === "true"
+	);
+}
+
+export function getPostRouteSlug(slug: string): string {
+	return normalizePostRoutePart(slug);
 }
 
 export function getPostUrlBySlug(
 	slug: string,
 	isPrivate?: boolean,
+	privateContext = false,
 ): string {
-	return url(`/posts/${getPostRouteSlug(slug, isPrivate)}/`);
+	const path = isPrivate
+		? `/private/posts/${getPostRouteSlug(slug)}/`
+		: `/posts/${getPostRouteSlug(slug)}/`;
+	return url(!isPrivate && privateContext ? withPrivateQuery(path) : path);
 }
 
-export function getTagUrl(tag: string): string {
-	if (!tag) return url("/archive/");
-	return url(`/archive/?tag=${encodeURIComponent(tag.trim())}`);
+export function getTagUrl(tag: string, privateContext = false): string {
+	const archiveUrl = privateContext ? "/private/archive/" : "/archive/";
+	if (!tag) return url(archiveUrl);
+	return url(`${archiveUrl}?tag=${encodeURIComponent(tag.trim())}`);
 }
 
-export function getCategoryUrl(category: string | null): string {
+export function getCategoryUrl(
+	category: string | null,
+	privateContext = false,
+): string {
+	const archiveUrl = privateContext ? "/private/archive/" : "/archive/";
 	if (
 		!category ||
 		category.trim() === "" ||
 		category.trim().toLowerCase() === i18n(I18nKey.uncategorized).toLowerCase()
 	)
-		return url("/archive/?uncategorized=true");
-	return url(`/archive/?category=${encodeURIComponent(category.trim())}`);
+		return url(`${archiveUrl}?uncategorized=true`);
+	return url(`${archiveUrl}?category=${encodeURIComponent(category.trim())}`);
+}
+
+export function getNavUrl(path: string, privateContext = false): string {
+	if (!privateContext) return url(path);
+	if (pathsEqual(path, "/")) return url("/private/");
+	if (pathsEqual(path, "/archive/")) return url("/private/archive/");
+	if (pathsEqual(path, "/about/")) return url("/about/?private=true");
+	return url(path);
+}
+
+export function getPrivacyToggleUrl(pathname: string, search = ""): string {
+	if (isPrivateView(pathname, search)) {
+		if (pathname.startsWith(url("/private/posts/"))) return url("/");
+		if (pathname.startsWith(url("/posts/")))
+			return url(withoutPrivateQuery(pathname, search));
+		if (pathsEqual(pathname, "/private/archive/"))
+			return url(withoutPrivateQuery("/archive/", search));
+		if (pathsEqual(pathname, "/about/"))
+			return url(withoutPrivateQuery("/about/", search));
+		return url("/");
+	}
+	if (pathname.startsWith(url("/posts/")))
+		return url(withPrivateQuery(`${pathname}${search}`));
+	if (pathsEqual(pathname, "/archive/")) return url("/private/archive/");
+	if (pathsEqual(pathname, "/about/")) return url("/about/?private=true");
+	return url("/private/");
 }
 
 export function getDir(path: string): string {

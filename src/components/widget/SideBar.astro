@@ -11,24 +11,31 @@ interface Props {
 	class?: string;
 	headings?: MarkdownHeading[];
 	tocDepth?: 1 | 2 | 3;
+	privateContext?: boolean;
 }
 
 const className = Astro.props.class;
-const { headings = [], tocDepth } = Astro.props;
+const { headings = [], tocDepth, privateContext = false } = Astro.props;
 const hasToc = siteConfig.toc.enable && headings.length > 0;
 ---
 <div id="sidebar" class:list={[className, "w-full"]}>
     <div class="flex flex-col w-full gap-4 mb-4">
         <Profile></Profile>
     </div>
-    <div id="sidebar-sticky" class="transition-all duration-700 flex flex-col w-full gap-4 top-4 sticky top-4">
-        {hasToc && <WidgetLayout name="Contents" id="sidebar-toc" class="onload-animation hidden lg:block" style="animation-delay: 150ms">
+    <div id="sidebar-sticky" class="transition-swup-fade flex flex-col w-full gap-4 top-4 sticky top-4">
+        {hasToc && <WidgetLayout name="Contents" id="sidebar-toc" class="onload-animation hidden lg:block" style="animation-delay: calc(var(--content-delay) + 0ms)">
             <div data-toc-scroll class="max-h-[calc(100vh_-_8rem)] overflow-y-auto overflow-x-hidden hide-scrollbar">
                 <TOC headings={headings} depth={tocDepth}></TOC>
             </div>
         </WidgetLayout>}
-        {!hasToc && <Categories class="onload-animation" style="animation-delay: 200ms"></Categories>}
-        {!hasToc && <Tag class="onload-animation" style="animation-delay: 250ms"></Tag>}
+        {!hasToc && <div data-private-sidebar-panel="public" class:list={[{ hidden: privateContext }, "flex flex-col gap-4"]}>
+            <Categories id="categories-public" class="onload-animation" style="animation-delay: calc(var(--content-delay) + 0ms)" privateContext={false}></Categories>
+            <Tag id="tags-public" class="onload-animation" style="animation-delay: calc(var(--content-delay) + 50ms)" privateContext={false}></Tag>
+        </div>}
+        {!hasToc && <div data-private-sidebar-panel="private" class:list={[{ hidden: !privateContext }, "flex flex-col gap-4"]}>
+            <Categories id="categories-private" class="onload-animation" style="animation-delay: calc(var(--content-delay) + 0ms)" privateContext={true}></Categories>
+            <Tag id="tags-private" class="onload-animation" style="animation-delay: calc(var(--content-delay) + 50ms)" privateContext={true}></Tag>
+        </div>}
     </div>
 </div>
 

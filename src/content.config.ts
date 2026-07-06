@@ -24,6 +24,18 @@ type PostData = {
 	nextTitle: string;
 	nextSlug: string;
 	nextPrivate: boolean;
+	publicPrevTitle: string;
+	publicPrevSlug: string;
+	publicPrevPrivate: boolean;
+	publicNextTitle: string;
+	publicNextSlug: string;
+	publicNextPrivate: boolean;
+	allPrevTitle: string;
+	allPrevSlug: string;
+	allPrevPrivate: boolean;
+	allNextTitle: string;
+	allNextSlug: string;
+	allNextPrivate: boolean;
 };
 
 const postsLoader: ReturnType<typeof glob> = glob({
@@ -40,7 +52,7 @@ const postsSchema: ZodType<PostData> = z.object({
 	image: z.string().optional().default(""),
 	tags: z.array(z.string()).optional().default([]),
 	category: z.string().optional().nullable().default(""),
-	private: z.boolean().optional().default(false),
+	private: z.boolean().optional().default(true),
 	lang: z.string().optional().default(""),
 	toc: z
 		.object({
@@ -55,12 +67,26 @@ const postsSchema: ZodType<PostData> = z.object({
 	nextTitle: z.string().default(""),
 	nextSlug: z.string().default(""),
 	nextPrivate: z.boolean().default(false),
+	publicPrevTitle: z.string().default(""),
+	publicPrevSlug: z.string().default(""),
+	publicPrevPrivate: z.boolean().default(false),
+	publicNextTitle: z.string().default(""),
+	publicNextSlug: z.string().default(""),
+	publicNextPrivate: z.boolean().default(false),
+	allPrevTitle: z.string().default(""),
+	allPrevSlug: z.string().default(""),
+	allPrevPrivate: z.boolean().default(false),
+	allNextTitle: z.string().default(""),
+	allNextSlug: z.string().default(""),
+	allNextPrivate: z.boolean().default(false),
 });
-const postsCollection: CollectionConfig<typeof postsSchema, typeof postsLoader> =
-	defineCollection({
-		loader: postsLoader,
-		schema: postsSchema,
-	});
+const postsCollection: CollectionConfig<
+	typeof postsSchema,
+	typeof postsLoader
+> = defineCollection({
+	loader: postsLoader,
+	schema: postsSchema,
+});
 const specLoader: ReturnType<typeof glob> = glob({
 	base: "./src/content/spec",
 	pattern: "**/*.md",

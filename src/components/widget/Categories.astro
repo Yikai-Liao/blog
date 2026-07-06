@@ -5,22 +5,24 @@ import { getCategoryList } from "../../utils/content-utils";
 import ButtonLink from "../control/ButtonLink.astro";
 import WidgetLayout from "./WidgetLayout.astro";
 
-const categories = await getCategoryList();
-
 const COLLAPSED_HEIGHT = "7.5rem";
 const COLLAPSE_THRESHOLD = 5;
 
-const isCollapsed = categories.length >= COLLAPSE_THRESHOLD;
-
 interface Props {
 	class?: string;
+	id?: string;
 	style?: string;
+	privateContext?: boolean;
 }
 const className = Astro.props.class;
+const id = Astro.props.id ?? "categories";
 const style = Astro.props.style;
+const { privateContext = false } = Astro.props;
+const categories = await getCategoryList(privateContext);
+const isCollapsed = categories.length >= COLLAPSE_THRESHOLD;
 ---
 
-<WidgetLayout name={i18n(I18nKey.categories)} id="categories" isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT}
+<WidgetLayout name={i18n(I18nKey.categories)} id={id} isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT}
                 class={className} style={style}
 >
     <div class="flex flex-col gap-2">
