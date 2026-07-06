@@ -132,6 +132,12 @@ loadButtonScript();
 	}
 
 	function navUrl(rawUrl, privateMode) {
+		if (rawUrl.startsWith(publicPostPrefix)) {
+			const next = new URL(rawUrl, window.location.origin);
+			if (privateMode) next.searchParams.set("private", "true");
+			else next.searchParams.delete("private");
+			return `${next.pathname}${next.search}${next.hash}`;
+		}
 		if (!privateMode) {
 			if (rawUrl === "/") return publicHomeUrl;
 			if (rawUrl === "/archive/") return publicArchiveUrl;
