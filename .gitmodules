@@ -1,0 +1,4 @@
+[submodule "contents"]
+	path = contents
+	url = https://github.com/Yikai-Liao/blog-posts.git
+	branch = main

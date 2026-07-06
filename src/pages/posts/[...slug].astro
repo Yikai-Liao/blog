@@ -6,7 +6,7 @@ import { getPostRouteSlug } from "@utils/url-utils";
 export async function getStaticPaths() {
 	const blogEntries = await getSortedPosts();
 	return blogEntries.map((entry) => ({
-		params: { slug: getPostRouteSlug(entry.id) },
+		params: { slug: getPostRouteSlug(entry.data.slug) },
 		props: { entry },
 	}));
 }

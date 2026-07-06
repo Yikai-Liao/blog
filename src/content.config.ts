@@ -3,8 +3,11 @@ import type { CollectionConfig } from "astro/content/config";
 import { glob } from "astro/loaders";
 import { type ZodType, z } from "astro/zod";
 
+const postSlugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
 type PostData = {
 	title: string;
+	slug: string;
 	published: Date;
 	updated?: Date;
 	draft: boolean;
@@ -40,10 +43,11 @@ type PostData = {
 
 const postsLoader: ReturnType<typeof glob> = glob({
 	base: "./contents",
-	pattern: "**/[^_]*.{md,mdx}",
+	pattern: "[0-9][0-9][0-9][0-9]/**/[^_]*.{md,mdx}",
 });
 const postsSchema: ZodType<PostData> = z.object({
 	title: z.string(),
+	slug: z.string().regex(postSlugRegex),
 	published: z.date(),
 	updated: z.date().optional(),
 	draft: z.boolean().optional().default(false),

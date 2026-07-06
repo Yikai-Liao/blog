@@ -89,6 +89,7 @@ export type LIGHT_DARK_MODE =
 export type BlogPostData = {
 	body: string;
 	title: string;
+	slug: string;
 	published: Date;
 	description: string;
 	author?: string;

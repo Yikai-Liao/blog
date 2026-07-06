@@ -1,6 +1,6 @@
 # Yikai Liao 的博客
 
-这是 `Yikai-Liao/blog` 的源码仓库。站点基于 Astro 和 Fuwari 改造，内容放在 `contents/`，评论后端放在 `comments/`。
+这是 `Yikai-Liao/blog` 的源码仓库。站点基于 Astro 和 Fuwari 改造，文章通过 `contents/` submodule 关联到 private 仓库 `Yikai-Liao/blog-posts`，评论后端放在 `comments/`。
 
 ## 技术栈
 
@@ -28,11 +28,11 @@ pnpm dev
 | `pnpm preview` | 预览生产构建 |
 | `pnpm check` | 运行 Astro 检查 |
 | `pnpm type-check` | 运行 TypeScript 检查 |
-| `pnpm new-post <slug>` | 在 `contents/` 下创建文章 |
+| `pnpm new-post <slug>` | 在 `contents/<当前年份>/` 下创建文章 |
 
 ## 写文章
 
-文章使用 Markdown 或 MDX，路径规则是 `contents/**/*.md` 和 `contents/**/*.mdx`。以下划线开头的文件不会被收录。
+文章使用 Markdown 或 MDX，路径规则是 `contents/<年份>/**/*.md` 和 `contents/<年份>/**/*.mdx`。以下划线开头的文件不会被收录，`contents/README.md` 也不会被收录。
 
 最小 frontmatter：
 
@@ -53,8 +53,54 @@ private: true
 
 - `draft: true`：不发布。
 - `private: true`：作为私有文章处理。当前 schema 默认值也是 `true`，公开文章需要显式写 `private: false`。
+- `slug`：文章 URL，必须在全部文章里唯一；年份目录不会进入 URL。只允许小写字母、数字、短横线，例如 `tidb-vs-tikv`。
 - `image`：封面图，可用 URL、`public/` 下的绝对路径，或相对文章文件的路径。
 - `toc.depth`：单篇文章目录深度，可设为 `1`、`2`、`3`。
+
+推荐的 private 仓结构：
+
+```text
+README.md
+2024/
+  post.md
+  topic/
+    index.md
+2025/
+  another-post.md
+```
+
+把文章迁移成 submodule：
+
+```sh
+git rm -r contents
+git submodule add https://github.com/Yikai-Liao/blog-posts.git contents
+git commit -m "Move blog posts to submodule"
+```
+
+GitHub Actions 需要一个 `BLOG_POSTS_TOKEN` secret。它需要能读取 `Yikai-Liao/blog-posts`；如果要让 private 仓更新后自动推进 public 仓的 submodule 指针并触发 public 仓构建，也需要能写 `Yikai-Liao/blog`。
+
+在 `Yikai-Liao/blog-posts` 里加一个 workflow 触发 public 仓更新：
+
+```yaml
+name: Notify Blog
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch public blog update
+        run: |
+          curl -fsS -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.BLOG_POSTS_TOKEN }}" \
+            https://api.github.com/repos/Yikai-Liao/blog/dispatches \
+            -d '{"event_type":"blog-posts-updated"}'
+```
 
 ## 评论后端
 

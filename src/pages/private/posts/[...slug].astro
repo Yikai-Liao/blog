@@ -8,7 +8,7 @@ export async function getStaticPaths() {
 	return blogEntries
 		.filter((entry) => entry.data.private)
 		.map((entry) => ({
-			params: { slug: getPostRouteSlug(entry.id) },
+			params: { slug: getPostRouteSlug(entry.data.slug) },
 			props: { entry },
 		}));
 }

@@ -24,7 +24,7 @@ export async function GET(context: APIContext): Promise<Response> {
 		description: siteConfig.subtitle || "No description",
 		site: context.site ?? "https://fuwari.vercel.app",
 		items: blog.map((post) => {
-			const link = getPostUrlBySlug(post.id, false);
+			const link = getPostUrlBySlug(post.data.slug, false);
 
 			const content =
 				typeof post.body === "string" ? post.body : String(post.body || "");

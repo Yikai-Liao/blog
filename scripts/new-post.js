@@ -28,7 +28,8 @@ if (!fileExtensionRegex.test(fileName)) {
   fileName += ".md"
 }
 
-const targetDir = "./contents/"
+const year = String(new Date().getFullYear())
+const targetDir = path.join("./contents", year)
 const fullPath = path.join(targetDir, fileName)
 const slug = path.basename(fileName, path.extname(fileName))
 

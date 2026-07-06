@@ -1,13 +1,37 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
-import { getCategoryUrl } from "@utils/url-utils.ts";
+import { getCategoryUrl, normalizePostRoutePart } from "@utils/url-utils.ts";
+
+function assertUniquePostSlugs(posts: CollectionEntry<"posts">[]) {
+	const seen = new Map<string, CollectionEntry<"posts">>();
+	const duplicates: string[] = [];
+
+	for (const post of posts) {
+		const slug = normalizePostRoutePart(post.data.slug);
+		const existing = seen.get(slug);
+		if (existing) {
+			duplicates.push(
+				`${slug}: ${existing.filePath ?? existing.id}, ${post.filePath ?? post.id}`,
+			);
+			continue;
+		}
+		seen.set(slug, post);
+	}
+
+	if (duplicates.length > 0) {
+		throw new Error(`Duplicate post slug(s):\n${duplicates.join("\n")}`);
+	}
+}
 
 // // Retrieve posts and sort them by publication date
 async function getRawSortedPosts(
 	includePrivate = false,
 ): Promise<CollectionEntry<"posts">[]> {
-	const allBlogPosts = await getCollection("posts", ({ data }) => {
+	const allPosts = await getCollection("posts");
+	assertUniquePostSlugs(allPosts);
+
+	const allBlogPosts = allPosts.filter(({ data }) => {
 		return data.draft !== true && (includePrivate || data.private !== true);
 	});
 
@@ -54,12 +78,12 @@ function setAdjacentFields(
 	fields: AdjacentFields,
 ) {
 	for (let i = 1; i < posts.length; i++) {
-		posts[i].data[fields.nextSlug] = posts[i - 1].id;
+		posts[i].data[fields.nextSlug] = posts[i - 1].data.slug;
 		posts[i].data[fields.nextTitle] = posts[i - 1].data.title;
 		posts[i].data[fields.nextPrivate] = posts[i - 1].data.private;
 	}
 	for (let i = 0; i < posts.length - 1; i++) {
-		posts[i].data[fields.prevSlug] = posts[i + 1].id;
+		posts[i].data[fields.prevSlug] = posts[i + 1].data.slug;
 		posts[i].data[fields.prevTitle] = posts[i + 1].data.title;
 		posts[i].data[fields.prevPrivate] = posts[i + 1].data.private;
 	}
@@ -111,7 +135,7 @@ export async function getSortedPostsList(
 
 	// delete post.body
 	const sortedPostsList = sortedFullPosts.map((post) => ({
-		slug: post.id,
+		slug: post.data.slug,
 		data: post.data,
 	}));
 

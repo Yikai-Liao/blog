@@ -21,7 +21,7 @@ interface Props {
 
 const { entry, privateContext = false } = Astro.props;
 const { Content, headings, remarkPluginFrontmatter } = await render(entry);
-const commentPath = getPostUrlBySlug(entry.id, false);
+const commentPath = getPostUrlBySlug(entry.data.slug, false);
 const contentBasePath = path.join("..", getDir(entry.filePath ?? ""));
 const adjacentPanels = [
 	{
@@ -119,7 +119,7 @@ const jsonLd = {
                 <Content />
             </Markdown>
 
-            {licenseConfig.enable && <License title={entry.data.title} slug={entry.id} pubDate={entry.data.published} author={entry.data.author} class="mb-6 rounded-xl license-container onload-animation"></License>}
+            {licenseConfig.enable && <License title={entry.data.title} slug={entry.data.slug} pubDate={entry.data.published} author={entry.data.author} class="mb-6 rounded-xl license-container onload-animation"></License>}
         </div>
     </div>
 
