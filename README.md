@@ -109,17 +109,12 @@ jobs:
 本地调试：
 
 ```sh
-cd comments
 pnpm install
-TWIKOO_D1_DATABASE_ID=local-twikoo pnpm d1:schema:local
-TWIKOO_D1_DATABASE_ID=local-twikoo pnpm dev
+TWIKOO_D1_DATABASE_ID=local-twikoo pnpm --dir comments d1:schema:local
+pnpm dev
 ```
 
-另开一个终端启动站点：
-
-```sh
-PUBLIC_TWIKOO_ENV_ID=http://127.0.0.1:8787 pnpm dev --host 127.0.0.1
-```
+`pnpm dev` 会默认用 `local-twikoo` 启动本地评论 Worker，并把前端评论地址指向 `http://127.0.0.1:8787`。
 
 更完整的 Worker 部署和权限说明见 [comments/README.md](comments/README.md)。
 

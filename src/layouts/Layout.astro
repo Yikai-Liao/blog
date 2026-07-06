@@ -401,17 +401,17 @@ if (window?.swup?.hooks) {
 	document.addEventListener('swup:enable', setup)
 }
 
-let backToTopBtn = document.getElementById('back-to-top-btn');
+let backToTopBtns = document.querySelectorAll('.back-to-top-btn');
 let toc = document.getElementById('toc-wrapper');
 let navbar = document.getElementById('navbar-wrapper')
 function scrollFunction() {
 	let bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100)
 
-	if (backToTopBtn) {
+	if (backToTopBtns.length) {
 		if (document.body.scrollTop > bannerHeight || document.documentElement.scrollTop > bannerHeight) {
-			backToTopBtn.classList.remove('hide')
+			backToTopBtns.forEach((btn) => btn.classList.remove('hide'))
 		} else {
-			backToTopBtn.classList.add('hide')
+			backToTopBtns.forEach((btn) => btn.classList.add('hide'))
 		}
 	}
 

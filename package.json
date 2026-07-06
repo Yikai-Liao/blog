@@ -3,7 +3,8 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "TWIKOO_D1_DATABASE_ID=${TWIKOO_D1_DATABASE_ID:-local-twikoo} PUBLIC_TWIKOO_ENV_ID=${PUBLIC_TWIKOO_ENV_ID:-http://127.0.0.1:8787} bash -c 'setsid pnpm --dir comments dev & comments_pid=$!; trap \"pnpm exec astro dev stop >/dev/null 2>&1; kill -TERM -$comments_pid 2>/dev/null\" EXIT INT TERM; pnpm exec astro dev \"$@\" || exit $?; wait $comments_pid' dev",
+    "dev:site": "astro dev",
     "start": "astro dev",
     "check": "astro check",
     "github-cards": "node scripts/update-github-card-data.js",
@@ -72,7 +73,8 @@
     "@types/mdast": "^4.0.4",
     "@types/sanitize-html": "^2.16.1",
     "postcss-import": "^16.1.1",
-    "postcss-nesting": "^14.0.0"
+    "postcss-nesting": "^14.0.0",
+    "wrangler": "^4.107.0"
   },
   "packageManager": "pnpm@11.10.0"
 }
