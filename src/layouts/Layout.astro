@@ -568,8 +568,8 @@ async function initBlogTwikoo() {
 		return;
 	}
 
-	const { envId, title, lang } = root.dataset;
-	const path = normalizeTwikooPath(window.location.pathname);
+	const { envId, path: commentPath, title, lang } = root.dataset;
+	const path = normalizeTwikooPath(commentPath || window.location.pathname);
 	if (!envId || !title) {
 		resetBlogTwikoo();
 		return;

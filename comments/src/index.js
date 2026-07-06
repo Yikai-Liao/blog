@@ -28,10 +28,6 @@ function uuid() {
 	return crypto.randomUUID().replaceAll("-", "");
 }
 
-function getUrlVariants(url) {
-	return [...new Set([url, url.endsWith("/") ? url.slice(0, -1) : `${url}/`])];
-}
-
 async function readConfig(DB) {
 	const row = await DB.prepare("SELECT value FROM config LIMIT 1").first();
 	if (!row?.value) return {};
@@ -107,9 +103,7 @@ async function writePublicCommentCache(event, data, ctx) {
 }
 
 function publicCommentCacheEvents(url) {
-	return getUrlVariants(url).flatMap((urlVariant) =>
-		PUBLIC_COMMENT_CACHE_SORTS.map((sort) => ({ url: urlVariant, sort })),
-	);
+	return PUBLIC_COMMENT_CACHE_SORTS.map((sort) => ({ url, sort }));
 }
 
 async function deletePublicCommentCache(url) {
@@ -197,18 +191,11 @@ async function getCommentReplies(DB, event, spamMarker, uid, main) {
 		`
 SELECT * FROM comment
 WHERE
-  url IN (${getUrlVariants(event.url)
-		.map(() => "?")
-		.join(", ")}) AND
+  url = ? AND
   (isSpam != ? OR uid = ?) AND
   rid IN (${placeholders})
 `.trim(),
-		[
-			...getUrlVariants(event.url),
-			spamMarker,
-			uid,
-			...main.map((item) => item._id),
-		],
+		[event.url, spamMarker, uid, ...main.map((item) => item._id)],
 	);
 }
 
@@ -260,8 +247,6 @@ async function commentGet(event, request, env, ctx) {
 	const spamMarker = isAdmin ? 2 : 1;
 	const limit = Number.parseInt(config.COMMENT_PAGE_SIZE, 10) || 8;
 	const before = event.before ?? MAX_TIMESTAMP_MILLIS;
-	const urls = getUrlVariants(event.url);
-	const urlPlaceholders = urls.map(() => "?").join(", ");
 	const visibilityParams = [spamMarker, uid];
 	let more = false;
 
@@ -270,12 +255,12 @@ async function commentGet(event, request, env, ctx) {
 		`
 SELECT COUNT(*) AS count FROM comment
 WHERE
-  url IN (${urlPlaceholders}) AND
+  url = ? AND
   rid = "" AND
   (isSpam != ? OR uid = ?)
 `.trim(),
 		"count",
-		[...urls, ...visibilityParams],
+		[event.url, ...visibilityParams],
 	);
 
 	let main = await queryAll(
@@ -283,7 +268,7 @@ WHERE
 		`
 SELECT * FROM comment
 WHERE
-  url IN (${urlPlaceholders}) AND
+  url = ? AND
   (isSpam != ? OR uid = ?) AND
   created < ? AND
   top = 0 AND
@@ -291,7 +276,7 @@ WHERE
 ORDER BY ${sortClause(event.sort)}
 LIMIT ?
 `.trim(),
-		[...urls, ...visibilityParams, before, limit + 1],
+		[event.url, ...visibilityParams, before, limit + 1],
 	);
 
 	if (main.length > limit) {
@@ -305,14 +290,14 @@ LIMIT ?
 			`
 SELECT * FROM comment
 WHERE
-  url IN (${urlPlaceholders}) AND
+  url = ? AND
   (isSpam != ? OR uid = ?) AND
   top = 1 AND
   rid = ""
 ORDER BY updated DESC
 LIMIT ?
 `.trim(),
-			[...urls, ...visibilityParams, MAX_QUERY_LIMIT],
+			[event.url, ...visibilityParams, MAX_QUERY_LIMIT],
 		);
 		main = [...top, ...main];
 	}
