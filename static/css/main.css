@@ -230,8 +230,14 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
   transition: width .2s ease;
 }
 .search-bar input:focus { width: 15rem; }
-.search-bar-panel { display: none; width: 100%; margin: 0 0 .5rem; }
-.search-panel { top: 5rem; width: 30rem; max-height: calc(100vh - 6.25rem); overflow-y: auto; }
+.search-bar-panel { display: none; width: 100%; margin: 0 0 .5rem; border-radius: .75rem; }
+.search-panel {
+  top: 5rem;
+  width: 30rem;
+  max-height: calc(100vh - 6.25rem);
+  padding: .5rem;
+  overflow-y: auto;
+}
 .archive-toolbar input {
   width: 100%;
   height: 2.75rem;
@@ -244,12 +250,24 @@ svg { width: 1.25em; height: 1.25em; fill: currentColor; vertical-align: -0.18em
 }
 .search-result {
   display: block;
-  margin-top: .75rem;
-  padding: .75rem;
+  margin-top: .125rem;
+  padding: .5rem .75rem;
   border-radius: .75rem;
-  background: var(--btn-regular-bg);
+  color: inherit;
+  background: transparent;
+  font-size: 1.125rem;
 }
-.search-result strong { display: block; color: var(--primary); }
+.search-result:first-child { margin-top: 0; }
+.search-result:hover {
+  background: var(--btn-plain-bg-hover);
+}
+.search-result strong {
+  display: inline-flex;
+  color: rgb(0 0 0 / 90%);
+  font-weight: 700;
+}
+.dark .search-result strong { color: rgb(255 255 255 / 90%); }
+.search-result:hover strong { color: var(--primary); }
 .search-result span, .search-empty { display: block; color: rgb(0 0 0 / 55%); margin: .3rem 0 0; }
 .dark .search-result span, .dark .search-empty { color: rgb(255 255 255 / 55%); }
 .display-panel { min-width: 15rem; }

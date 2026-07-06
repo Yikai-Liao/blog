@@ -3,7 +3,7 @@
 
 {% block content %}
   {% set is_post = current_path is starting_with("/posts/") %}
-    <article id="post-container" class="post-container card-base">
+    <article id="post-container" class="post-container card-base" data-pagefind-body>
       <header class="post-header">
         {% if is_post %}
           <div class="post-stats">
