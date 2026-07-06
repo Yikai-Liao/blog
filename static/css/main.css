@@ -1467,34 +1467,6 @@ h1:hover .anchor, h2:hover .anchor, h3:hover .anchor, h4:hover .anchor { opacity
 }
 .code-frame:hover .copy-btn { opacity: 1; }
 .copy-btn.success { color: var(--deep-text); background: var(--primary); }
-.expressive-code .frame:hover .copy-btn { opacity: 1; }
-.expressive-code .copy-btn {
-  width: 2rem;
-  padding: 0;
-  box-shadow: 0 .5rem 1rem rgb(0 0 0 / 50%);
-}
-.copy-btn-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 1rem;
-  height: 1rem;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-.copy-btn-icon svg,
-svg.copy-btn-icon {
-  width: 1rem;
-  height: 1rem;
-  fill: white;
-}
-.copy-btn .copy-icon { opacity: 1; }
-.copy-btn .success-icon { opacity: 0; }
-.copy-btn.success .copy-icon { opacity: 0; }
-.copy-btn.success .success-icon {
-  opacity: 1;
-  fill: var(--deep-text);
-}
 .expressive-code ::selection {
   background: var(--codeblock-selection);
 }

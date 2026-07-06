@@ -610,22 +610,6 @@ addEventListener("resize", () => {
 });
 
 document.addEventListener("click", (event) => {
-	if (!(event.target instanceof Element)) return;
-	const button = event.target.closest(".expressive-code .copy-btn");
-	if (!button) return;
-	const code = button.closest("pre")?.querySelector("code");
-	const text = qsa(".code:not(summary *)", code)
-		.map((line) => line.textContent)
-		.join("\n");
-	navigator.clipboard.writeText(text || code?.innerText || "");
-	const previous = button.getAttribute("data-timeout-id");
-	if (previous) clearTimeout(Number(previous));
-	button.classList.add("success");
-	const timeout = setTimeout(() => button.classList.remove("success"), 1000);
-	button.setAttribute("data-timeout-id", String(timeout));
-});
-
-document.addEventListener("click", (event) => {
 	if (
 		event.defaultPrevented ||
 		event.button !== 0 ||

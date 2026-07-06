@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { definePlugin, ExpressiveCodeEngine } from "@expressive-code/core";
+import { toHtml } from "@expressive-code/core/hast";
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections";
 import { pluginFrames } from "@expressive-code/plugin-frames";
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
@@ -16,86 +17,11 @@ const targetDir = path.join(root, "content", "posts");
 const theme = await loadShikiTheme("github-dark");
 const markdownParser = new MarkdownIt({ html: true });
 
-function pluginCustomCopyButton() {
-	return definePlugin({
-		name: "Custom Copy Button",
-		hooks: {
-			postprocessRenderedBlock: (context) => {
-				const traverse = (node) => {
-					if (node.type === "element" && node.tagName === "pre") {
-						node.children ||= [];
-						node.children.push({
-							type: "element",
-							tagName: "button",
-							properties: {
-								className: ["copy-btn"],
-								"aria-label": "Copy code",
-							},
-							children: [
-								{
-									type: "element",
-									tagName: "div",
-									properties: { className: ["copy-btn-icon"] },
-									children: [
-										{
-											type: "element",
-											tagName: "svg",
-											properties: {
-												viewBox: "0 -960 960 960",
-												xmlns: "http://www.w3.org/2000/svg",
-												className: ["copy-btn-icon", "copy-icon"],
-											},
-											children: [
-												{
-													type: "element",
-													tagName: "path",
-													properties: {
-														d: "M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z",
-													},
-													children: [],
-												},
-											],
-										},
-										{
-											type: "element",
-											tagName: "svg",
-											properties: {
-												viewBox: "0 -960 960 960",
-												xmlns: "http://www.w3.org/2000/svg",
-												className: ["copy-btn-icon", "success-icon"],
-											},
-											children: [
-												{
-													type: "element",
-													tagName: "path",
-													properties: {
-														d: "m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z",
-													},
-													children: [],
-												},
-											],
-										},
-									],
-								},
-							],
-						});
-						return;
-					}
-					for (const child of node.children || []) {
-						if (child.type === "element") traverse(child);
-					}
-				};
-				traverse(context.renderData.blockAst);
-			},
-		},
-	});
-}
-
 function pluginLanguageBadge() {
 	return definePlugin({
 		name: "Language Badge",
 		baseStyles: () => `
-      [data-language]::before {
+      .expressive-code [data-language]::before {
         position: absolute;
         z-index: 2;
         right: 0.5rem;
@@ -113,8 +39,8 @@ function pluginLanguageBadge() {
         transition: opacity 0.3s;
         opacity: 0;
       }
-      .frame:not(.has-title):not(.is-terminal) [data-language]::before { opacity: 1; }
-      .frame:not(.has-title):not(.is-terminal):hover [data-language]::before { opacity: 0; }
+      .expressive-code .frame:not(.has-title):not(.is-terminal) [data-language]::before { opacity: 1; }
+      .expressive-code .frame:not(.has-title):not(.is-terminal):hover [data-language]::before { opacity: 0; }
     `,
 	});
 }
@@ -123,12 +49,11 @@ const codeEngine = new ExpressiveCodeEngine({
 	themes: [theme, theme],
 	plugins: [
 		pluginShiki(),
-		pluginFrames({ showCopyToClipboardButton: false }),
+		pluginFrames(),
 		pluginTextMarkers(),
 		pluginCollapsibleSections(),
 		pluginLineNumbers(),
 		pluginLanguageBadge(),
-		pluginCustomCopyButton(),
 	],
 	defaultProps: {
 		wrap: true,
@@ -171,30 +96,6 @@ const escapeHtml = (value) =>
 		.replaceAll("<", "&lt;")
 		.replaceAll(">", "&gt;")
 		.replaceAll('"', "&quot;");
-
-function hastToHtml(node) {
-	if (!node) return "";
-	if (node.type === "text") return escapeHtml(node.value || "");
-	if (node.type === "raw") return node.value || "";
-	if (node.type !== "element")
-		return (node.children || []).map(hastToHtml).join("");
-	const props = Object.entries(node.properties || {})
-		.filter(([, value]) => value !== false && value != null)
-		.map(([key, value]) => {
-			const attr =
-				key === "className"
-					? "class"
-					: key === "viewBox"
-						? "viewBox"
-						: key.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
-			if (value === true) return attr;
-			const rendered = Array.isArray(value) ? value.join(" ") : String(value);
-			return `${attr}="${escapeHtml(rendered)}"`;
-		})
-		.join(" ");
-	const open = props ? `<${node.tagName} ${props}>` : `<${node.tagName}>`;
-	return `${open}${(node.children || []).map(hastToHtml).join("")}</${node.tagName}>`;
-}
 
 async function listMarkdownFiles(dir) {
 	const entries = await fs.readdir(dir, { withFileTypes: true });
@@ -354,7 +255,7 @@ async function transformCodeBlocks(markdown) {
 				meta: metaParts.join(" "),
 			});
 			const html = indentHtmlForMarkdownContainer(
-				hastToHtml(rendered.renderedGroupAst),
+				toHtml(rendered.renderedGroupAst),
 				token,
 				originalLines,
 			);
@@ -398,7 +299,26 @@ generate_feeds = true
 	);
 }
 
+async function writeExpressiveCodeAssets() {
+	const [baseStyles, themeStyles, jsModules] = await Promise.all([
+		codeEngine.getBaseStyles(),
+		codeEngine.getThemeStyles(),
+		codeEngine.getJsModules(),
+	]);
+	await fs.mkdir(path.join(root, "static", "css"), { recursive: true });
+	await fs.mkdir(path.join(root, "static", "js"), { recursive: true });
+	await fs.writeFile(
+		path.join(root, "static", "css", "ec.css"),
+		`/* Generated by scripts/preprocess-zola-content.mjs. */\n${baseStyles}\n${themeStyles}\n`,
+	);
+	await fs.writeFile(
+		path.join(root, "static", "js", "expressive-code.js"),
+		`// biome-ignore-all lint: generated by Expressive Code.\n// Generated by scripts/preprocess-zola-content.mjs.\n${jsModules.join("\n")}\n`,
+	);
+}
+
 async function main() {
+	await writeExpressiveCodeAssets();
 	await cleanGeneratedPosts();
 	const files = await listMarkdownFiles(sourceDir);
 	const posts = await Promise.all(
