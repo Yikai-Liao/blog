@@ -9,7 +9,16 @@ const env = {
 const preprocess = spawn("node", ["scripts/preprocess-zola-content.mjs"], { stdio: "inherit", env });
 preprocess.on("exit", (code) => {
   if (code !== 0) process.exit(code || 1);
-  const zola = spawn("zola", ["serve", "--interface", "127.0.0.1", "--port", process.env.PORT || "1111", "--base-url", env.PUBLIC_SITE_URL], {
+  const zola = spawn("zola", [
+    "serve",
+    "--interface",
+    "127.0.0.1",
+    "--port",
+    process.env.PORT || "1111",
+    "--output-dir",
+    ".zola-dev-public",
+    "--force",
+  ], {
     stdio: "inherit",
     env,
   });

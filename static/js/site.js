@@ -55,7 +55,9 @@ async function initSearch() {
   if (!input || !results) return;
   let pagefind;
   try {
-    pagefind = await import(`${config.baseUrl}pagefind/pagefind.js`);
+    const configuredBase = new URL(config.baseUrl || "/", location.href);
+    const runtimeBase = configuredBase.origin === location.origin ? configuredBase.href : `${location.origin}/`;
+    pagefind = await import(new URL("pagefind/pagefind.js", runtimeBase).href);
     await pagefind.options({ excerptLength: 20 });
   } catch {
     pagefind = null;
@@ -65,7 +67,7 @@ async function initSearch() {
     results.innerHTML = "";
     if (!keyword) return;
     if (!pagefind) {
-      results.innerHTML = `<p class="search-empty">Search is available after production build.</p>`;
+      results.innerHTML = `<p class="search-empty">搜索索引仅在生产构建后可用。</p>`;
       return;
     }
     const response = await pagefind.search(keyword);
@@ -197,12 +199,14 @@ function initPage() {
 initPanels();
 initSearch();
 initPage();
+window.__zolaBlogRuntimeReady = true;
 
 const swup = new Swup({
   containers: ["#swup-container", "#sidebar-sticky"],
   animationSelector: '[class*="transition-swup-"]',
   plugins: [new SwupPreloadPlugin()],
 });
+window.swup = swup;
 
 swup.hooks.on("visit:start", (visit) => {
   document.documentElement.style.setProperty("--content-delay", "0ms");

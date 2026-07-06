@@ -23,7 +23,7 @@ You can add dynamic cards that link to GitHub repositories, on page load, the re
 {{ github(repo="Fabrizz/MMM-OnSpotify") }}
 Create a GitHub repository card with the code `::github{repo="<owner>/<repo>"}`.
 
-<div class="expressive-code"><pre data-language="markdown" class="wrap" style="--ecMaxLine:36ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code">{{ github(repo=&quot;Yikai-Liao/blog&quot;) }}</div></div></code></pre></div>
+<div class="expressive-code"><pre data-language="markdown" class="wrap" style="--ecMaxLine:32ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code">::github{repo=&quot;Yikai-Liao/blog&quot;}</div></div></code></pre></div>
 
 ## Admonitions
 
@@ -61,10 +61,8 @@ Negative potential consequences of an action.
 
 ### Basic Syntax
 
-<div class="expressive-code"><pre data-language="markdown" class="wrap" style="--ecMaxLine:79ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code">&lt;blockquote class=&quot;admonition bdm-note&quot;&gt;</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">2</div></div><div class="code">&lt;p class=&quot;bdm-title&quot;&gt;Note&lt;/p&gt;</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">3</div></div><div class="code">
-</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">4</div></div><div class="code">Highlights information that users should take into account, even when skimming.</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">5</div></div><div class="code">&lt;/blockquote&gt;</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">6</div></div><div class="code">
-</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">7</div></div><div class="code">&lt;blockquote class=&quot;admonition bdm-tip&quot;&gt;</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">8</div></div><div class="code">&lt;p class=&quot;bdm-title&quot;&gt;Tip&lt;/p&gt;</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">9</div></div><div class="code">
-</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">10</div></div><div class="code">Optional information to help a user be more successful.</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">11</div></div><div class="code">&lt;/blockquote&gt;</div></div></code></pre></div>
+<div class="expressive-code"><pre data-language="markdown" class="wrap" style="--ecMaxLine:79ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code">:::note</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">2</div></div><div class="code">Highlights information that users should take into account, even when skimming.</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">3</div></div><div class="code">:::</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">4</div></div><div class="code">
+</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">5</div></div><div class="code">:::tip</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">6</div></div><div class="code">Optional information to help a user be more successful.</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">7</div></div><div class="code">:::</div></div></code></pre></div>
 
 ### Custom Titles
 
@@ -76,8 +74,7 @@ The title of the admonition can be customized.
 This is a note with a custom title.
 </blockquote>
 
-<div class="expressive-code"><pre data-language="markdown" class="wrap" style="--ecMaxLine:40ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code">&lt;blockquote class=&quot;admonition bdm-note&quot;&gt;</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">2</div></div><div class="code">&lt;p class=&quot;bdm-title&quot;&gt;MY CUSTOM TITLE&lt;/p&gt;</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">3</div></div><div class="code">
-</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">4</div></div><div class="code">This is a note with a custom title.</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">5</div></div><div class="code">&lt;/blockquote&gt;</div></div></code></pre></div>
+<div class="expressive-code"><pre data-language="markdown" class="wrap" style="--ecMaxLine:35ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code">:::note[MY CUSTOM TITLE]</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">2</div></div><div class="code">This is a note with a custom title.</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">3</div></div><div class="code">:::</div></div></code></pre></div>
 
 ### GitHub Syntax
 
@@ -86,9 +83,8 @@ This is a note with a custom title.
 
 [The GitHub syntax](https://github.com/orgs/community/discussions/16925) is also supported.
 </blockquote>
-<div class="expressive-code"><pre data-language="text" class="wrap" style="--ecMaxLine:40ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code">&lt;blockquote class=&quot;admonition bdm-note&quot;&gt;</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">2</div></div><div class="code">&lt;p class=&quot;bdm-title&quot;&gt;NOTE&lt;/p&gt;</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">3</div></div><div class="code">
-</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">4</div></div><div class="code">The GitHub syntax is also supported.</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">5</div></div><div class="code">&lt;/blockquote&gt;</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">6</div></div><div class="code">&lt;blockquote class=&quot;admonition bdm-tip&quot;&gt;</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">7</div></div><div class="code">&lt;p class=&quot;bdm-title&quot;&gt;TIP&lt;/p&gt;</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">8</div></div><div class="code">
-</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">9</div></div><div class="code">The GitHub syntax is also supported.</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">10</div></div><div class="code">&lt;/blockquote&gt;</div></div></code></pre></div>
+<div class="expressive-code"><pre data-language="text" class="wrap" style="--ecMaxLine:38ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code">&gt; [!NOTE]</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">2</div></div><div class="code">&gt; The GitHub syntax is also supported.</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">3</div></div><div class="code">
+</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">4</div></div><div class="code">&gt; [!TIP]</div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">5</div></div><div class="code">&gt; The GitHub syntax is also supported.</div></div></code></pre></div>
 
 ### Spoiler
 
@@ -96,4 +92,4 @@ You can add spoilers to your text. The text also supports **Markdown** syntax.
 
 The content <spoiler>is hidden **ayyy**</spoiler>!
 
-<div class="expressive-code"><pre data-language="markdown" class="wrap" style="--ecMaxLine:50ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code">The content &lt;spoiler&gt;is hidden **ayyy**&lt;/spoiler&gt;!</div></div></code></pre></div>
+<div class="expressive-code"><pre data-language="markdown" class="wrap" style="--ecMaxLine:41ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code">The content <spoiler>is hidden **ayyy**</spoiler>!</div></div></code></pre></div>

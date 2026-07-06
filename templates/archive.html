@@ -4,9 +4,9 @@
 {% block content %}
   {% set posts = get_section(path="posts/_index.md") %}
   <section class="archive-page card-base">
-    <h1>Archive</h1>
+    <h1>归档</h1>
     <div class="archive-toolbar">
-      <input id="archive-filter-input" type="search" placeholder="Filter posts">
+      <input id="archive-filter-input" type="search" placeholder="筛选文章">
     </div>
     <div class="archive-list">
       {% for year, pages in posts.pages | group_by(attribute="year") %}

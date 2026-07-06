@@ -198,7 +198,7 @@ async function main() {
     const [data, body] = parseFrontmatter(raw);
     const slug = data.slug || path.basename(file, ".md");
     const target = path.join(targetDir, slug, "index.md");
-    const transformed = await transformCodeBlocks(transformDirectives(body));
+    const transformed = transformDirectives(await transformCodeBlocks(body));
     await fs.mkdir(path.dirname(target), { recursive: true });
     await fs.writeFile(target, `${buildFrontmatter(data, file)}${transformed}`);
   }

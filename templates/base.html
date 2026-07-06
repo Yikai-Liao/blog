@@ -39,9 +39,9 @@
         <div class="navbar-card card-base">
           <a href="{{ get_url(path="/") }}" class="btn-plain nav-home" aria-label="Home">{{ macros::icon(name="home") }}</a>
           <div class="nav-links">
-            <a href="{{ get_url(path="/") }}" class="btn-plain">Home</a>
-            <a href="{{ get_url(path="archive/") }}" class="btn-plain">Archive</a>
-            <a href="{{ get_url(path="about/") }}" class="btn-plain">About</a>
+            <a href="{{ get_url(path="/") }}" class="btn-plain">主页</a>
+            <a href="{{ get_url(path="archive/") }}" class="btn-plain">归档</a>
+            <a href="{{ get_url(path="about/") }}" class="btn-plain">关于</a>
             <a href="{{ config.extra.github_url }}" class="btn-plain" target="_blank" rel="noopener">GitHub {{ macros::icon(name="external") }}</a>
           </div>
           <div class="nav-actions">
@@ -51,17 +51,17 @@
             <button id="nav-menu-switch" class="btn-plain icon-btn mobile-only" aria-label="Menu">{{ macros::icon(name="menu") }}</button>
           </div>
           <div id="search-panel" class="float-panel float-panel-closed search-panel">
-            <input id="search-input" type="search" placeholder="Search" autocomplete="off">
+            <input id="search-input" type="search" placeholder="搜索" autocomplete="off">
             <div id="search-results"></div>
           </div>
           <div id="display-setting" class="float-panel float-panel-closed display-panel">
-            <div class="panel-label">Theme color</div>
+            <div class="panel-label">主题色</div>
             <input id="hue-slider" type="range" min="0" max="360" value="{{ config.extra.theme_hue }}">
           </div>
           <div id="nav-menu-panel" class="float-panel float-panel-closed mobile-menu">
-            <a href="{{ get_url(path="/") }}">Home</a>
-            <a href="{{ get_url(path="archive/") }}">Archive</a>
-            <a href="{{ get_url(path="about/") }}">About</a>
+            <a href="{{ get_url(path="/") }}">主页</a>
+            <a href="{{ get_url(path="archive/") }}">归档</a>
+            <a href="{{ get_url(path="about/") }}">关于</a>
             <a href="{{ config.extra.github_url }}" target="_blank" rel="noopener">GitHub</a>
           </div>
         </div>
@@ -94,7 +94,7 @@
           <div id="sidebar-sticky" class="sidebar-sticky">
             {% if page and page.toc %}
               <section id="sidebar-toc" class="widget card-base onload-animation">
-                <h2>Contents</h2>
+                <h2>目录</h2>
                 <div class="toc-scroll">
                   <ul class="toc-list">
                     {% for h1 in page.toc %}
@@ -106,14 +106,14 @@
               </section>
             {% else %}
               <section class="widget card-base onload-animation">
-                <h2>Categories</h2>
+                <h2>分类</h2>
                 <div class="tag-list">
                   {% set categories = get_taxonomy(kind="categories") %}
                   {% for term in categories.items %}<a class="btn-regular" href="{{ term.permalink }}">{{ term.name }}</a>{% endfor %}
                 </div>
               </section>
               <section class="widget card-base onload-animation">
-                <h2>Tags</h2>
+                <h2>标签</h2>
                 <div class="tag-list">
                   {% set tags = get_taxonomy(kind="tags") %}
                   {% for term in tags.items %}<a class="btn-regular" href="{{ term.permalink }}">#{{ term.name }}</a>{% endfor %}
@@ -136,6 +136,6 @@
     </div>
   </div>
   <div id="page-height-extend" class="hidden"></div>
-  <script type="module" src="{{ get_url(path="js/site.js") }}"></script>
+  <script type="module" src="{{ get_url(path="js/site.js") }}?v=zola-rebuild-2"></script>
 </body>
 </html>
