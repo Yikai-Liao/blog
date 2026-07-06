@@ -1767,6 +1767,14 @@ html.is-animating .transition-swup-fade { opacity: 0; transform: translateY(1rem
   .float-panel { left: .75rem; right: .75rem; min-width: 0; }
   .search-panel { width: auto; max-width: calc(100vw - 1.5rem); box-sizing: border-box; }
   .back-to-top { right: .75rem; }
+  .card-list {
+    gap: 0;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    padding: .25rem 0;
+    border-radius: var(--radius-large);
+    background: var(--card-bg);
+  }
   .profile-card {
     display: flex;
     align-items: center;
@@ -1775,21 +1783,54 @@ html.is-animating .transition-swup-fade { opacity: 0; transform: translateY(1rem
   }
   .profile-avatar { width: 10rem; flex: 0 0 10rem; margin: 0; }
   .post-card {
-    flex-direction: column-reverse;
     min-height: 0;
     margin: 0;
-    border-radius: var(--radius-large);
+    border-radius: 0;
+    background: transparent;
+  }
+  .post-card:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 1.5rem;
+    bottom: 0;
+    left: 1.5rem;
+    border-bottom: 1px dashed rgb(0 0 0 / 10%);
+  }
+  .dark .post-card:not(:last-child)::after {
+    border-color: rgb(255 255 255 / 15%);
   }
   .post-card-cover {
     position: relative;
     inset: auto;
+    display: block;
     width: calc(100% - 2rem);
     height: 12rem;
     margin: 1rem 1rem -.5rem;
   }
   .post-card-body, .post-card-body-no-cover { width: 100%; padding: 1.5rem; }
-  .post-card-title { font-size: 1.7rem; }
-  .post-card-title::before, .post-card-enter { display: none; }
+  .post-card-title {
+    font-size: 1.875rem;
+    line-height: 1.2;
+  }
+  .post-card-title::before,
+  .post-card-enter {
+    display: none;
+  }
+  .post-card-arrow {
+    position: static;
+    opacity: 1;
+    transform: translateY(.18rem);
+  }
+  .post-card .post-meta {
+    margin-bottom: 1rem;
+    column-gap: 1rem;
+  }
+  .post-card .post-meta-tags {
+    display: none;
+  }
+  .post-card-desc {
+    margin-bottom: 1rem;
+  }
   .post-header h1 {
     font-size: 1.875rem;
     line-height: 2.25rem;
