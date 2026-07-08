@@ -15,9 +15,9 @@
   },
   "dependencies": {
     "twikoo-cloudflare": "1.6.41",
-    "twikoo-func": "1.7.13"
+    "twikoo-func": "1.7.14"
   },
   "devDependencies": {
-    "wrangler": "^4.107.0"
+    "wrangler": "^4.107.1"
   }
 }
