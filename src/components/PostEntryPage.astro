@@ -13,6 +13,7 @@ import License from "./misc/License.astro";
 import Markdown from "./misc/Markdown.astro";
 import PostMetadata from "./PostMeta.astro";
 import TwikooComments from "./TwikooComments.astro";
+import Backlinks from "./Backlinks.astro";
 
 interface Props {
 	entry: CollectionEntry<"posts">;
@@ -118,6 +119,8 @@ const jsonLd = {
             <Markdown class="mb-6 markdown-content onload-animation">
                 <Content />
             </Markdown>
+
+            <Backlinks slug={entry.data.slug} privateContext={privateContext} />
 
             {licenseConfig.enable && <License title={entry.data.title} slug={entry.data.slug} pubDate={entry.data.published} author={entry.data.author} class="mb-6 rounded-xl license-container onload-animation"></License>}
         </div>

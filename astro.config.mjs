@@ -16,14 +16,19 @@ import remarkDirective from "remark-directive"; /* Handle directives */
 import remarkGithubAdmonitionsToDirectives from "remark-github-admonitions-to-directives";
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
+import wikiLinkPlugin from "@flowershow/remark-wiki-link";
 import { expressiveCodeConfig } from "./src/config.ts";
 import { pluginLanguageBadge } from "./src/plugins/expressive-code/language-badge.ts";
 import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.mjs";
 import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.mjs";
-import { PostCardComponent } from "./src/plugins/rehype-component-post-card.mjs";
 import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.js";
 import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
+import {
+	markWikiLinksPrivateNavigation,
+	validateWikiLinks,
+	wikiLinkOptions,
+} from "./src/plugins/remark-wiki-links.mjs";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 
 function normalizeSite(value, fallback) {
@@ -127,6 +132,8 @@ export default defineConfig({
 				remarkDirective,
 				remarkSectionize,
 				parseDirectiveNode,
+				[wikiLinkPlugin, wikiLinkOptions],
+				validateWikiLinks,
 			],
 			rehypePlugins: [
 				rehypeKatex,
@@ -136,7 +143,6 @@ export default defineConfig({
 					{
 						components: {
 							github: GithubCardComponent,
-							post: PostCardComponent,
 							note: (x, y) => AdmonitionComponent(x, y, "note"),
 							tip: (x, y) => AdmonitionComponent(x, y, "tip"),
 							important: (x, y) => AdmonitionComponent(x, y, "important"),
@@ -145,6 +151,7 @@ export default defineConfig({
 						},
 					},
 				],
+				markWikiLinksPrivateNavigation,
 				[
 					rehypeAutolinkHeadings,
 					{

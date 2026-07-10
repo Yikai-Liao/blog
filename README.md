@@ -57,6 +57,17 @@ private: true
 - `image`：封面图，可用 URL、`public/` 下的绝对路径，或相对文章文件的路径。
 - `toc.depth`：单篇文章目录深度，可设为 `1`、`2`、`3`。
 
+## 站内引用与关系图
+
+站内文章引用统一使用 Obsidian 风格的 wiki link，并以 `slug` 作为稳定标识：
+
+```markdown
+[[tidb-vs-tikv]]
+[[tidb-vs-tikv#架构|跳到架构说明]]
+```
+
+每篇文章底部会显示反向链接。`/graph/` 只展示公开文章及公开文章之间的引用；`/private/graph/` 展示完整图谱。构建会拒绝不存在的 slug，以及公开文章指向私有文章的引用，防止私有文章信息泄露到公开页面。
+
 推荐的 private 仓结构：
 
 ```text

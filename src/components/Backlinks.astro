@@ -1,0 +1,47 @@
+---
+import { Icon } from "astro-icon/components";
+import { getPostUrlBySlug } from "@utils/url-utils";
+import { getWikiGraph } from "@utils/wiki-graph";
+
+interface Props {
+	slug: string;
+	privateContext?: boolean;
+}
+
+const { slug, privateContext = false } = Astro.props;
+const graph = await getWikiGraph(privateContext);
+const backlinks = graph.incoming.get(slug) ?? [];
+---
+
+{backlinks.length > 0 && (
+	<section class="backlinks card-base mb-6 px-5 py-4 onload-animation" aria-labelledby="backlinks-title">
+		<div class="flex items-center gap-2 mb-3 text-black/75 dark:text-white/75">
+			<Icon name="material-symbols:account-tree-outline-rounded" class="text-[1.35rem] text-[var(--primary)]" />
+		<h2 id="backlinks-title" class="text-lg font-bold">反向链接</h2>
+		<span class="text-sm text-black/30 dark:text-white/30">{backlinks.length}</span>
+		</div>
+		<ul class="grid gap-2 list-none p-0 m-0">
+			{backlinks.map((post) => (
+				<li>
+					<a
+						href={getPostUrlBySlug(post.slug, post.private, privateContext)}
+						class="backlink-row group flex items-center gap-3 rounded-xl px-3 py-2 transition"
+					>
+						<Icon name="material-symbols:subdirectory-arrow-right-rounded" class="text-[1.15rem] text-[var(--primary)]" />
+						<span class="font-medium text-black/75 dark:text-white/75 group-hover:text-[var(--primary)]">{post.title}</span>
+					</a>
+				</li>
+			))}
+		</ul>
+	</section>
+)}
+
+<style>
+	.backlinks {
+		background: color-mix(in oklch, var(--card-bg) 94%, var(--primary));
+	}
+
+	.backlink-row:hover {
+		background: var(--btn-plain-bg-hover);
+	}
+</style>

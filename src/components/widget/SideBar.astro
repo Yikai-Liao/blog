@@ -28,11 +28,11 @@ const hasToc = siteConfig.toc.enable && headings.length > 0;
                 <TOC headings={headings} depth={tocDepth}></TOC>
             </div>
         </WidgetLayout>}
-        {!hasToc && <div data-private-sidebar-panel="public" class:list={[{ hidden: privateContext }, "flex flex-col gap-4"]}>
+		{!hasToc && <div data-private-sidebar-panel="public" class:list={[{ hidden: privateContext }, "flex flex-col gap-4"]}>
             <Categories id="categories-public" class="onload-animation" style="animation-delay: calc(var(--content-delay) + 0ms)" privateContext={false}></Categories>
             <Tag id="tags-public" class="onload-animation" style="animation-delay: calc(var(--content-delay) + 50ms)" privateContext={false}></Tag>
         </div>}
-        {!hasToc && <div data-private-sidebar-panel="private" class:list={[{ hidden: !privateContext }, "flex flex-col gap-4"]}>
+		{!hasToc && <div data-private-sidebar-panel="private" class:list={[{ hidden: !privateContext }, "flex flex-col gap-4"]}>
             <Categories id="categories-private" class="onload-animation" style="animation-delay: calc(var(--content-delay) + 0ms)" privateContext={true}></Categories>
             <Tag id="tags-private" class="onload-animation" style="animation-delay: calc(var(--content-delay) + 50ms)" privateContext={true}></Tag>
         </div>}
@@ -42,6 +42,14 @@ const hasToc = siteConfig.toc.enable && headings.length > 0;
 <script>
 function isArchivePage() {
 	return window.location.pathname.replace(/\/+$/, "").endsWith("/archive");
+}
+
+function isGraphPage() {
+	return window.location.pathname.replace(/\/+$/, "").endsWith("/graph");
+}
+
+function isTaxonomyFilterPage() {
+	return isArchivePage() || isGraphPage();
 }
 
 function withoutValue(params: URLSearchParams, key: string, value: string) {
@@ -54,7 +62,8 @@ function withoutValue(params: URLSearchParams, key: string, value: string) {
 }
 
 function syncArchiveFilters() {
-	const onArchive = isArchivePage();
+	const onFilterPage = isTaxonomyFilterPage();
+	const onGraph = isGraphPage();
 	const params = new URLSearchParams(window.location.search);
 
 	document
@@ -68,9 +77,9 @@ function syncArchiveFilters() {
 				key === "uncategorized"
 					? params.has("uncategorized")
 					: params.getAll(key).includes(value);
-			link.classList.toggle("archive-filter-active", onArchive && active);
-			link.toggleAttribute("aria-current", onArchive && active);
-			if (!onArchive) return;
+			link.classList.toggle("archive-filter-active", onFilterPage && active);
+			link.toggleAttribute("aria-current", onFilterPage && active);
+			if (!onFilterPage) return;
 
 			let next = active ? withoutValue(params, key, value) : new URLSearchParams(params);
 			if (!active) {
@@ -79,7 +88,7 @@ function syncArchiveFilters() {
 				next.append(key, value);
 			}
 
-			const url = new URL(link.href);
+			const url = onGraph ? new URL(window.location.href) : new URL(link.href);
 			url.search = next.toString();
 			link.href = url.toString();
 		});
@@ -93,7 +102,7 @@ function onArchiveFilterClick(event: MouseEvent) {
 		event.ctrlKey ||
 		event.shiftKey ||
 		event.altKey ||
-		!isArchivePage()
+		!isTaxonomyFilterPage()
 	) {
 		return;
 	}

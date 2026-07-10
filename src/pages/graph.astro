@@ -1,0 +1,11 @@
+---
+import Graph from "@components/Graph.svelte";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getWikiGraph } from "@utils/wiki-graph";
+
+const graph = await getWikiGraph();
+---
+
+<MainGridLayout title="文档关系图" description="公开文章之间的引用关系图。">
+	<Graph graph={{ nodes: graph.nodes, edges: graph.edges }} client:only="svelte" />
+</MainGridLayout>

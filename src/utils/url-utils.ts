@@ -79,6 +79,7 @@ export function getNavUrl(path: string, privateContext = false): string {
 	if (!privateContext) return url(path);
 	if (pathsEqual(path, "/")) return url("/private/");
 	if (pathsEqual(path, "/archive/")) return url("/private/archive/");
+	if (pathsEqual(path, "/graph/")) return url("/private/graph/");
 	if (pathsEqual(path, "/about/")) return url("/about/?private=true");
 	return url(path);
 }
@@ -90,6 +91,8 @@ export function getPrivacyToggleUrl(pathname: string, search = ""): string {
 			return url(withoutPrivateQuery(pathname, search));
 		if (pathsEqual(pathname, "/private/archive/"))
 			return url(withoutPrivateQuery("/archive/", search));
+		if (pathsEqual(pathname, "/private/graph/"))
+			return url(withoutPrivateQuery("/graph/", search));
 		if (pathsEqual(pathname, "/about/"))
 			return url(withoutPrivateQuery("/about/", search));
 		return url("/");
@@ -97,6 +100,7 @@ export function getPrivacyToggleUrl(pathname: string, search = ""): string {
 	if (pathname.startsWith(url("/posts/")))
 		return url(withPrivateQuery(`${pathname}${search}`));
 	if (pathsEqual(pathname, "/archive/")) return url("/private/archive/");
+	if (pathsEqual(pathname, "/graph/")) return url("/private/graph/");
 	if (pathsEqual(pathname, "/about/")) return url("/about/?private=true");
 	return url("/private/");
 }

@@ -119,6 +119,8 @@ loadButtonScript();
 		privateHomeUrl: url("/private/"),
 		publicArchiveUrl: url("/archive/"),
 		privateArchiveUrl: url("/private/archive/"),
+		publicGraphUrl: url("/graph/"),
+		privateGraphUrl: url("/private/graph/"),
 		publicAboutUrl: url("/about/"),
 		privateAboutUrl: url("/about/?private=true"),
 		publicPostPrefix: url("/posts/"),
@@ -141,11 +143,13 @@ loadButtonScript();
 		if (!privateMode) {
 			if (rawUrl === "/") return publicHomeUrl;
 			if (rawUrl === "/archive/") return publicArchiveUrl;
+			if (rawUrl === "/graph/") return publicGraphUrl;
 			if (rawUrl === "/about/") return publicAboutUrl;
 			return rawUrl;
 		}
 		if (rawUrl === "/") return privateHomeUrl;
 		if (rawUrl === "/archive/") return privateArchiveUrl;
+		if (rawUrl === "/graph/") return privateGraphUrl;
 		if (rawUrl === "/about/") return privateAboutUrl;
 		return rawUrl;
 	}
@@ -161,6 +165,9 @@ loadButtonScript();
 			if (window.location.pathname === privateArchiveUrl) {
 				return `${publicArchiveUrl}${window.location.search}`;
 			}
+			if (window.location.pathname === privateGraphUrl) {
+				return `${publicGraphUrl}${window.location.search}`;
+			}
 			if (window.location.pathname === publicAboutUrl) {
 				return `${next.pathname}${next.search}${next.hash}`;
 			}
@@ -173,6 +180,9 @@ loadButtonScript();
 		}
 		if (window.location.pathname === publicArchiveUrl) {
 			return `${privateArchiveUrl}${window.location.search}`;
+		}
+		if (window.location.pathname === publicGraphUrl) {
+			return `${privateGraphUrl}${window.location.search}`;
 		}
 		if (window.location.pathname === publicAboutUrl) return privateAboutUrl;
 		return privateHomeUrl;
