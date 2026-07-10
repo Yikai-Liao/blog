@@ -28,6 +28,7 @@
 	let categories: string[] = [];
 	let uncategorized = false;
 	let graphRenderer: ReturnType<typeof ForceGraph<GraphNode, GraphLink>> | undefined;
+	let renderedNodes: GraphNode[] = [];
 
 	$: filteredNodes = graph.nodes.filter((node) => {
 		if (tags.length > 0 && !node.tags.some((tag) => tags.includes(tag))) return false;
@@ -41,11 +42,13 @@
 
 	function graphData() {
 		const radius = Math.max(100, Math.sqrt(filteredNodes.length) * 72);
+		const nodes = filteredNodes.map((node, index) => {
+			const angle = (Math.PI * 2 * index) / Math.max(filteredNodes.length, 1);
+			return { ...node, x: Math.cos(angle) * radius, y: Math.sin(angle) * radius };
+		});
+		renderedNodes = nodes;
 		return {
-			nodes: filteredNodes.map((node, index) => {
-				const angle = (Math.PI * 2 * index) / Math.max(filteredNodes.length, 1);
-				return { ...node, x: Math.cos(angle) * radius, y: Math.sin(angle) * radius };
-			}),
+			nodes,
 			links: filteredEdges.map((edge) => ({ source: edge.from, target: edge.to })),
 		};
 	}
@@ -63,6 +66,7 @@
 	}
 
 	onMount(() => {
+		const graphContainer = container;
 		const primary = themeColor("--primary", "#8969c4");
 		const card = themeColor("--card-bg", "#29292e");
 		const line = themeColor("--line-color", "rgba(255,255,255,.16)");
@@ -70,6 +74,7 @@
 			? "rgba(255, 255, 255, 0.72)"
 			: themeColor("--deep-text", "#2f2f35");
 		let hovered: GraphNode | null = null;
+		let touchStart: { x: number; y: number } | undefined;
 		let lastWidth = 0;
 		let lastHeight = 0;
 		const nodeSlug = (node: string | GraphNode) => typeof node === "string" ? node : node.slug;
@@ -80,7 +85,7 @@
 			);
 
 		const forceGraph = ForceGraph<GraphNode, GraphLink>()
-			(container)
+			(graphContainer)
 			.graphData(graphData())
 			.nodeId("slug")
 			.backgroundColor(card)
@@ -108,7 +113,7 @@
 			.nodePointerAreaPaint((node, color, context, globalScale) => {
 				context.fillStyle = color;
 				context.beginPath();
-				context.arc(node.x ?? 0, node.y ?? 0, 7 / globalScale, 0, 2 * Math.PI);
+				context.arc(node.x ?? 0, node.y ?? 0, 18 / globalScale, 0, 2 * Math.PI);
 				context.fill();
 			})
 			.linkColor((link) =>
@@ -121,17 +126,38 @@
 			.d3AlphaDecay(0.035)
 			.onNodeHover((node) => {
 				hovered = node;
-				container.style.cursor = node ? "pointer" : "grab";
+				graphContainer.style.cursor = node ? "pointer" : "grab";
 			})
-			.onNodeClick((node) => window.location.assign(node.url));
+			.onNodeClick((node, event) => {
+				if (event?.pointerType !== "touch") window.location.assign(node.url);
+			});
 
 		forceGraph.d3Force("charge")?.strength(-120);
 		forceGraph.d3Force("link")?.distance(105);
 		graphRenderer = forceGraph;
 
+		const onPointerDown = (event: PointerEvent) => {
+			if (event.pointerType === "touch") touchStart = { x: event.clientX, y: event.clientY };
+		};
+		const onPointerUp = (event: PointerEvent) => {
+			if (event.pointerType !== "touch" || !touchStart) return;
+			const moved = Math.hypot(event.clientX - touchStart.x, event.clientY - touchStart.y);
+			touchStart = undefined;
+			if (moved > 12) return;
+
+			const bounds = graphContainer.getBoundingClientRect();
+			const tapX = event.clientX - bounds.left;
+			const tapY = event.clientY - bounds.top;
+			const target = renderedNodes.find((node) => {
+				const point = forceGraph.graph2ScreenCoords(node.x ?? 0, node.y ?? 0);
+				return Math.hypot(point.x - tapX, point.y - tapY) <= 28;
+			});
+			if (target) window.location.assign(target.url);
+		};
+
 		const zoomToGraph = () => forceGraph.zoomToFit(0, 44);
 		const resizeGraph = () => {
-			const { width, height } = container.getBoundingClientRect();
+			const { width, height } = graphContainer.getBoundingClientRect();
 			if (width <= 0 || height <= 0 || (width === lastWidth && height === lastHeight)) return;
 			lastWidth = width;
 			lastHeight = height;
@@ -139,7 +165,7 @@
 			requestAnimationFrame(zoomToGraph);
 		};
 		const resizeObserver = new ResizeObserver(resizeGraph);
-		resizeObserver.observe(container);
+		resizeObserver.observe(graphContainer);
 		forceGraph.onEngineStop(() => requestAnimationFrame(zoomToGraph));
 		requestAnimationFrame(() => {
 			resizeGraph();
@@ -148,11 +174,15 @@
 		window.addEventListener("resize", resizeGraph);
 		window.addEventListener("archive-filter-change", applyFilters);
 		window.addEventListener("popstate", applyFilters);
+		graphContainer.addEventListener("pointerdown", onPointerDown, { passive: true });
+		graphContainer.addEventListener("pointerup", onPointerUp, { passive: true });
 
 		return () => {
 			window.removeEventListener("resize", resizeGraph);
 			window.removeEventListener("archive-filter-change", applyFilters);
 			window.removeEventListener("popstate", applyFilters);
+			graphContainer.removeEventListener("pointerdown", onPointerDown);
+			graphContainer.removeEventListener("pointerup", onPointerUp);
 			resizeObserver.disconnect();
 			forceGraph._destructor();
 			graphRenderer = undefined;
@@ -178,6 +208,7 @@
 	p { margin: .35rem 0 0; color: color-mix(in oklch, var(--deep-text) 48%, transparent); font-size: .875rem; }
 	.graph-hint { color: color-mix(in oklch, var(--deep-text) 42%, transparent); font-size: .75rem; white-space: nowrap; }
 	.graph-canvas { height: clamp(27rem, 63vh, 43rem); overflow: hidden; outline: none; border-top: 1px solid var(--line-divider); }
+	.graph-canvas :global(canvas) { touch-action: none; }
 	:global(.dark) h1 { color: color-mix(in oklch, white 88%, var(--primary)); }
 	:global(.dark) p, :global(.dark) .graph-hint { color: color-mix(in oklch, white 50%, transparent); }
 	@media (max-width: 640px) { .graph-header { align-items: start; } .graph-hint { display: none; } .graph-canvas { height: 62vh; min-height: 26rem; } }
