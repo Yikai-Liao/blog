@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { visit } from "unist-util-visit";
+import { findPostFiles } from "../utils/postignore.mjs";
 
 const WIKI_LINK = /(?<!!)(?:^|[^!])\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|[^\]]+)?\]\]/g;
 
@@ -15,16 +16,6 @@ function parseFrontmatter(markdown) {
 	return data;
 }
 
-function findPostFiles(directory) {
-	if (!fs.existsSync(directory)) return [];
-	return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
-		if (entry.name.startsWith("_")) return [];
-		const file = path.join(directory, entry.name);
-		if (entry.isDirectory()) return findPostFiles(file);
-		return /\.(md|mdx)$/.test(entry.name) ? [file] : [];
-	});
-}
-
 function normalizeBase(value) {
 	const trimmed = value?.trim();
 	return !trimmed || trimmed === "/"
@@ -35,7 +26,8 @@ function normalizeBase(value) {
 function loadPosts() {
 	const posts = new Map();
 	const byFile = new Map();
-	for (const file of findPostFiles("contents")) {
+	for (const relativeFile of findPostFiles("contents")) {
+		const file = path.join("contents", relativeFile);
 		const data = parseFrontmatter(fs.readFileSync(file, "utf8"));
 		if (!data.slug || data.draft === "true") continue;
 		const post = { ...data, file: path.resolve(file), private: data.private !== "false" };

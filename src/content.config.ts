@@ -1,7 +1,8 @@
 import { defineCollection } from "astro:content";
+import { glob, type Loader } from "astro/loaders";
 import type { CollectionConfig } from "astro/content/config";
-import { glob } from "astro/loaders";
 import { type ZodType, z } from "astro/zod";
+import { postignoreGlob } from "./content-loaders/postignore";
 
 const postSlugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -41,9 +42,8 @@ type PostData = {
 	allNextPrivate: boolean;
 };
 
-const postsLoader: ReturnType<typeof glob> = glob({
+const postsLoader: Loader = postignoreGlob({
 	base: "./contents",
-	pattern: "[0-9][0-9][0-9][0-9]/**/[^_]*.{md,mdx}",
 });
 const postsSchema: ZodType<PostData> = z.object({
 	title: z.string(),

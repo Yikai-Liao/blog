@@ -42,6 +42,7 @@
     "astro-icon": "^1.1.5",
     "force-graph": "1.49.6",
     "hastscript": "^9.0.1",
+    "ignore": "^7.0.5",
     "katex": "^0.17.0",
     "markdown-it": "^14.3.0",
     "mdast-util-to-string": "^4.0.0",

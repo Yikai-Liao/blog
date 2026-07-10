@@ -32,7 +32,9 @@ pnpm dev
 
 ## 写文章
 
-文章使用 Markdown 或 MDX，路径规则是 `contents/<年份>/**/*.md` 和 `contents/<年份>/**/*.mdx`。以下划线开头的文件不会被收录，`contents/README.md` 也不会被收录。
+文章使用 Markdown 或 MDX，`contents/` 下任意未被排除、且 frontmatter 符合下方 schema 的 `.md` / `.mdx` 都会成为文章；不对 `index.md`、目录名或年份目录做特化。是否收录由同目录或祖先目录中的 `.postignore` 决定；它与 `.gitignore` 使用完全相同的语法和层级覆盖规则。根目录的 [`contents/.postignore`](contents/.postignore) 保留了现有的 `README.md`、工具目录和以下划线开头文章不收录的约定。
+
+例如，在 `contents/2026/.postignore` 中写入 `research/*` 会排除其中的文件；再写入 `!research/summary.md` 可以重新收录该文件。修改 `.postignore`、新增或删除 Markdown/MDX 文件时，开发服务器会重新计算文章集合。
 
 最小 frontmatter：
 

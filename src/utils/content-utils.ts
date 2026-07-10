@@ -173,7 +173,7 @@ export type Category = {
 
 export async function getCategoryList(
 	includePrivate = false,
-	privateContext = includePrivate,
+	privateContext: boolean = includePrivate,
 ): Promise<Category[]> {
 	const allBlogPosts = await getRawSortedPosts(includePrivate);
 	const count: { [key: string]: number } = {};

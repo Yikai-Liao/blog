@@ -80,6 +80,9 @@ importers:
       hastscript:
         specifier: ^9.0.1
         version: 9.0.1
+      ignore:
+        specifier: ^7.0.5
+        version: 7.0.5
       katex:
         specifier: ^0.17.0
         version: 0.17.0
@@ -3894,6 +3897,10 @@ packages:
 
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
+    engines: {node: '>= 4'}
+
+  ignore@7.0.5:
+    resolution: {integrity: sha512-Hs59xBNfUIunMFgWAbGX5cq6893IbWg4KnrjbYwX3tx0ztorVgTDA6B2sxf8ejHJ4wz8BqGUMYlnzNBer5NvGg==}
     engines: {node: '>= 4'}
 
   immutable@4.3.9:
@@ -10828,6 +10835,8 @@ snapshots:
   ieee754@1.2.1: {}
 
   ignore@5.3.2: {}
+
+  ignore@7.0.5: {}
 
   immutable@4.3.9:
     optional: true
